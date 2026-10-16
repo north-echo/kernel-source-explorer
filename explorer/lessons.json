@@ -1,0 +1,391 @@
+{
+  "version": 1,
+  "book": {
+    "title": "The Linux Programming Interface",
+    "author": "Michael Kerrisk",
+    "year": 2010,
+    "baseline": "The book discusses Linux through 2.6.35. Source checkpoints are verified separately against Linux 7.2.11.",
+    "usage": "Reading references only. The book PDF and its examples are not distributed. All explanations and experiments here are original companion material; this project is unaffiliated with the author or publisher."
+  },
+  "glossary": {
+    "program": "Executable code and data that can be run. A process is an execution of a program.",
+    "process": "An executing program together with identity and state such as memory, credentials and open descriptors.",
+    "task": "Linux\u2019s schedulable execution context. A multithreaded process has multiple tasks.",
+    "file descriptor": "A small integer indexing an entry in a process\u2019s descriptor table.",
+    "open-file description": "The underlying open-file state, including the offset and file status flags, referred to by one or more descriptor entries.",
+    "fork": "An interface that creates a child process. It returns in both parent and child on success, with different return values.",
+    "exec": "The family of interfaces that replace the current process\u2019s program image.",
+    "close-on-exec": "A descriptor flag, FD_CLOEXEC, requesting that the descriptor be closed during successful program replacement.",
+    "system call": "An interface through which a user program asks the kernel to perform an operation. A library wrapper is a separate layer.",
+    "virtual address space": "The address-space view used by a process. Equal virtual addresses across processes need not imply shared ordinary variable state.",
+    "copy-on-write": "An implementation technique that can defer copying private memory pages until a write requires a separate copy.",
+    "exit status": "Encoded information about how a child terminated; decode it with the appropriate wait-status macros.",
+    "zombie": "A terminated task whose remaining exit information has not yet been collected or otherwise disposed of."
+  },
+  "lessons": [
+    {
+      "id": "process-inheritance",
+      "title": "A new process, inherited access",
+      "chapter": "2",
+      "reference": "Chapter 2 \u00b7 \u00a72.7 Processes",
+      "reading": "Read a few paragraphs of the Processes section. Stop when the relationship between a parent and child gives you a question.",
+      "summary": "Follow one open file through fork and program replacement.",
+      "prompt": "A launcher opens a file, forks, and the child executes a helper. What access might the helper still have?",
+      "explanation": [
+        "An open descriptor is an entry in a process\u2019s descriptor table. After an ordinary fork, the child has its own table with inherited entries referring to the same open-file descriptions.",
+        "Closing the child\u2019s descriptor removes that entry from the child\u2019s table. The parent\u2019s entry remains open. Replacing the child\u2019s program with exec normally preserves open descriptors; FD_CLOEXEC requests closure on successful exec.",
+        "A fresh PID or program image does not by itself remove inherited authority. Descriptor handling is one part of a launcher\u2019s boundary; credentials, namespaces and other inherited state deserve their own investigation later."
+      ],
+      "follow_up": "If the parent closes its copy after fork, which process still has a reference to the open file?",
+      "boundary": "The application calls fork and execl through its C library. The indexed calls below are inside the kernel. The connection across those layers is a curated explanation, not a compiler-resolved edge from the experiment.",
+      "terms": [
+        "process",
+        "file descriptor",
+        "open-file description",
+        "exec",
+        "close-on-exec"
+      ],
+      "experiment": {
+        "file": "inherited_authority.c",
+        "intro": "An optional experiment using a temporary, immediately unlinked file containing only \u201cdemo only\u201d. No privileges or sensitive files are involved.",
+        "commands": "cc -std=c11 -Wall -Wextra inherited_authority.c -o inherited_authority\n./inherited_authority\n./inherited_authority --cloexec\n./inherited_authority --close-child",
+        "expected": "default: helper inherited descriptor=yes data=demo only\n--cloexec: helper inherited descriptor=no\n--close-child: helper inherited descriptor=no\nall three: parent descriptor still open=yes",
+        "observe": "Compare what the helper can read with whether the parent\u2019s descriptor remains open. The closed descriptor is one piece of state, not a general clean slate."
+      },
+      "checkpoints": [
+        {
+          "id": "copy-files",
+          "title": "Where creation handles the file table",
+          "selector": {
+            "type": "call",
+            "caller": "copy_process",
+            "callee": "copy_files",
+            "file": "kernel/fork.c"
+          },
+          "notice": "The new task\u2019s file setup is delegated to copy_files. Read the call and its error branch.",
+          "ignore": "The neighboring scheduler, tracing and memory setup can wait.",
+          "question": "What responsibility has this function handed to copy_files?"
+        },
+        {
+          "id": "duplicate-table",
+          "title": "A copied table can retain shared references",
+          "selector": {
+            "type": "call",
+            "caller": "copy_files",
+            "callee": "dup_fd",
+            "file": "kernel/fork.c"
+          },
+          "notice": "Read the CLONE_FILES branch and the later dup_fd call. Ordinary fork takes the table-duplication path; sharing a whole table is a separate option.",
+          "ignore": "The helper\u2019s allocation mechanics are not needed for this question.",
+          "question": "How is sharing a table different from two tables pointing to the same open file?"
+        },
+        {
+          "id": "close-exec",
+          "title": "The close-on-exec checkpoint",
+          "selector": {
+            "type": "call",
+            "caller": "begin_new_exec",
+            "callee": "do_close_on_exec",
+            "file": "fs/exec.c"
+          },
+          "notice": "This call handles descriptors marked to close during exec. Inspect the surrounding comments.",
+          "ignore": "Credential transitions and binary-format dispatch are separate topics.",
+          "question": "Why can an unmarked descriptor still be useful to the replacement program?"
+        }
+      ]
+    },
+    {
+      "id": "process-identity",
+      "title": "What does a process ID identify?",
+      "chapter": "6",
+      "reference": "Chapter 6 \u00b7 Processes; revisit Chapter 2 \u00a72.7",
+      "reading": "Use Chapter 2 for the broad idea. When you reach Chapter 6, compare a program\u2019s identity with the state the kernel tracks for it.",
+      "summary": "Connect getpid to the task Linux is currently running.",
+      "prompt": "If two executions run the same program, what makes them different processes?",
+      "explanation": [
+        "A program is executable code and data; a process is an execution with identity and state. Two executions can run the same program while having distinct process IDs.",
+        "In Linux, a task is a schedulable execution context. Threads add a distinction: getpid returns a thread-group ID, while gettid identifies the calling thread. You can leave thread details until the relevant reading.",
+        "A PID is an identifier. Access control depends on additional state; possessing a new number is not an isolation mechanism."
+      ],
+      "follow_up": "After a successful exec, would you expect the PID to change? Keep that prediction for the program-replacement topic.",
+      "boundary": "getpid in the C program is an application-facing interface. The macro-generated kernel handler is a separate layer. This index covers the kernel, not the C library wrapper.",
+      "terms": [
+        "program",
+        "process",
+        "task",
+        "system call"
+      ],
+      "experiment": {
+        "file": "process_identity.c",
+        "intro": "Print the current process ID and its parent\u2019s ID. Repeat the command if you are curious.",
+        "commands": "cc -std=c11 -Wall -Wextra process_identity.c -o process_identity\n./process_identity\n./process_identity",
+        "expected": "pid=<a process ID> parent=<its parent\u2019s ID>\npid=<another process ID> parent=<its parent\u2019s ID>",
+        "observe": "Values depend on the running system. Repeated invocations often share a parent. PID reuse is possible over time."
+      },
+      "checkpoints": [
+        {
+          "id": "getpid-handler",
+          "title": "The kernel\u2019s getpid handler",
+          "selector": {
+            "type": "call",
+            "caller": "__arm64_sys_getpid",
+            "callee": "task_tgid_vnr",
+            "file": "kernel/sys.c"
+          },
+          "notice": "The handler is written using SYSCALL_DEFINE0(getpid); this arm64 build indexes it as __arm64_sys_getpid. Focus on the return expression rather than memorizing the generated name.",
+          "ignore": "The generated wrapper plumbing and RCU details in neighboring handlers can wait.",
+          "question": "What identity does the handler ask for?"
+        },
+        {
+          "id": "task-record",
+          "title": "A task has a kernel record",
+          "selector": {
+            "type": "definition",
+            "name": "task_struct",
+            "file": "include/linux/sched.h"
+          },
+          "notice": "This structure is the kernel\u2019s task record. Its size is a reason to follow one field or responsibility at a time.",
+          "ignore": "You do not need to read or memorize this entire structure.",
+          "question": "Which kinds of state would you expect a task record to refer to?"
+        }
+      ]
+    },
+    {
+      "id": "fork-memory",
+      "title": "Two processes, two variable values",
+      "chapter": "24",
+      "reference": "Chapter 24 \u00b7 \u00a724.2 and \u00a724.2.2",
+      "reading": "When you reach fork, read its return-value behavior and memory semantics. This is a later-reading option, not a prerequisite for continuing Chapter 2.",
+      "summary": "Separate inherited contents from continuing to share ordinary variable changes.",
+      "prompt": "A child changes an ordinary variable after fork. What value would the parent print after waiting for that child?",
+      "explanation": [
+        "Ordinary fork creates separate virtual address spaces with initially equivalent contents. A later assignment to an ordinary private variable in the child does not change that variable in the parent.",
+        "Linux can implement this efficiently using copy-on-write. Separate logical state does not require eagerly copying every physical page. Explicit shared mappings are a different case.",
+        "copy_mm distinguishes sharing an address space with CLONE_VM from duplicating memory-management state. The local branch explains a choice; it is not the whole copy-on-write implementation."
+      ],
+      "follow_up": "Why can the virtual addresses match even though later values differ?",
+      "boundary": "The C library\u2019s fork wrapper is outside this index. These checkpoints investigate kernel memory setup; they do not trace an observed run of the experiment.",
+      "terms": [
+        "fork",
+        "virtual address space",
+        "copy-on-write"
+      ],
+      "experiment": {
+        "file": "fork_variables.c",
+        "intro": "The parent waits so the two output lines have a predictable order.",
+        "commands": "cc -std=c11 -Wall -Wextra fork_variables.c -o fork_variables\n./fork_variables",
+        "expected": "child value=7\nparent value=42",
+        "observe": "Compare the assignment in the child branch with the value printed in the parent branch."
+      },
+      "checkpoints": [
+        {
+          "id": "memory-setup",
+          "title": "Creation delegates memory setup",
+          "selector": {
+            "type": "call",
+            "caller": "copy_process",
+            "callee": "copy_mm",
+            "file": "kernel/fork.c"
+          },
+          "notice": "Read the memory-setup call and the failure check.",
+          "ignore": "Other resource-copying calls are separate responsibilities.",
+          "question": "What needs to succeed before creation continues?"
+        },
+        {
+          "id": "memory-choice",
+          "title": "Sharing or duplicating the memory context",
+          "selector": {
+            "type": "call",
+            "caller": "copy_mm",
+            "callee": "dup_mm",
+            "file": "kernel/fork.c"
+          },
+          "notice": "Read the CLONE_VM condition and the else branch containing dup_mm.",
+          "ignore": "Page-table details inside helpers can wait.",
+          "question": "Which branch fits the experiment\u2019s ordinary fork?"
+        }
+      ]
+    },
+    {
+      "id": "shared-offset",
+      "title": "Two descriptors, one file position",
+      "chapter": "24",
+      "reference": "Chapter 24 \u00b7 \u00a724.2.1; related reading in Chapter 5",
+      "reading": "Read the file-sharing discussion when it fits your reading. Compare descriptor-table entries with open-file descriptions.",
+      "summary": "Explore the shared object beneath an inherited descriptor.",
+      "prompt": "The child reads the first two bytes of a file. After waiting, which byte will the parent read through its inherited descriptor?",
+      "explanation": [
+        "After fork, the inherited descriptor entries refer to the same open-file description. That description holds the file offset, so a read by one process can advance the position observed by the other.",
+        "The parent waits for the child in this experiment to avoid racing reads. The result is a shared-offset observation, not a scheduling puzzle.",
+        "Duplicating the descriptor table preserves references to file objects. That differs from opening the pathname again to obtain a separate open-file description."
+      ],
+      "follow_up": "What would you predict if the child opened the pathname independently instead?",
+      "boundary": "These are compiler-resolved calls inside the kernel. The explanation linking descriptor references to the experiment is a teaching annotation, not a runtime trace.",
+      "terms": [
+        "file descriptor",
+        "open-file description",
+        "fork"
+      ],
+      "experiment": {
+        "file": "fork_file_offset.c",
+        "intro": "Use a temporary, unlinked four-byte file. The child reads two bytes before the parent reads one.",
+        "commands": "cc -std=c11 -Wall -Wextra fork_file_offset.c -o fork_file_offset\n./fork_file_offset",
+        "expected": "parent next byte=c",
+        "observe": "A parent result of c follows the child\u2019s read of a and b. Both processes close their own descriptors."
+      },
+      "checkpoints": [
+        {
+          "id": "table-copy",
+          "title": "Follow descriptor-table duplication",
+          "selector": {
+            "type": "call",
+            "caller": "copy_files",
+            "callee": "dup_fd",
+            "file": "kernel/fork.c"
+          },
+          "notice": "The dup_fd call duplicates the table for this path.",
+          "ignore": "CLONE_FILES is a distinct sharing option; ordinary fork does not request it.",
+          "question": "Does a new table imply new open-file descriptions?"
+        },
+        {
+          "id": "file-references",
+          "title": "Inspect what duplication retains",
+          "selector": {
+            "type": "call",
+            "caller": "dup_fd",
+            "callee": "get_file",
+            "file": "fs/file.c"
+          },
+          "notice": "Read the get_file call and the neighboring assignment into the new table. The code retains a reference to an existing file object.",
+          "ignore": "The surrounding allocation and resizing mechanics can wait.",
+          "question": "Which objects are retained by reference?"
+        }
+      ]
+    },
+    {
+      "id": "exit-wait",
+      "title": "An exit status the parent can collect",
+      "chapter": "25\u201326",
+      "reference": "Chapter 25 \u00b7 \u00a725.1; Chapter 26 \u00b7 \u00a726.1",
+      "reading": "Read about termination and waiting when you reach those chapters. Keep termination and collecting a child\u2019s status as two separate events.",
+      "summary": "Follow cleanup and the parent\u2019s wait operation.",
+      "prompt": "A child exits with status 42. What must the parent do to obtain that result?",
+      "explanation": [
+        "The parent can call waitpid to wait for a child and obtain status information. That status is encoded; WIFEXITED checks for normal termination and WEXITSTATUS extracts the exit code.",
+        "Termination releases resources, while some information remains available for a parent to collect. The zombie state concerns that retained information, not a process continuing to execute normally.",
+        "The example uses _exit in the child. The C library exit function additionally handles library-level cleanup such as stdio flushing; that distinction matters after fork."
+      ],
+      "follow_up": "What changes if the child terminates because of a signal instead of calling _exit?",
+      "boundary": "waitpid and _exit are application interfaces. The indexed Linux wait and exit implementations are separate layers; architecture and C-library wrappers determine the entry route.",
+      "terms": [
+        "exit status",
+        "zombie",
+        "system call"
+      ],
+      "experiment": {
+        "file": "exit_wait.c",
+        "intro": "The child calls _exit(42); the parent handles interrupted waits and decodes a normal exit.",
+        "commands": "cc -std=c11 -Wall -Wextra exit_wait.c -o exit_wait\n./exit_wait",
+        "expected": "waited for child=yes exit status=42",
+        "observe": "Notice the normal-exit test before extracting the status."
+      },
+      "checkpoints": [
+        {
+          "id": "release-memory",
+          "title": "One part of termination cleanup",
+          "selector": {
+            "type": "call",
+            "caller": "do_exit",
+            "callee": "exit_mm",
+            "file": "kernel/exit.c"
+          },
+          "notice": "This call handles the exiting task\u2019s memory-management context.",
+          "ignore": "Other cleanup responsibilities can be studied separately.",
+          "question": "Why is cleanup broader than returning an exit number?"
+        },
+        {
+          "id": "wait-operation",
+          "title": "The parent enters a wait operation",
+          "selector": {
+            "type": "call",
+            "caller": "kernel_wait4",
+            "callee": "do_wait",
+            "file": "kernel/exit.c"
+          },
+          "notice": "Focus on the wait operation and the surrounding status-handling code.",
+          "ignore": "Compatibility wrappers and tracing helpers can wait.",
+          "question": "Which side of the parent-child relationship is waiting here?"
+        }
+      ]
+    },
+    {
+      "id": "exec-replacement",
+      "title": "A different program, the same PID",
+      "chapter": "27",
+      "reference": "Chapter 27 \u00b7 \u00a727.1 and \u00a727.4",
+      "reading": "Read the execve discussion and its descriptor behavior when you reach Chapter 27. Compare program replacement with process creation.",
+      "summary": "Observe what is replaced and what can survive exec.",
+      "prompt": "A process successfully executes a new program image. Which would you expect to remain: its PID, an ordinary variable\u2019s changed value, or an unmarked open descriptor?",
+      "explanation": [
+        "A successful exec replaces the program image within the existing process. The PID remains, while the new image starts with its own initialized program state.",
+        "Open descriptors normally survive unless marked close-on-exec or otherwise closed. Exec does not by itself remove every kind of inherited access.",
+        "The experiment executes itself with a different argument. Its second run of main shows the same PID and the initial variable value. Code following a successful execl call is not resumed in the old image."
+      ],
+      "follow_up": "How would a launcher arrange for a helper to receive only the descriptors it needs?",
+      "boundary": "execl is a C-library convenience interface. The kernel-side exec path handles the requested replacement; the library-to-kernel transition is a curated conceptual bridge.",
+      "terms": [
+        "program",
+        "exec",
+        "close-on-exec"
+      ],
+      "experiment": {
+        "file": "exec_identity.c",
+        "intro": "Run the program by its local path. It replaces itself once, using a marker argument.",
+        "commands": "cc -std=c11 -Wall -Wextra exec_identity.c -o exec_identity\n./exec_identity",
+        "expected": "before exec pid=<same ID> value=42\nafter exec pid=<same ID> value=7",
+        "observe": "Compare the two PIDs and the initialization of the ordinary variable."
+      },
+      "checkpoints": [
+        {
+          "id": "exec-request",
+          "title": "Preparing a program replacement",
+          "selector": {
+            "type": "call",
+            "caller": "do_execveat_common",
+            "callee": "bprm_execve",
+            "file": "fs/exec.c"
+          },
+          "notice": "Follow the prepared binary-parameter structure into the execution helper.",
+          "ignore": "Argument copying and security-hook details are further investigations.",
+          "question": "What is being handed to the helper?"
+        },
+        {
+          "id": "exec-format",
+          "title": "Dispatch toward the binary handler",
+          "selector": {
+            "type": "call",
+            "caller": "bprm_execve",
+            "callee": "exec_binprm",
+            "file": "fs/exec.c"
+          },
+          "notice": "This is a call into binary-format handling. Handler selection can involve indirect calls; the explorer does not guess their targets.",
+          "ignore": "Tracing and credential details can wait.",
+          "question": "Why should the graph avoid inventing a direct edge to a particular format handler?"
+        },
+        {
+          "id": "exec-descriptors",
+          "title": "Preserved access has an explicit exception",
+          "selector": {
+            "type": "call",
+            "caller": "begin_new_exec",
+            "callee": "do_close_on_exec",
+            "file": "fs/exec.c"
+          },
+          "notice": "Close-on-exec handling occurs during replacement.",
+          "ignore": "A complete launcher security review requires more than this single checkpoint.",
+          "question": "Which descriptor choice can the application make before exec?"
+        }
+      ]
+    }
+  ]
+}

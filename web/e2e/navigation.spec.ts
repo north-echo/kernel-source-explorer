@@ -6,7 +6,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
   page.on('pageerror', e => errors.push(e.message));
   // The built application must not depend on any external network resource.
   await page.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
-  await page.goto('/');
+  await page.goto('/#explore');
   await expect(page.getByText('Process fixture: 3 compiled TUs and 1 skipped TU; not a kernel index')).toBeVisible();
   await page.getByLabel('Symbol name').fill('allocate_pid');
   const hit = page.locator('.result').filter({hasText: 'allocate_pid'});
@@ -60,7 +60,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
 });
 
 test('rejects a trail for another dataset and renders at phone width', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/#explore');
   await expect(page.locator('.dataset-bar')).toContainText('process-fixture-v1');
   await page.locator('input[type=file]').setInputFiles({name:'wrong.json', mimeType:'application/json', buffer: Buffer.from(JSON.stringify({version:1,dataset_id:'wrong',revision:'fixture-v1',name:'wrong',steps:[]}))});
   await expect(page.getByRole('alert')).toContainText('different dataset');

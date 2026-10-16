@@ -6,9 +6,9 @@ test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   page.on('pageerror', e => errors.push(e.message));
   await page.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   const started = performance.now();
-  await page.goto('/');
+  await page.goto('/#explore');
   await expect(page.locator('.dataset-bar')).toContainText('7.2.11');
-  await expect(page.locator('.dataset-bar')).toContainText('3/3');
+  await expect(page.locator('.dataset-bar')).toContainText('7/7');
   await page.getByLabel('Symbol name').fill('kernel_clone');
   await page.locator('.result').filter({has:page.locator('strong', {hasText:/^kernel_clone$/})}).click();
   await page.getByLabel('Direction', {exact:true}).selectOption('outgoing');
@@ -28,5 +28,26 @@ test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   await page.locator('.trail-panel ol li').last().locator('button').click();
   await expect(page.locator('.source-line.current')).toContainText('pid = alloc_pid(');
   await page.screenshot({path:fileURLToPath(new URL('../../docs/kernel-ui.png', import.meta.url)),fullPage:true});
+  expect(errors).toEqual([]);
+});
+
+test('reading checkpoint opens focused real source and returns to its question', async ({page}) => {
+  const errors: string[]=[]; page.on('pageerror', e=>errors.push(e.message));
+  await page.route('**/api/reader-profile', route=>route.fulfill({json:{reading_lesson:'process-inheritance',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
+  await page.goto('/#learn/process-inheritance');
+  await page.getByRole('button',{name:'Look at the source',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Open checkpoint',exact:true})).toHaveCount(3);
+  await page.locator('.checkpoint').filter({hasText:'The close-on-exec checkpoint'}).getByRole('button',{name:'Open checkpoint'}).click();
+  await expect(page.locator('.source-line.current')).toContainText('do_close_on_exec(me->files)');
+  await expect(page.locator('.source-path')).toContainText('fs/exec.c:1186:2');
+  await expect(page.getByRole('heading',{name:'The close-on-exec checkpoint',exact:true})).toBeVisible();
+  await expect(page.locator('.relationships-pane')).toBeHidden();
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/guided-source.png',import.meta.url)),fullPage:true});
+  await page.getByRole('button',{name:'Show full explorer'}).click();
+  await expect(page.locator('.relationships-pane')).toBeVisible();
+  await page.getByRole('link',{name:'Return to A new process, inherited access'}).click();
+  await expect(page.locator('.checkpoint').filter({hasText:'The close-on-exec checkpoint'})).toContainText('Opened in this dataset');
+  await page.getByRole('button',{name:'Think it through',exact:true}).click();
+  await expect(page.getByLabel('My thinking (optional)')).toHaveValue('');
   expect(errors).toEqual([]);
 });

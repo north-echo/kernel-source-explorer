@@ -30,8 +30,8 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--llvm-suffix', default='-22')
     p.add_argument('--jobs', default='4')
-    p.add_argument('--tu', action='append', choices=['kernel/fork.c', 'kernel/pid.c', 'kernel/cred.c'],
-                   help='Defaults to fork, pid and cred translation units')
+    p.add_argument('--tu', action='append', choices=['kernel/fork.c', 'kernel/pid.c', 'kernel/cred.c', 'kernel/exit.c', 'kernel/sys.c', 'fs/exec.c', 'fs/file.c'],
+                   help='Defaults to the seven process-lifecycle learning translation units')
     a = p.parse_args()
     if platform.system() != 'Linux':
         p.error('Preparation requires Linux; macOS case-insensitive checkouts are not valid build roots')
@@ -64,13 +64,13 @@ def main():
     generator = source / 'scripts/clang-tools/gen_compile_commands.py'
     if not generator.is_file() or 'saved)?cmd_' not in generator.read_text():
         raise RuntimeError('Pinned compilation database tooling differs from the inspected implementation')
-    tus = a.tu or ['kernel/fork.c', 'kernel/pid.c', 'kernel/cred.c']
+    tus = a.tu or ['kernel/fork.c', 'kernel/pid.c', 'kernel/cred.c', 'kernel/exit.c', 'kernel/sys.c', 'fs/exec.c', 'fs/file.c']
     make = ['make', '-C', source, f'ARCH={arch}', f'LLVM={a.llvm_suffix}']
     run(make + ['defconfig'])
     run(make + [f'-j{a.jobs}', 'prepare'])
     run(make + [f'-j{a.jobs}'] + [tu[:-2] + '.o' for tu in tus])
     original = output / 'compile_commands.original.json'
-    run(['python3', generator, '-d', source, '-o', original, source / 'kernel'])
+    run(['python3', generator, '-d', source, '-o', original, source / 'kernel', source / 'fs'])
     commands = json.loads(original.read_text())
     selected = [c for c in commands if str(Path(c['file']).relative_to(source)) in tus]
     if len(selected) != len(tus):

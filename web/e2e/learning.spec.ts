@@ -1,0 +1,49 @@
+import {test, expect} from '@playwright/test';
+import {fileURLToPath} from 'node:url';
+
+test('reading starts with one optional question, saves local thinking, and distinguishes experiment status', async ({page}) => {
+  const errors: string[]=[]; page.on('pageerror', e=>errors.push(e.message));
+  await page.route('**/api/reader-profile', route=>route.fulfill({json:{reading_lesson:'process-inheritance',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
+  await page.goto('/');
+  await expect(page.getByRole('heading',{name:'What are you reading?'})).toBeVisible();
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/learning-home.png',import.meta.url)),fullPage:true});
+  await page.getByRole('link',{name:'Start with processes'}).click();
+  await expect(page.getByRole('heading',{name:'A new process, inherited access',exact:true})).toBeVisible();
+  await expect(page.locator('.authored-explanation')).toHaveCount(0);
+  await page.getByLabel('My thinking (optional)').fill('The helper may retain an inherited descriptor.');
+  await page.getByRole('button',{name:'Compare with an explanation'}).click();
+  await expect(page.locator('.authored-explanation')).toContainText('FD_CLOEXEC');
+  await page.reload();
+  await expect(page.getByLabel('My thinking (optional)')).toHaveValue('The helper may retain an inherited descriptor.');
+  await expect(page.locator('.authored-explanation')).toHaveCount(0);
+  await page.getByRole('button',{name:'Optional experiment',exact:true}).click();
+  await expect(page.getByLabel('My experiment status')).toHaveValue('not-run');
+  await page.getByText('Compare the expected result when ready',{exact:true}).click();
+  await expect(page.getByLabel('My experiment status')).toHaveValue('not-run');
+  const download=page.waitForEvent('download');
+  await page.getByRole('link',{name:'Download inherited_authority.c'}).click();
+  expect((await download).suggestedFilename()).toBe('inherited_authority.c');
+  await page.getByLabel('My experiment status').selectOption('traced');
+  await page.getByLabel('My observation (optional)').fill('Reasoned through; not executed by me.');
+  await page.reload();
+  await page.getByRole('button',{name:'Optional experiment',exact:true}).click();
+  await expect(page.getByLabel('My experiment status')).toHaveValue('traced');
+  await expect(page.getByLabel('My observation (optional)')).toHaveValue('Reasoned through; not executed by me.');
+  await page.getByRole('button',{name:'Look at the source',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Open checkpoint',exact:true})).toHaveCount(0);
+  await expect(page.locator('.source-invitations')).toContainText('You can still use the reading and experiment.');
+  await page.setViewportSize({width:390,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+  expect(errors).toEqual([]);
+});
+
+test('a separate reader gets a generic profile and can choose another reading place', async ({page}) => {
+  await page.route('**/api/reader-profile', route=>route.fulfill({json:{reading_lesson:'process-inheritance',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
+  await page.goto('/#learn/exec-replacement');
+  await expect(page.getByLabel('My thinking (optional)')).toHaveValue('');
+  await page.getByRole('button',{name:'Keep my reading place here'}).click();
+  await page.getByRole('link',{name:'All reading topics'}).click();
+  await expect(page.locator('.reading-place')).toContainText('Chapter 27');
+  await page.reload();
+  await expect(page.locator('.reading-place')).toContainText('Chapter 27');
+});

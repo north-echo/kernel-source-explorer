@@ -1,0 +1,10 @@
+import type {Edge, Loc} from './types';
+export type Selection = {symbol_id: string; name: string; location: Loc; edge?: Edge};
+export type Checkpoint = {id: string; title: string; notice: string; ignore: string; question: string; available: boolean; reason?: string; dataset_id?: string; selection?: Selection};
+export type Topic = {id: string; title: string; chapter: string; reference: string; reading: string; summary: string; prompt: string; explanation: string[]; follow_up: string; boundary: string; terms: string[]; experiment: {file: string; intro: string; commands: string; expected: string; observe: string; source: string}; checkpoints: Checkpoint[]};
+export type Curriculum = {version: number; annotation_origin: string; book: {title: string; author: string; baseline: string; usage: string}; glossary: Record<string, string>; lessons: Topic[]};
+export type ReaderProfile = {reading_lesson: string; reading_reference: string; interests: string[]; study_environment?: string; discussion_context?: string};
+export type TopicNotes = {thinking: string; observation: string; experiment: 'not-run' | 'traced' | 'ran'; visited: Record<string, string>};
+export type ReaderState = {version: 1; readingLesson: string; readingReference: string; interests: string[]; lastLesson: string; studyEnvironment: string; discussionContext: string; notes: Record<string, TopicNotes>};
+export type GuidedContext = {lesson: Pick<Topic, 'id' | 'title' | 'reference'>; checkpoint: Checkpoint};
+export const emptyNotes = (): TopicNotes => ({thinking: '', observation: '', experiment: 'not-run', visited: {}});

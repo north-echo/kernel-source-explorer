@@ -1,0 +1,62 @@
+{
+  "system": "Linux",
+  "running_kernel": "7.0.0-28-generic",
+  "architecture": "aarch64",
+  "effective_uid": 501,
+  "compiler": "Ubuntu clang version 22.1.2 (1ubuntu1)",
+  "note": "Execution on this host is distinct from compiler evidence for the indexed kernel version.",
+  "results": [
+    {
+      "experiment": "inherited_authority",
+      "arguments": [],
+      "stdout": "helper inherited descriptor=yes data=demo only\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "inherited_authority",
+      "arguments": [
+        "--cloexec"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "inherited_authority",
+      "arguments": [
+        "--close-child"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "process_identity",
+      "arguments": [],
+      "stdout": "pid=3506 parent=3479\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "fork_variables",
+      "arguments": [],
+      "stdout": "child value=7\nparent value=42\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "fork_file_offset",
+      "arguments": [],
+      "stdout": "parent next byte=c\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "exit_wait",
+      "arguments": [],
+      "stdout": "waited for child=yes exit status=42\n",
+      "result": "passed"
+    },
+    {
+      "experiment": "exec_identity",
+      "arguments": [],
+      "stdout": "before exec pid=3525 value=42\nafter exec pid=3525 value=7\n",
+      "result": "passed"
+    }
+  ]
+}

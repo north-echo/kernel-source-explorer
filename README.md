@@ -1,61 +1,88 @@
-# Linux Kernel Source Explorer
+# Kernel Source Explorer
 
-A local source explorer for Linux kernel learning and investigation. Search symbols, follow compiler-resolved relationships, and open their supporting source locations in coordinated graph and source views. Fresh implementation inspired by Sourcetrail; no Sourcetrail code or branding is included.
+A local reading companion and source explorer for learning how Linux works. Bring a question from your reading, reason about it, and follow a few compiler-backed source checkpoints. Open the full symbol graph whenever you want to investigate further.
 
-## Current status
+![Reading companion](docs/learning-home.png)
 
-The vertical slice, bounded kernel integration, exploration controls, and focused hardening are implemented. Linux **7.2.11**, commit `a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea`, was signature-verified, built with arm64 `defconfig`, and indexed for `kernel/fork.c`, `kernel/pid.c`, and `kernel/cred.c`. All three translation units succeeded with no diagnostics. This is a **partial kernel index**.
+## Start with a question
 
-The run produced 59,899 symbols and 180,708 relationship evidence records in 26.38 seconds. See [validation and limitations](docs/VALIDATION.md), [measured kernel results](docs/kernel-validation.json), and the [implementation specification](IMPLEMENTATION_SPEC.md).
+The **Learn** home accompanies selected topics from Michael Kerrisk's *The Linux Programming Interface*: process inheritance, identity, memory after fork, shared file offsets, exit/wait and program replacement. Each topic provides a reading pointer, an optional question, an explanation you reveal when ready, glossary terms, guided kernel locations and an optional original C experiment.
 
-![Kernel Source Explorer](docs/kernel-ui.png)
+There are no scores, deadlines, chapter gates or mandatory labs. Reading notes are optional. Discussion, reasoning through code and personally running an experiment are kept distinct.
 
-## Quick start with the fixture
+The **Explorer** tab provides coordinated symbol search, relationship graphs, source navigation and saved trails. A guided source visit opens a short excerpt with what to notice and what can wait, and lets you return to the same topic.
 
-Prerequisites: Python 3.11+, Node 22.12+ (Node 22 LTS tested), CMake 3.20+, a C++17 compiler, and matching LLVM/Clang **22 or 23** development libraries. The tested versions are LLVM 23.1.3 on macOS and LLVM 22.1.2 on Ubuntu 26.04 arm64. Apple Clang alone does not supply LibTooling development libraries.
+![Guided source visit](docs/guided-source.png)
 
-macOS build prerequisites:
+This is an independent companion, unaffiliated with the book's author or publisher. The PDF and book examples are not distributed. Explanations and experiments are original. You can use the reading topics without an index or without owning the book; reading pointers refer you to your own copy when available.
 
-```sh
-brew install llvm cmake
-```
+## Quick start
 
-Ubuntu 26.04 build prerequisites:
+Prerequisites for the reading companion: Python 3.11+ and Node 22.12+ (Node 22 LTS tested).
 
 ```sh
-sudo apt-get install build-essential cmake clang-22 llvm-22-dev libclang-22-dev libclang-cpp22-dev
-```
-
-From the repository root:
-
-```sh
+git clone https://github.com/north-echo/kernel-source-explorer.git
+cd kernel-source-explorer
 make setup
-make indexer                         # macOS default LLVM prefix
-# Linux: make indexer LLVM_PREFIX=/usr/lib/llvm-22
-make fixture
 make web
 make serve
 ```
 
-Open **http://127.0.0.1:8000**. Search `allocate_pid`, select its outgoing direct call to `helper`, and inspect `process.c:5:37`. Search `spawn_task` for the macro call and unresolved callbacks. Coverage intentionally includes one partial and one skipped translation unit. These are fixture results, not kernel results.
+Open **http://127.0.0.1:8000** and choose a reading topic. Explanations begin hidden. To inspect real kernel checkpoints, prepare a dataset using [the Linux workflow](docs/KERNEL.md). Browsing needs no external network after dependencies, UI assets and any desired source/index are available. The browser never compiles or executes experiments.
 
-`make setup` installs the exact Python dependency versions in `requirements.lock` and uses the npm lockfile. If `clang` is not on PATH, generate the fixture commands with `.venv/bin/kse fixture --compiler /path/to/clang-22` before indexing.
+On the development machine, the seven-unit validated kernel dataset is already available in `data/learning/`, so `make serve` selects it automatically. The server prefers `data/learning/index.sqlite`, then `data/kernel/index.sqlite`, then `data/fixture.sqlite`. Set `KSE_INDEX` to explicitly select another index; one dataset is open per server instance.
 
-## Browse the prepared kernel dataset
+## Your personal reading layer
 
-The validated dataset and source snapshot are present locally under `data/kernel/` and excluded from Git. After building the web interface:
+Everyone gets generic defaults. To supply a private starting point:
 
 ```sh
-KSE_INDEX="$PWD/data/kernel/index.sqlite" make serve
+mkdir -p data
+cp examples/reader.json data/reader-profile.json
 ```
 
-Search `kernel_clone`. Choose outgoing direct calls and select `kernel_clone → copy_process` to open `kernel/fork.c:2752`. Import [the reviewed process-creation trail](docs/process-creation-trail.json) with the trail panel. Notes are user annotations, separate from compiler evidence.
+The local profile can set your reading position, interests, Linux environment and an optional discussion reminder. It seeds a new browser; existing browser choices take precedence. Reading notes, self-reported experiment status and visited locations stay in browser storage. The profile, book PDFs, continuity documents, generated indexes and kernel source snapshots are excluded from Git.
 
-Only one dataset is open per service instance; select it with `KSE_INDEX` before starting the service. Dataset IDs guard against stale navigation if an index is replaced. Trails are tied to the exact dataset, saved in this browser's local storage, and exported/imported as JSON. Rebuilt datasets need a freshly generated demonstration trail.
+See [personal setup and curriculum authoring](docs/LEARNING.md). The shared application and curriculum do not depend on a particular learner's history.
 
-To reproduce the kernel preparation and index, see [the Linux workflow](docs/KERNEL.md). No installation or boot of the indexed kernel is required. Once source, dependencies, the built UI, and the index are available, browsing requires no external network access.
+## Try source exploration with a small fixture
 
-## Validation
+Additional prerequisites: CMake 3.20+, a C++17 compiler and matching LLVM/Clang **22 or 23** development libraries. Apple Clang alone does not supply LibTooling headers.
+
+macOS:
+
+```sh
+brew install llvm cmake
+make indexer
+```
+
+Ubuntu 26.04:
+
+```sh
+sudo apt-get install build-essential cmake clang-22 llvm-22-dev libclang-22-dev libclang-cpp22-dev
+make indexer LLVM_PREFIX=/usr/lib/llvm-22
+```
+
+Then:
+
+```sh
+make fixture
+KSE_INDEX="$PWD/data/fixture.sqlite" make serve
+```
+
+Choose **Explorer**, search `allocate_pid`, select outgoing direct calls, and click its edge to `helper`. The source opens at `process.c:5:37`. Search `spawn_task` for macro calls and unresolved callbacks. The fixture intentionally reports two successful, one partial and one skipped translation unit; these are not kernel results. If necessary, select a compiler explicitly with `.venv/bin/kse fixture --compiler /path/to/clang-22` before indexing.
+
+## Actual kernel validation
+
+Linux **7.2.11**, commit `a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea`, was signature-verified and built with arm64 `defconfig`. The learning index covers seven translation units: `kernel/fork.c`, `kernel/pid.c`, `kernel/cred.c`, `kernel/exit.c`, `kernel/sys.c`, `fs/exec.c` and `fs/file.c`.
+
+All seven succeeded with zero diagnostics. The run produced **91,590 symbols**, **413,584 relationship evidence records** and **14 available learning checkpoints** in **55.02 seconds**. This remains a bounded partial kernel index. It does not infer indirect-call targets or provide automatic security analysis.
+
+Six original experiment programs passed eight unprivileged cases on an Ubuntu VM running Linux 7.0.0-28-generic. That running system is separate from the indexed 7.2.11 source. Fedora is a suitable study environment, but this validation was not performed on Fedora or a booted 7.2.11 kernel.
+
+See [validation and limitations](docs/VALIDATION.md), [learning-index measurements](docs/learning-validation.json) and [experiment results](docs/experiment-validation.json).
+
+## Checks and development
 
 ```sh
 .venv/bin/pytest -q
@@ -63,22 +90,20 @@ npm run build --prefix web
 cd web
 npx playwright install chromium --only-shell
 npm run test:e2e
-npm run test:kernel                  # requires data/kernel/index.sqlite and matching demo trail
+npm run test:kernel                 # optional: requires data/learning and its matching demo trail
 ```
 
-Use Node 22 LTS if your Node version has trouble installing Playwright browsers. Browser tests bind port 8000 themselves; stop a manually running service first. See [validation details](docs/VALIDATION.md) for actual results and limits.
+Fixture and learning browser checks use port 8765; real-kernel checks use 8766. The normal service on port 8000 can remain running. The CI workflow builds the native fixture, runs the Python tests and exercises the reading/explorer UI; it does not download or claim a real kernel index.
 
-## Development
+- `indexer/`: standalone single-TU C++ Clang LibTooling analysis.
+- `explorer/cli.py`: explicit sequential indexing, SQLite ingestion and atomic publication.
+- `explorer/schema.sql`: schema v1; schema changes require a version bump and rebuild.
+- `explorer/api.py`: read-only local service; source is limited to registered, hash-verified roots.
+- `explorer/lessons.json`, `explorer/learning.py`, `explorer/experiments/`: original shared reading collection and evidence resolution.
+- `web/`: React/TypeScript, Cytoscape.js and locally bundled highlighting.
 
-- `indexer/`: single-TU C++ Clang LibTooling executable; emits compiler facts and diagnostics as JSON.
-- `explorer/cli.py`: explicit sequential index driver; stores facts in SQLite and atomically publishes replacements.
-- `explorer/schema.sql`: schema v1. Schema changes require a version bump and a dataset rebuild; no migrations are supported yet.
-- `explorer/api.py`: read-only FastAPI service. The index itself is selected by the server, never by an HTTP file path.
-- `web/`: React/TypeScript, Cytoscape.js, locally bundled C syntax highlighting.
-- `fixtures/`, `tests/`, `web/e2e/`, `web/kernel-e2e/`: focused compiler, service, and browser checks.
+For UI development, run the API on port 8000 and `npm run dev --prefix web`; Vite serves port 5173 and proxies `/api`. Production serves the built UI from FastAPI.
 
-For UI development, start the API on 127.0.0.1:8000 and `npm run dev --prefix web`; Vite proxies `/api` locally on port 5173. Production serves the built interface from FastAPI.
+The service uses loopback hosts/origins, parameterized SQL, bounded responses, component-wise symlink rejection and source hashes. Indexing accepts trusted compilation databases only through the explicit CLI. This is a single-user local application.
 
-The service binds loopback by default in the documented commands. It permits only explicit loopback hosts/origins, uses parameterized SQL, bounds responses, rejects symlink source paths, and refuses changed source contents. Browsing never executes compilation commands. Indexing accepts trusted compilation databases through an explicit local CLI operation.
-
-A project license has not been selected. Kernel sources, indexes, generated source snapshots, and build products are excluded from Git.
+The project was implemented fresh, with Sourcetrail's coordinated views as a design reference. No Sourcetrail code, artwork or branding was copied. See [the original implementation specification](IMPLEMENTATION_SPEC.md). The original application and companion material are [MIT licensed](LICENSE); dependencies and displayed kernel/book material retain their own rights. See [third-party notices](THIRD_PARTY_NOTICES.md).

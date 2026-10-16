@@ -11,9 +11,12 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from explorer.learning import experiment_path, learning_content, reader_profile
+
 
 def create_app(index_path: Path | None = None, web_root: Path | None = None):
-    index_path = (index_path or Path(os.environ.get('KSE_INDEX', 'data/fixture.sqlite'))).resolve()
+    default_index = next((path for path in [Path('data/learning/index.sqlite'), Path('data/kernel/index.sqlite')] if path.is_file()), Path('data/fixture.sqlite'))
+    index_path = (index_path or Path(os.environ.get('KSE_INDEX', str(default_index)))).resolve()
     app = FastAPI(title='Kernel Source Explorer', docs_url=None, redoc_url=None)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=['localhost', '127.0.0.1', '[::1]'])
     allowed_origins = {'http://127.0.0.1:8000', 'http://localhost:8000', 'http://127.0.0.1:5173', 'http://localhost:5173'}
@@ -21,7 +24,7 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
     @app.middleware('http')
     async def local_boundary(request: Request, call_next):
         origin = request.headers.get('origin')
-        if origin and origin not in allowed_origins:
+        if origin and origin not in allowed_origins and origin != str(request.base_url).rstrip('/'):
             from fastapi.responses import JSONResponse
             return JSONResponse({'detail': 'Browser origin is not allowed'}, status_code=403)
         response = await call_next(request)
@@ -58,6 +61,24 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
                         diagnostic_count=db.execute('SELECT count(*) FROM diagnostics').fetchone()[0],
                         symbol_count=db.execute('SELECT count(*) FROM symbols').fetchone()[0],
                         relationship_count=db.execute('SELECT count(*) FROM relationships').fetchone()[0])
+
+    @app.get('/api/learning')
+    def learning(request: Request):
+        if not index_path.is_file():
+            return learning_content()
+        with connection(request) as (db, metadata):
+            return learning_content(db, metadata)
+
+    @app.get('/api/reader-profile')
+    def profile():
+        return reader_profile(Path(os.environ.get('KSE_PROFILE', 'data/reader-profile.json')))
+
+    @app.get('/api/learning/{lesson_id}/experiment')
+    def download_experiment(lesson_id: str):
+        path = experiment_path(lesson_id)
+        if path is None:
+            raise HTTPException(404, 'Unknown reading topic')
+        return FileResponse(path, filename=path.name, media_type='text/plain')
 
     @app.get('/api/symbols')
     def search(request: Request, q: str = Query('', max_length=200), path: str = Query('', max_length=500),

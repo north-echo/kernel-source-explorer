@@ -1,0 +1,204 @@
+{
+  "dataset_id": "20cd7789b792776c9c1ce746e8d6dac95d94f7188ced72c1add7d60570a3dea8",
+  "revision": "a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea",
+  "architecture": "arm64",
+  "configuration_hash": "b2842fbaf5f212052a77c6d5056ab1a20f0b6222e79c5d41d491d0b8b9512537",
+  "created_at": "2026-10-16T18:51:55.490314+00:00",
+  "elapsed_seconds": 55.02165453500004,
+  "peak_rss_bytes": 2419965952,
+  "clang_versions": [
+    "22.1.2"
+  ],
+  "scope_label": "Linux 7.2.11 arm64 defconfig: 7 process-lifecycle translation units; bounded coverage",
+  "database_bytes": 335593472,
+  "symbols": 91590,
+  "relationships": 413584,
+  "diagnostics": 0,
+  "files": 821,
+  "translation_units": [
+    {
+      "path": "kernel/fork.c",
+      "status": "successful",
+      "elapsed_seconds": 3.0757542879999846,
+      "peak_rss_bytes": 2373644288
+    },
+    {
+      "path": "kernel/pid.c",
+      "status": "successful",
+      "elapsed_seconds": 2.257078229000058,
+      "peak_rss_bytes": 2404003840
+    },
+    {
+      "path": "kernel/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 1.6038440629999968,
+      "peak_rss_bytes": 1507450880
+    },
+    {
+      "path": "kernel/exit.c",
+      "status": "successful",
+      "elapsed_seconds": 2.0179002510000146,
+      "peak_rss_bytes": 2419965952
+    },
+    {
+      "path": "kernel/sys.c",
+      "status": "successful",
+      "elapsed_seconds": 1.776306556999998,
+      "peak_rss_bytes": 2346262528
+    },
+    {
+      "path": "fs/exec.c",
+      "status": "successful",
+      "elapsed_seconds": 2.5638154849999637,
+      "peak_rss_bytes": 2357874688
+    },
+    {
+      "path": "fs/file.c",
+      "status": "successful",
+      "elapsed_seconds": 2.336891958000024,
+      "peak_rss_bytes": 2402160640
+    }
+  ],
+  "checkpoints": [
+    {
+      "topic": "process-inheritance",
+      "checkpoint": "copy-files",
+      "available": true,
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2280,
+        "column": 11
+      }
+    },
+    {
+      "topic": "process-inheritance",
+      "checkpoint": "duplicate-table",
+      "available": true,
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      }
+    },
+    {
+      "topic": "process-inheritance",
+      "checkpoint": "close-exec",
+      "available": true,
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      }
+    },
+    {
+      "topic": "process-identity",
+      "checkpoint": "getpid-handler",
+      "available": true,
+      "location": {
+        "file": "kernel/sys.c",
+        "line": 1001,
+        "column": 9
+      }
+    },
+    {
+      "topic": "process-identity",
+      "checkpoint": "task-record",
+      "available": true,
+      "location": {
+        "file": "include/linux/sched.h",
+        "line": 826,
+        "column": 8
+      }
+    },
+    {
+      "topic": "fork-memory",
+      "checkpoint": "memory-setup",
+      "available": true,
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2292,
+        "column": 11
+      }
+    },
+    {
+      "topic": "fork-memory",
+      "checkpoint": "memory-choice",
+      "available": true,
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1594,
+        "column": 8
+      }
+    },
+    {
+      "topic": "shared-offset",
+      "checkpoint": "table-copy",
+      "available": true,
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      }
+    },
+    {
+      "topic": "shared-offset",
+      "checkpoint": "file-references",
+      "available": true,
+      "location": {
+        "file": "fs/file.c",
+        "line": 458,
+        "column": 4
+      }
+    },
+    {
+      "topic": "exit-wait",
+      "checkpoint": "release-memory",
+      "available": true,
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 975,
+        "column": 2
+      }
+    },
+    {
+      "topic": "exit-wait",
+      "checkpoint": "wait-operation",
+      "available": true,
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 1893,
+        "column": 8
+      }
+    },
+    {
+      "topic": "exec-replacement",
+      "checkpoint": "exec-request",
+      "available": true,
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1899,
+        "column": 9
+      }
+    },
+    {
+      "topic": "exec-replacement",
+      "checkpoint": "exec-format",
+      "available": true,
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1801,
+        "column": 11
+      }
+    },
+    {
+      "topic": "exec-replacement",
+      "checkpoint": "exec-descriptors",
+      "available": true,
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      }
+    }
+  ]
+}

@@ -16,3 +16,11 @@ datasets/
 web/test-results/
 web/playwright-report/
 test-results/
+# Personal study material, local profiles and credentials never belong in a shared repository.
+reader-profile*.json
+*LEARNING_CONTINUITY*
+*.pdf
+.env
+.env.*
+!.env.example
+.aws/

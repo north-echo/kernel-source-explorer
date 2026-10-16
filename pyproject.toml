@@ -22,4 +22,4 @@ include = ["explorer*"]
 testpaths = ["tests"]
 
 [tool.setuptools.package-data]
-explorer = ["schema.sql"]
+explorer = ["schema.sql", "lessons.json", "experiments/*.c"]

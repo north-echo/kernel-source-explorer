@@ -8,7 +8,7 @@
 - Commit: `a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea`
 - Signing primary fingerprint: `647F28654894E3BD457199BE38DBBDC86092693E` (Greg Kroah-Hartman)
 
-The preparation script obtains the release public key through kernel.org's Web Key Directory and requires a valid tag signature from this pinned primary fingerprint. The fingerprint is published in [kernel.org's signature documentation](https://www.kernel.org/signature.html). This uses upstream TLS/WKD plus the documented signing identity; it does not claim an independently established web of trust. Verification output is retained in the preparation directory and dataset metadata.
+The preparation script obtains the release public key through kernel.org's Web Key Directory and requires a valid tag signature from this pinned primary fingerprint. The fingerprint is published in [kernel.org's signature documentation](https://www.kernel.org/signature.html). This uses upstream TLS/WKD plus the documented signing identity; it does not claim an independently established web of trust. Verification output is retained in the preparation directory and dataset metadata. The learning scope covers fork, PID/credentials, exit/wait, identity, exec, and descriptor-table handling.
 
 ## Linux preparation
 
@@ -34,16 +34,20 @@ python3 -m explorer.cli index \
   --compdb "$HOME/kse/prepared/compile_commands.json" \
   --metadata "$HOME/kse/prepared/metadata.json" \
   --indexer build/indexer/kse-index \
-  --output "$HOME/kse/kernel.sqlite" \
-  --scope 'Linux 7.2.11 arm64 defconfig: fork, pid and cred; partial kernel coverage' \
+  --output "$HOME/kse/learning.sqlite" \
+  --scope 'Linux 7.2.11 arm64 defconfig: 7 process-lifecycle translation units; partial kernel coverage' \
   --tu "$HOME/kse/linux-7.2.11/kernel/fork.c" \
   --tu "$HOME/kse/linux-7.2.11/kernel/pid.c" \
-  --tu "$HOME/kse/linux-7.2.11/kernel/cred.c"
+  --tu "$HOME/kse/linux-7.2.11/kernel/cred.c" \
+  --tu "$HOME/kse/linux-7.2.11/kernel/exit.c" \
+  --tu "$HOME/kse/linux-7.2.11/kernel/sys.c" \
+  --tu "$HOME/kse/linux-7.2.11/fs/exec.c" \
+  --tu "$HOME/kse/linux-7.2.11/fs/file.c"
 ```
 
-Change the scope label appropriately on x86. The script checks the commit and signed tag, rejects tracked modifications, runs `defconfig`, `prepare`, and the three object builds. It then invokes the pinned `scripts/clang-tools/gen_compile_commands.py` over the kernel directory's actual `.cmd` files. The generator was inspected before selecting these commands: its positional inputs are directories, archives, or `modules.order`, rather than individual object files. Merely generating a compilation database would not prepare headers or command records.
+Change the scope label appropriately on x86. The script checks the commit and signed tag, rejects tracked modifications, runs `defconfig`, `prepare`, and the seven object builds. It then invokes the pinned `scripts/clang-tools/gen_compile_commands.py` over the kernel and fs directories' actual `.cmd` files. The generator was inspected before selecting these commands: its positional inputs are directories, archives, or `modules.order`, rather than individual object files. Merely generating a compilation database would not prepare headers or command records.
 
-`compile_commands.original.json` retains every discovered kernel command. `compile_commands.json` selects only the three requested TUs. Original command strings are preserved, including target, include paths, defines, and compiler flags. No unsupported flags were omitted in the validated run. ClangTool applies its standard syntax-only, output-file and dependency-output adjusters; this changes indexing mode without fabricating compiler inputs.
+`compile_commands.original.json` retains every discovered kernel command. `compile_commands.json` selects only the seven requested TUs. Original command strings are preserved, including target, include paths, defines, and compiler flags. No unsupported flags were omitted in the validated run. ClangTool applies its standard syntax-only, output-file and dependency-output adjusters; this changes indexing mode without fabricating compiler inputs.
 
 The retained metadata includes full configuration contents and hash, upstream identity and signature result, compiler/indexer versions, indexer binary hash, compilation-database hash, scope, timing, and all translation-unit outcomes. Memory is the maximum per-child `wait4` peak RSS, not total memory for the CLI plus child; per-TU memory and time are also recorded. The full indexing elapsed time includes JSON ingestion and database construction.
 
@@ -52,15 +56,15 @@ The retained metadata includes full configuration contents and hash, upstream id
 Export the index and only its recorded source files, with content-hash verification:
 
 ```sh
-python3 scripts/export_dataset.py "$HOME/kse/kernel.sqlite" "$HOME/kse/export"
+python3 scripts/export_dataset.py "$HOME/kse/learning.sqlite" "$HOME/kse/learning-export"
 ```
 
-Copy the complete export directory to the browsing machine, for example `data/kernel`. Register the new source path only after checking every file:
+Copy the complete export directory to the browsing machine, for example `data/learning`. Register the new source path only after checking every file:
 
 ```sh
-python3 scripts/relocate_dataset.py data/kernel/index.sqlite data/kernel/source
-python3 scripts/create_demo_trail.py data/kernel/index.sqlite docs/process-creation-trail.json
-KSE_INDEX="$PWD/data/kernel/index.sqlite" make serve
+python3 scripts/relocate_dataset.py data/learning/index.sqlite data/learning/source
+python3 scripts/create_demo_trail.py data/learning/index.sqlite docs/process-creation-trail.json
+KSE_INDEX="$PWD/data/learning/index.sqlite" make serve
 ```
 
 Relocation preserves dataset identity and symbol IDs. The exported tree is a source snapshot for browsing; it is not a complete kernel checkout and cannot reproduce compilation by itself. Keep the Linux preparation directory, configuration, and full checkout to rebuild.

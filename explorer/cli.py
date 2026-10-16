@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import platform
 import sqlite3
+import shutil
 import subprocess
 from types import SimpleNamespace
 import tempfile
@@ -25,6 +26,8 @@ def file_hash(path: Path) -> str:
 
 
 def fixture(root: Path, output: Path, compiler: str):
+    if compiler == 'clang' and not shutil.which(compiler):
+        compiler = shutil.which('clang-22') or shutil.which('clang-23') or compiler
     root = root.resolve()
     output.mkdir(parents=True, exist_ok=True)
     entries = [dict(directory=str(root), file=str(root / name),
