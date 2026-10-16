@@ -24,7 +24,9 @@ Validated on 2026-10-16. The shared application supports an optional reading com
 - Missing/ambiguous/partially indexed checkpoint evidence is rejected. All 14 checkpoints resolved in the seven-unit source dataset and their source excerpts passed hash verification.
 - Personal profiles, PDFs, continuity documents, source snapshots and indexes are excluded from Git. Profile responses expose supported fields only, not a continuity document. Public previews use generic test profiles.
 
-The CI workflow runs fixture, API and reading/browser checks. It does not download a kernel or claim the optional kernel test succeeded. Its status should be read from GitHub Actions separately from the local results above.
+Pinned pytest 9.0.3 and setuptools 83.0.0 address the two dependency alerts reported during publication.
+
+The CI workflow runs native/fixture/API checks on Ubuntu 26.04 and passes a hash-verified portable fixture plus built UI to supported Ubuntu 24.04 for Playwright browser checks. It does not download a kernel or claim the optional kernel test succeeded. Its status should be read from GitHub Actions separately from the local results above.
 
 ## Measured kernel results
 
