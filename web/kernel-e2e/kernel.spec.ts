@@ -1,0 +1,32 @@
+import {test, expect} from '@playwright/test';
+import {fileURLToPath} from 'node:url';
+
+test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
+  const errors: string[] = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
+  const started = performance.now();
+  await page.goto('/');
+  await expect(page.locator('.dataset-bar')).toContainText('7.2.11');
+  await expect(page.locator('.dataset-bar')).toContainText('3/3');
+  await page.getByLabel('Symbol name').fill('kernel_clone');
+  await page.locator('.result').filter({has:page.locator('strong', {hasText:/^kernel_clone$/})}).click();
+  await page.getByLabel('Direction', {exact:true}).selectOption('outgoing');
+  await page.getByLabel('Relationship', {exact:true}).selectOption('direct_call');
+  const call = page.locator('.evidence').filter({hasText:'kernel_clone → copy_process'});
+  await call.locator('button').first().click();
+  await expect(page.locator('.source-line.current')).toContainText('p = copy_process(NULL, trace, NUMA_NO_NODE, args);');
+  await expect(page.locator('.source-path')).toContainText('kernel/fork.c:2752:');
+  console.log('Kernel open/search/call-site flow ms:', Math.round(performance.now() - started));
+  await call.getByRole('button', {name:'Follow copy_process'}).click();
+  const dup = page.locator('.evidence').filter({hasText:'copy_process → dup_task_struct'});
+  for(let i=0;i<10 && await dup.count()===0;i++) await page.getByRole('button',{name:'More relationships'}).click();
+  await dup.locator('button').first().click();
+  await expect(page.locator('.source-line.current')).toContainText('p = dup_task_struct(current, node);');
+  await page.locator('input[type=file]').setInputFiles(fileURLToPath(new URL('../../docs/process-creation-trail.json', import.meta.url)));
+  await expect(page.locator('.trail-panel ol li')).toHaveCount(4);
+  await page.locator('.trail-panel ol li').last().locator('button').click();
+  await expect(page.locator('.source-line.current')).toContainText('pid = alloc_pid(');
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/kernel-ui.png', import.meta.url)),fullPage:true});
+  expect(errors).toEqual([]);
+});

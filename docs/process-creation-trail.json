@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "dataset_id": "f806e9ad221fc45df06920c832e045c87525dbdfa50bb4e27a6a0b10e0f65c9d",
+  "revision": "a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea",
+  "name": "Process creation: reviewed checkpoints",
+  "steps": [
+    {
+      "symbol": "c:@F@kernel_clone",
+      "name": "kernel_clone",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2752,
+        "column": 6
+      },
+      "note": "kernel_clone requests creation of the child task via copy_process."
+    },
+    {
+      "symbol": "c:@F@copy_process",
+      "name": "copy_process",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2115,
+        "column": 6
+      },
+      "note": "Task-structure duplication. Return to copy_process for the next checkpoint."
+    },
+    {
+      "symbol": "c:@F@copy_process",
+      "name": "copy_process",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2156,
+        "column": 11
+      },
+      "note": "Credential setup is a separate call in copy_process; inspect its failure handling."
+    },
+    {
+      "symbol": "c:@F@copy_process",
+      "name": "copy_process",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2308,
+        "column": 9
+      },
+      "note": "PID allocation occurs under the pid != &init_struct_pid condition."
+    }
+  ]
+}

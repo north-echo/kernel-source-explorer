@@ -1,0 +1,10 @@
+export type Loc = {file: string; line: number; column: number};
+export type SymbolInfo = {id: string; name: string; kind: string};
+export type Hit = SymbolInfo & Loc & {status: string; is_definition: number};
+export type Location = Loc & {id: number; is_definition: number; status: string; tu: string; spelling_file: string | null; spelling_line: number | null; spelling_column: number | null};
+export type Edge = Loc & {id: number; source_id: string; target_id: string | null; source_name: string; target_name: string | null; kind: string; resolution: string; origin: string; tu: string; status: string; spelling_file: string | null; spelling_line: number | null; spelling_column: number | null};
+export type Neighborhood = {nodes: SymbolInfo[]; edges: Edge[]; total: number; next_offset: number | null};
+export type Dataset = {metadata: {dataset_id: string; release: string; revision: string; architecture: string; configuration_hash: string; compilation_database_hash: string; clang_versions: string[]; kind: string; scope_label: string; created_at: string; elapsed_seconds: number; provenance: Record<string, unknown>}; coverage: {id: number; path: string; status: string; reason: string | null}[]; diagnostics: {id: number; severity: string; file: string; line: number; message: string}[]; diagnostic_count: number; symbol_count: number; relationship_count: number};
+export type Source = {file: string; start: number; line: number; total_lines: number; lines: string[]};
+export type Step = {symbol: string; name: string; location: Loc; note: string};
+export type Trail = {version: 1; dataset_id: string; revision: string; name: string; steps: Step[]};

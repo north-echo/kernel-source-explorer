@@ -1,0 +1,71 @@
+{
+  "release": "7.2.11",
+  "revision": "a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea",
+  "architecture": "arm64",
+  "configuration_hash": "b2842fbaf5f212052a77c6d5056ab1a20f0b6222e79c5d41d491d0b8b9512537",
+  "compilation_database_hash": "356473af1074b9ded5593a6511f5703f42f04ae5d78b7e95d838b2c14b396dd9",
+  "clang_versions": [
+    "22.1.2"
+  ],
+  "created_at": "2026-10-16T18:17:09.866136+00:00",
+  "elapsed_seconds": 26.38325122399965,
+  "peak_rss_bytes": 2402422784,
+  "dataset_id": "f806e9ad221fc45df06920c832e045c87525dbdfa50bb4e27a6a0b10e0f65c9d",
+  "database_bytes": 150933504,
+  "symbols": 59899,
+  "relationships": 180708,
+  "files": 797,
+  "diagnostics": 0,
+  "translation_units": [
+    {
+      "path": "kernel/fork.c",
+      "status": "successful",
+      "elapsed_seconds": 5.463143636000041,
+      "peak_rss_bytes": 2371895296
+    },
+    {
+      "path": "kernel/pid.c",
+      "status": "successful",
+      "elapsed_seconds": 2.5195506079999177,
+      "peak_rss_bytes": 2402422784
+    },
+    {
+      "path": "kernel/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 1.8419549679997544,
+      "peak_rss_bytes": 1508216832
+    }
+  ],
+  "api_measurements": {
+    "kernel_clone": {
+      "search_neighborhood_source_ms": 26.8,
+      "matching_symbols": 2,
+      "direct_call_evidence_total": 29
+    },
+    "copy_process": {
+      "search_neighborhood_source_ms": 22.64,
+      "matching_symbols": 8,
+      "direct_call_evidence_total": 228
+    },
+    "dup_task_struct": {
+      "search_neighborhood_source_ms": 18.99,
+      "matching_symbols": 2,
+      "direct_call_evidence_total": 24
+    },
+    "copy_creds": {
+      "search_neighborhood_source_ms": 19.93,
+      "matching_symbols": 1,
+      "direct_call_evidence_total": 24
+    },
+    "alloc_pid": {
+      "search_neighborhood_source_ms": 22.89,
+      "matching_symbols": 1,
+      "direct_call_evidence_total": 38
+    }
+  },
+  "indirect_calls": 192,
+  "browser_open_search_call_site_ms": [
+    725,
+    708
+  ]
+}
