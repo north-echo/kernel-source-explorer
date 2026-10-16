@@ -8,19 +8,20 @@ Validated on 2026-10-16. The shared application supports an optional reading com
 - SQLite schema v1, explicit sequential indexing, persistent diagnostics, coverage and atomic dataset publication.
 - Read-only FastAPI search, graph and source APIs with loopback host/origin controls, registered roots, safe component-wise source opening and hash checks.
 - React search/graph/source navigation, graph pagination/aggregation, history, exact evidence navigation and portable local trails.
-- Six original book-guided topics with optional questions, explanations revealed on request, glossary terms, original C downloads and 14 compiler-backed checkpoints.
-- A focused source-reading view with a return to the same topic and explicit reading boundaries.
+- All 64 chapter reading guides with original prompts, explanations, printed-page references, subject/search navigation and interactive concept diagrams.
+- Six original focused investigations with optional questions, explanations revealed on request, glossary terms, original C downloads and 14 compiler-backed checkpoints.
+- A focused source-reading view with an optional compiler-evidenced checkpoint graph, keyboard-accessible call-site/function controls, a return to the same topic and explicit reading boundaries.
 - Optional private profiles and browser-local reading notes. Reasoning through an experiment and running it are distinct self-reported states. There are no scores, deadlines, required notes or compulsory labs.
 
 ## Checks actually run
 
-- **20 Python checks pass locally**, including the optional real-kernel checkpoint test. Without `data/learning/`, the kernel check is explicitly skipped; the other 19 use native compiler fixtures or test the reading/profile boundaries without a kernel.
-- **Four fixture/reading Chromium checks pass**: exact graph-edge source navigation; macro and indirect-call behavior; history and trail round-trip; reading-home navigation; hidden explanations; local thought/observation persistence; separate-reader defaults; self-reported experiment state; source-unavailable handling; and phone-width overflow.
-- **Two real-kernel Chromium checks pass**: the reviewed process-creation trail and focused source navigation to `begin_new_exec → do_close_on_exec`, including return-to-topic state and verified-source visit recording.
+- **22 Python checks pass locally**, including the optional real-kernel checkpoint test. Without `data/learning/`, the kernel check is explicitly skipped; the other 21 use native compiler fixtures or test the reading/profile boundaries without a kernel.
+- **Five fixture/reading Chromium checks pass**: exact graph-edge source navigation; macro and indirect-call behavior; history and trail round-trip; reading-home navigation; hidden explanations; local thought/observation persistence; separate-reader defaults; self-reported experiment state; source-unavailable handling; phone-width overflow; 64-chapter discovery; concept-flow interaction; chapter bookmarks; and explicit unmapped-chapter handling.
+- **Two real-kernel Chromium checks pass**: the reviewed process-creation trail and focused source navigation to `begin_new_exec → do_close_on_exec`, including checkpoint graph visibility, call-site navigation, return-to-topic state and verified-source visit recording.
 - **Six C programs passed eight unprivileged execution cases**. [Execution results](experiment-validation.json) identify the actual running host kernel as Linux 7.0.0-28-generic on aarch64, effective UID 501. This does not imply execution on the indexed 7.2.11 kernel, on Fedora, or by the learner.
 - The native indexer compiled against LLVM/Clang 23.1.3 on macOS and 22.1.2 on Ubuntu 26.04 arm64.
 - TypeScript checks and the production build pass. The initial Python installation was also reproduced in a fresh temporary virtual environment; a clean offline npm install from the lockfile rebuilt successfully.
-- Browser tests use isolated loopback ports 8765/8766, and the original explorer checks block external resource requests. Screenshots of the reading home, guided source and full explorer were visually inspected.
+- Browser tests use isolated loopback ports 8765/8766, and the original explorer checks block external resource requests. Screenshots of the reading home, chapter diagrams at desktop/phone widths, guided source and full explorer were visually inspected.
 - Missing/ambiguous/partially indexed checkpoint evidence is rejected. All 14 checkpoints resolved in the seven-unit source dataset and their source excerpts passed hash verification.
 - Personal profiles, PDFs, continuity documents, source snapshots and indexes are excluded from Git. Profile responses expose supported fields only, not a continuity document. Public previews use generic test profiles.
 
@@ -53,7 +54,7 @@ Relationship totals count translation-unit evidence, repeated header facts and d
 
 ## Known limits
 
-- The collection covers selected TLPI topics, not a complete book course or a conversational AI tutor. Free-text answers are neither interpreted nor graded. Personal profile data seeds a new browser; existing saved browser choices take precedence. Exported notes are JSON snapshots; automatic notes import/synchronization is not implemented.
+- The collection provides a concise reading companion for all 64 core chapters, not exhaustive section-by-section instruction or a conversational AI tutor. The appendices and published exercise solutions are not reproduced. Only six investigations currently have reviewed source checkpoints and experiments; 64 chapter guides do not mean 64 kernel walkthroughs. Free-text answers are neither interpreted nor graded. Personal profile data seeds a new browser; existing saved browser choices take precedence. Exported notes are JSON snapshots; automatic notes import/synchronization is not implemented.
 - The book's historical kernel baseline and the modern indexed source are distinct. Cross-layer links between application/library interfaces and kernel checkpoints are curated explanations, not compiler edges or traces. The current getpid mapping is arm64-specific.
 - Only seven kernel TUs and their included declarations are indexed. A declaration may have no indexed definition. Absence of evidence does not imply absence of behavior elsewhere.
 - Indirect calls have no inferred target. Callback assignments and address-taking references do not establish which implementation will run. No runtime overlays, automatic vulnerability analysis or complete security-boundary assessment is provided.
@@ -69,4 +70,4 @@ Relationship totals count translation-unit evidence, repeated header facts and d
 
 ## Next steps
 
-Broaden the reading collection from actual reader questions, validate another architecture/configuration, improve header-fact storage and peak memory, and add source-location history. Keep personal continuity outside the shared curriculum and require reviewed source evidence for new kernel checkpoints.
+Deepen chapter guides and add reviewed source mappings and optional experiments from actual reader questions, validate another architecture/configuration, improve header-fact storage and peak memory, and add source-location history. Keep personal continuity outside the shared curriculum and require reviewed source evidence for new kernel checkpoints.

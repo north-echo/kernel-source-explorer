@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import hljs from 'highlight.js/lib/core';
 import c from 'highlight.js/lib/languages/c';
 import {Graph} from './Graph';
+import {CheckpointGraph} from './CheckpointGraph';
 import {api} from './api';
 import {Learning} from './Learning';
 import {useReaderState} from './useReaderState';
@@ -17,6 +18,7 @@ function App() {
   const [mode, setMode] = useState(window.location.hash.startsWith('#explore') ? 'explore' : 'learn');
   const [guided, setGuided] = useState<GuidedContext>();
   const [fullExplorer, setFullExplorer] = useState(false);
+  const [showCheckpointGraph, setShowCheckpointGraph] = useState(true);
   useEffect(() => {const changed = () => setMode(window.location.hash.startsWith('#explore') ? 'explore' : 'learn'); window.addEventListener('hashchange', changed); return () => window.removeEventListener('hashchange', changed);}, []);
   const [dataset, setDataset] = useState<Dataset>();
   const [error, setError] = useState('');
@@ -105,7 +107,7 @@ function App() {
   function openCheckpoint(context: GuidedContext) {
     const selection = context.checkpoint.selection;
     if (!selection || context.checkpoint.dataset_id !== ds) {setError('The checkpoint belongs to another dataset. Reload the reading companion.'); return;}
-    setGuided(context); setFullExplorer(false); setDirection('outgoing'); setKind('direct_call');
+    setGuided(context); setFullExplorer(false); setShowCheckpointGraph(true); setDirection('outgoing'); setKind('direct_call');
     if (active === selection.symbol_id) {setEdge(selection.edge); setFocus({...selection.location});}
     else {pendingLocation.current = {id: selection.symbol_id, location: selection.location, edge: selection.edge}; choose(selection.symbol_id);}
     window.location.hash = 'explore';
@@ -149,7 +151,9 @@ function App() {
     <div hidden={mode !== 'learn'}><Learning dataset={ds} reader={reader} updateReader={updateReader} storageError={storageError} onExplore={openCheckpoint}/></div>
     <div hidden={mode !== 'explore'} className={guided && !fullExplorer ? 'explorer-shell guided-explorer' : 'explorer-shell'}>
     {guided && <section className="guided-context" aria-label="Guided source visit"><div className="guided-return"><a href={'#learn/' + guided.lesson.id}>Return to {guided.lesson.title}</a><button onClick={() => setFullExplorer(!fullExplorer)}>{fullExplorer ? 'Focus on this checkpoint' : 'Show full explorer'}</button></div><span className="book-reference">{guided.lesson.reference} / authored teaching note</span><h1>{guided.checkpoint.title}</h1><p className="guided-question">{guided.checkpoint.question}</p><p><strong>Notice:</strong> {guided.checkpoint.notice}</p><p><strong>Leave for later:</strong> {guided.checkpoint.ignore}</p></section>}
-    <main className="workspace">
+    {guided && !fullExplorer && <div className="checkpoint-graph-toggle"><button aria-expanded={showCheckpointGraph} onClick={()=>setShowCheckpointGraph(!showCheckpointGraph)}>{showCheckpointGraph ? 'Hide checkpoint graph' : 'Show checkpoint graph'}</button><span>One verified relationship, beside its source.</span></div>}
+    <main className={guided && !fullExplorer && showCheckpointGraph ? 'workspace with-checkpoint-graph' : 'workspace'}>
+      {guided && !fullExplorer && showCheckpointGraph && guided.checkpoint.selection && <CheckpointGraph selection={guided.checkpoint.selection} onSymbol={id=>{setFullExplorer(true);choose(id);}} onEdge={inspectEdge}/>}
       <aside className="search-pane"><h1>Find a symbol</h1><label>Symbol name<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Function, type, variable…"/></label><label>Source path<input value={path} onChange={e => setPath(e.target.value)} placeholder="e.g. kernel/"/></label><div className="result-count">{hits.length} results shown</div><nav aria-label="Search results" className="results">{hits.map(h => <button key={h.id} className={'result ' + (active === h.id ? 'active' : '')} onClick={() => choose(h.id)}><strong>{h.name}</strong><span>{h.kind} · {h.status !== 'successful' ? 'partial evidence' : h.is_definition ? 'definition' : 'declaration'}</span><small>{h.file}:{h.line}</small></button>)}{ds && !hits.length && <p className="empty">No indexed symbols match. Try a broader name or path.</p>}{searchMore && <button onClick={() => setSearchOffset(s => s + 40)}>More symbols</button>}</nav></aside>
       <section className="relationships-pane"><div className="pane-heading"><h2>Relationships</h2><div><button aria-label="Previous selection" disabled={historyIndex <= 0} onClick={() => {setHistoryIndex(historyIndex - 1); setActive(history[historyIndex - 1]);}}>←</button><button aria-label="Next selection" disabled={historyIndex >= history.length - 1} onClick={() => {setHistoryIndex(historyIndex + 1); setActive(history[historyIndex + 1]);}}>→</button></div></div>
         {active ? <><div className="graph-controls"><label>Direction<select aria-label="Direction" value={direction} onChange={e => setDirection(e.target.value)}><option value="both">Both directions</option><option value="incoming">Incoming</option><option value="outgoing">Outgoing</option></select></label><label>Relationship<select aria-label="Relationship" value={kind} onChange={e => setKind(e.target.value)}><option value="all">All kinds</option><option value="direct_call">Direct calls</option><option value="indirect_call">Indirect calls</option><option value="reference">References</option><option value="declared_type">Declared types</option></select></label></div><Graph nodes={selected && !nodes.some(n => n.id === active) ? [...nodes, selected] : nodes} edges={edges} active={active} onSymbol={choose} onEdge={inspectEdge}/><div className="graph-actions"><button onClick={() => expand()}>Expand</button><button onClick={() => {setEdges([]); setNodes(selected ? [selected] : []); setNext(null);}}>Collapse neighbors</button><span>{edges.length} / {total} evidence records</span>{next !== null && <button onClick={() => expand(next)}>More relationships</button>}</div><div className="evidence-list" aria-label="Relationship evidence">{edges.map(e => <div className={'evidence ' + (edge?.id === e.id ? 'selected' : '')} key={e.id}><button onClick={() => inspectEdge(e)}><span className={'edge-kind ' + e.kind}>{e.kind.replaceAll('_', ' ')}</span><strong>{e.source_name} → {e.target_name || 'unresolved target'}</strong><small>{e.file}:{e.line}:{e.column} · {e.status}</small></button>{e.target_id && <button className="follow" aria-label={'Follow ' + e.target_name} onClick={() => choose(e.target_id!)}>Open</button>}</div>)}{!edges.length && <p className="empty">No relationships shown. Expand the symbol or change the filters. Coverage is limited to the indexed scope.</p>}</div></> : <div className="start-state"><div className="source-glyph">ƒ</div><h3>Choose a starting point</h3><p>Find a symbol, follow its relationships, and inspect the source evidence.</p><p>Solid edges represent compiler facts. Dashed calls have an unresolved target.</p></div>}

@@ -11,13 +11,15 @@ EXPERIMENTS = Path(__file__).with_name('experiments')
 
 @lru_cache
 def curriculum():
-    return json.loads(CONTENT.read_text())
+    result = json.loads(CONTENT.read_text())
+    result['chapters'] = json.loads(CONTENT.with_name('chapters.json').read_text())
+    return result
 
 
 
 def experiment_path(lesson_id):
     lesson = next((item for item in curriculum()['lessons'] if item['id'] == lesson_id), None)
-    if not lesson:
+    if not lesson or not lesson.get('experiment'):
         return None
     filename = lesson['experiment']['file']
     if Path(filename).name != filename or not filename.endswith('.c'):
@@ -73,7 +75,7 @@ def reader_profile(path):
         raw = json.loads(path.read_text())
         if not isinstance(raw, dict):
             return fallback
-        ids = {lesson['id'] for lesson in curriculum()['lessons']}
+        ids = {lesson['id'] for lesson in curriculum()['lessons'] + curriculum()['chapters']}
         result = dict(reading_lesson=raw.get('reading_lesson') if raw.get('reading_lesson') in ids else fallback['reading_lesson'],
                       reading_reference=str(raw.get('reading_reference', fallback['reading_reference']))[:200],
                       interests=[x[:80] for x in raw.get('interests', [])[:8] if isinstance(x, str)] if isinstance(raw.get('interests', []), list) else [])

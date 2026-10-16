@@ -4,7 +4,9 @@ The Learn tab is the default home. It offers reading pointers, one question at a
 
 ## Shared curriculum
 
-The initial collection accompanies selected topics in Michael Kerrisk's *The Linux Programming Interface*. It contains original explanations and original C experiments, with chapter/section references to consult in your own copy. It does not bundle the PDF, book examples, or substantial book text. It is an independent companion, unaffiliated with the author or publisher. Reading and experiments remain available without a source index.
+The collection accompanies all 64 core chapters in Michael Kerrisk's *The Linux Programming Interface*. Each chapter has printed-page references, an original question, two explanatory paragraphs, a follow-up and an interactive conceptual map. Search the chapter library by number, title or idea, filter by subject, and keep your reading place in any chapter. The appendices and published exercise solutions are not reproduced.
+
+Six focused investigations provide the deeper source and experiment routes listed below. The other chapters currently provide reading guidance and concept maps; they have no dedicated experiment or reviewed kernel checkpoint. It contains original explanations and original C experiments, with chapter/section references to consult in your own copy. It does not bundle the PDF, book examples, or substantial book text. It is an independent companion, unaffiliated with the author or publisher. Reading and experiments remain available without a source index.
 
 | Topic | Reading pointer | Experiment |
 | --- | --- | --- |
@@ -34,7 +36,7 @@ KSE_PROFILE=/absolute/path/to/my-reader.json make serve
 
 Supported fields:
 
-- `reading_lesson`: a topic ID from `explorer/lessons.json`.
+- `reading_lesson`: an investigation ID from `explorer/lessons.json` or a chapter ID (`chapter-01` through `chapter-64`) from `explorer/chapters.json`.
 - `reading_reference`: a short description of your current reading position.
 - `interests`: a list of topics you care about.
 - `study_environment`: your normal unprivileged Linux environment.
@@ -50,9 +52,13 @@ There is no model API or automated grading. The explanations are authored materi
 
 The collection currently has 14 source checkpoints. Each call checkpoint resolves to an existing successful, compiler-resolved direct call, constrained by caller, callee, source file and translation unit. Definition checkpoints require an unambiguous indexed definition. The resolver rejects missing, ambiguous, partially indexed or mismatched-revision evidence.
 
-Opening a checkpoint shows the exact source location with a short reading boundary: what to notice and what can wait. You can show the full explorer or return to the same topic without losing your place. A checkpoint is recorded as opened only after the API successfully serves the hash-verified source excerpt for that location and dataset. Changing datasets requires revisiting source checkpoints to show them as opened in the new dataset.
+Opening a checkpoint shows a focused compiler graph beside the exact source location, with a short reading boundary: what to notice and what can wait. You can hide/show the checkpoint graph, select its arrow to revisit the call site, open a function in the full Explorer, or return to the same topic without losing your place. A definition-only checkpoint shows its definition node without inventing a call. Keyboard-accessible controls accompany the graph canvas. A checkpoint is recorded as opened only after the API successfully serves the hash-verified source excerpt for that location and dataset. Changing datasets requires revisiting source checkpoints to show them as opened in the new dataset.
 
 The book's historical Linux baseline and our Linux 7.2.11 source are distinguished. Application interfaces, C-library wrappers, syscall entry points and kernel helper calls are also distinguished. The experiment's conceptual connection to a kernel checkpoint is an authored annotation, not a compiler-resolved cross-layer call edge or a runtime trace.
+
+## Concept diagrams
+
+Each chapter and focused investigation has an authored conceptual diagram. Select a step to emphasize its incoming/outgoing relationships; a text version of all connections is also available. Branches show alternatives or shared-resource relationships where relevant. These simplified maps are teaching annotations, not compiler-derived call chains or runtime traces. They remain available without an index. The separate checkpoint graph draws only the actual selected compiler evidence.
 
 ## Optional experiments
 
@@ -70,6 +76,6 @@ Actual execution results are in [experiment-validation.json](experiment-validati
 
 ## Author another reading collection
 
-`explorer/lessons.json` separates reading annotations from compiler facts. Each topic defines a stable ID, reading reference, question, optional explanation, glossary terms, original experiment and checkpoint selectors. `explorer/learning.py` resolves selectors against the index and serves bundled original experiment files. The current collection is pinned to the verified 7.2.11 revision and arm64 syscall naming; other revisions/architectures need a reviewed mapping and validation.
+`explorer/chapters.json` contains the chapter catalog; `explorer/lessons.json` contains the focused investigations. Both keep reading annotations separate from compiler facts. Each chapter defines a stable ID, number, subject, printed-page range, reading reference, original question, explanation, follow-up, related investigation IDs and conceptual nodes/edges. Focused investigations add glossary terms, an original experiment and checkpoint selectors. Keep node IDs unique and every edge tied to existing nodes. `explorer/learning.py` resolves selectors against the index and serves bundled original experiment files. The current collection is pinned to the verified 7.2.11 revision and arm64 syscall naming; other revisions/architectures need a reviewed mapping and validation.
 
 Keep personal study context in a local profile. Do not embed learner history, private paths, copyrighted book pages, credentials or generated graph evidence in a curriculum. Add a focused navigation check for new checkpoint types and validate the actual pinned source before claiming coverage.

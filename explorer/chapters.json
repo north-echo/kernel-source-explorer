@@ -1,0 +1,3764 @@
+[
+  {
+    "id": "chapter-01",
+    "number": 1,
+    "group": "Foundations",
+    "title": "History and Standards",
+    "chapter": "1",
+    "reference": "Chapter 1 · History and Standards · pp. 1–20",
+    "pages": {
+      "start": 1,
+      "end": 20
+    },
+    "reading": "Read alongside Chapter 1. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A program works on Linux. What would make you confident it also works on another UNIX system?",
+    "prompt": "A program works on Linux. What would make you confident it also works on another UNIX system?",
+    "explanation": [
+      "Separate the API contract from one implementation. A standardized interface improves portability, but extensions, optional features and differing limits still matter.",
+      "Identify which interfaces your program relies on, then check the relevant standard and the target system's documentation. A successful build on one machine establishes very little about other systems."
+    ],
+    "follow_up": "What evidence would you want before calling a program portable?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Program's assumptions"
+        },
+        {
+          "id": "n1",
+          "label": "Interface contract"
+        },
+        {
+          "id": "n2",
+          "label": "Target implementation"
+        },
+        {
+          "id": "n3",
+          "label": "Observed behavior"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-02",
+    "number": 2,
+    "group": "Foundations",
+    "title": "Fundamental Concepts",
+    "chapter": "2",
+    "reference": "Chapter 2 · Fundamental Concepts · pp. 21–42",
+    "pages": {
+      "start": 21,
+      "end": 42
+    },
+    "reading": "Read alongside Chapter 2. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "After a shell starts a program, which parts belong to the program and which belong to the kernel?",
+    "prompt": "After a shell starts a program, which parts belong to the program and which belong to the kernel?",
+    "explanation": [
+      "A process is a running context with memory, credentials and references to kernel-managed resources. The executable file supplies instructions; it is not the entire process.",
+      "A library call may do work entirely in user space or request a kernel service. Keeping those layers distinct helps explain why a process can replace its program yet retain its identity and some open resources."
+    ],
+    "follow_up": "When a process executes a different program, which resources would you expect it to retain?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "process-inheritance"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Shell"
+        },
+        {
+          "id": "n1",
+          "label": "Process"
+        },
+        {
+          "id": "n2",
+          "label": "Library interface"
+        },
+        {
+          "id": "n3",
+          "label": "Kernel service"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-03",
+    "number": 3,
+    "group": "Foundations",
+    "title": "System Programming Concepts",
+    "chapter": "3",
+    "reference": "Chapter 3 · System Programming Concepts · pp. 43–68",
+    "pages": {
+      "start": 43,
+      "end": 68
+    },
+    "reading": "Read alongside Chapter 3. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A call reports failure. Is printing a generic error enough to understand what happened?",
+    "prompt": "A call reports failure. Is printing a generic error enough to understand what happened?",
+    "explanation": [
+      "Read the documented return-value contract before examining errno. Many system calls report failure with -1, while other APIs use different conventions; errno alone does not tell you whether a call failed.",
+      "Capture useful error context before another call changes it. Headers describe interfaces to the compiler, while feature-test macros influence which declarations those headers expose."
+    ],
+    "follow_up": "What information would make a failed open useful to diagnose later?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Call interface"
+        },
+        {
+          "id": "n1",
+          "label": "Check return value"
+        },
+        {
+          "id": "n2",
+          "label": "Interpret documented error"
+        },
+        {
+          "id": "n3",
+          "label": "Decide how to recover"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-04",
+    "number": 4,
+    "group": "Files and storage",
+    "title": "File I/O: The Universal I/O Model",
+    "chapter": "4",
+    "reference": "Chapter 4 · File I/O: The Universal I/O Model · pp. 69–88",
+    "pages": {
+      "start": 69,
+      "end": 88
+    },
+    "reading": "Read alongside Chapter 4. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Your copy program asks to read 4096 bytes and receives only 700. Has it reached the end?",
+    "prompt": "Your copy program asks to read 4096 bytes and receives only 700. Has it reached the end?",
+    "explanation": [
+      "A positive read result tells you how many bytes arrived. It may be less than requested without indicating end of file; a zero result on a regular file indicates end of file.",
+      "Treat read and write results as counts, and advance through the buffer accordingly. A file descriptor is a process-local handle, not the bytes of a file or a promise that an operation transfers everything."
+    ],
+    "follow_up": "If write accepts only part of your buffer, where should the next write begin?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Open resource"
+        },
+        {
+          "id": "n1",
+          "label": "Read into buffer"
+        },
+        {
+          "id": "n2",
+          "label": "Use actual byte count"
+        },
+        {
+          "id": "n3",
+          "label": "Write remaining bytes"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-05",
+    "number": 5,
+    "group": "Files and storage",
+    "title": "File I/O: Further Details",
+    "chapter": "5",
+    "reference": "Chapter 5 · File I/O: Further Details · pp. 89–112",
+    "pages": {
+      "start": 89,
+      "end": 112
+    },
+    "reading": "Read alongside Chapter 5. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two descriptors refer to one open file description. Which changes can one user see through the other?",
+    "prompt": "Two descriptors refer to one open file description. Which changes can one user see through the other?",
+    "explanation": [
+      "Distinguish the descriptor entry from the open file description it references. Duplicated descriptors can share a file offset and file status flags while keeping descriptor flags such as close-on-exec separate.",
+      "This distinction matters when redirecting streams or passing access to a child. Changing the shared offset can affect another descriptor even though closing one descriptor leaves the other open."
+    ],
+    "follow_up": "Would two independent open calls share the same offset?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "shared-offset"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Descriptor A"
+        },
+        {
+          "id": "n1",
+          "label": "Shared open file description"
+        },
+        {
+          "id": "n2",
+          "label": "File object"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-06",
+    "number": 6,
+    "group": "Foundations",
+    "title": "Processes",
+    "chapter": "6",
+    "reference": "Chapter 6 · Processes · pp. 113–138",
+    "pages": {
+      "start": 113,
+      "end": 138
+    },
+    "reading": "Read alongside Chapter 6. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why can two running copies of the same executable have different environments and arguments?",
+    "prompt": "Why can two running copies of the same executable have different environments and arguments?",
+    "explanation": [
+      "Each process has its own execution context. Arguments, environment strings and memory belong to that running instance, even when the executable file is shared.",
+      "Environment variables are data supplied to a program, not a secure statement of identity. A process ID identifies a process during its lifetime; it is not a permanent name for a person or executable."
+    ],
+    "follow_up": "Which parts of a process would you inspect to explain how it was launched?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "process-identity"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Executable and launch inputs"
+        },
+        {
+          "id": "n1",
+          "label": "Process address space"
+        },
+        {
+          "id": "n2",
+          "label": "Running program"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-07",
+    "number": 7,
+    "group": "Foundations",
+    "title": "Memory Allocation",
+    "chapter": "7",
+    "reference": "Chapter 7 · Memory Allocation · pp. 139–152",
+    "pages": {
+      "start": 139,
+      "end": 152
+    },
+    "reading": "Read alongside Chapter 7. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A freed allocation still seems readable. Does that make using it valid?",
+    "prompt": "A freed allocation still seems readable. Does that make using it valid?",
+    "explanation": [
+      "Allocation lifetime is a contract of the language and allocator. Once you free an allocation, accessing it through the old pointer is invalid even when the underlying pages remain mapped.",
+      "The allocator manages blocks within a process and may reuse storage without returning pages immediately to the kernel. Separate ownership of a block from the virtual-memory mechanisms that supply its storage."
+    ],
+    "follow_up": "Who should own the responsibility for freeing a buffer passed between functions?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Request storage"
+        },
+        {
+          "id": "n1",
+          "label": "Allocator supplies block"
+        },
+        {
+          "id": "n2",
+          "label": "Owner uses block"
+        },
+        {
+          "id": "n3",
+          "label": "Free ends lifetime"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-08",
+    "number": 8,
+    "group": "Foundations",
+    "title": "Users and Groups",
+    "chapter": "8",
+    "reference": "Chapter 8 · Users and Groups · pp. 153–166",
+    "pages": {
+      "start": 153,
+      "end": 166
+    },
+    "reading": "Read alongside Chapter 8. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A file stores a numeric owner ID. What happens if the account name changes?",
+    "prompt": "A file stores a numeric owner ID. What happens if the account name changes?",
+    "explanation": [
+      "User and group names are convenient mappings to numeric identifiers. File ownership and process credentials use IDs, so a renamed account can still own the same files.",
+      "Account lookups may involve configured services rather than only local text files. Handle lookup failures and avoid assuming that every numeric ID currently has a display name."
+    ],
+    "follow_up": "Should a diagnostic hide an owner ID when no account name can be found?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Account name"
+        },
+        {
+          "id": "n1",
+          "label": "Account lookup"
+        },
+        {
+          "id": "n2",
+          "label": "Numeric UID or GID"
+        },
+        {
+          "id": "n3",
+          "label": "Ownership display"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-09",
+    "number": 9,
+    "group": "Foundations",
+    "title": "Process Credentials",
+    "chapter": "9",
+    "reference": "Chapter 9 · Process Credentials · pp. 167–184",
+    "pages": {
+      "start": 167,
+      "end": 184
+    },
+    "reading": "Read alongside Chapter 9. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A program has a real user ID and an effective user ID. Which one explains its current access?",
+    "prompt": "A program has a real user ID and an effective user ID. Which one explains its current access?",
+    "explanation": [
+      "Credentials have distinct roles. Many access checks depend on effective credentials and supplementary groups, while Linux also has filesystem IDs and capability rules.",
+      "Changing identity requires attention to saved IDs, group membership and the order of operations. Do not infer that dropping one field necessarily removes every route back to privilege."
+    ],
+    "follow_up": "What would you inspect to determine whether a privilege drop is permanent?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Process credentials"
+        },
+        {
+          "id": "n1",
+          "label": "Operation's access check"
+        },
+        {
+          "id": "n2",
+          "label": "Permission decision"
+        },
+        {
+          "id": "n3",
+          "label": "Success or error"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-10",
+    "number": 10,
+    "group": "Foundations",
+    "title": "Time",
+    "chapter": "10",
+    "reference": "Chapter 10 · Time · pp. 185–210",
+    "pages": {
+      "start": 185,
+      "end": 210
+    },
+    "reading": "Read alongside Chapter 10. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A clock is adjusted while you measure a task. Could the measured duration become misleading?",
+    "prompt": "A clock is adjusted while you measure a task. Could the measured duration become misleading?",
+    "explanation": [
+      "Calendar time answers what time it is, while a monotonic clock is useful for elapsed intervals. Select the clock according to the question rather than treating all timestamps as interchangeable.",
+      "Process CPU time measures execution time consumed, not how long a person waited. A process blocked on I/O may have a long elapsed duration and little CPU time."
+    ],
+    "follow_up": "Which clock would you choose for a timeout, and which for a log entry?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Choose time question"
+        },
+        {
+          "id": "n1",
+          "label": "Select clock"
+        },
+        {
+          "id": "n2",
+          "label": "Take measurements"
+        },
+        {
+          "id": "n3",
+          "label": "Interpret interval"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-11",
+    "number": 11,
+    "group": "Foundations",
+    "title": "System Limits and Options",
+    "chapter": "11",
+    "reference": "Chapter 11 · System Limits and Options · pp. 211–222",
+    "pages": {
+      "start": 211,
+      "end": 222
+    },
+    "reading": "Read alongside Chapter 11. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A constant is large enough on your laptop. Is hard-coding it a safe system limit?",
+    "prompt": "A constant is large enough on your laptop. Is hard-coding it a safe system limit?",
+    "explanation": [
+      "Some limits are compile-time constants; others vary with the running system or a particular file system. Use the query interface appropriate to the limit.",
+      "Distinguish an indeterminate limit from an actual query error using the documented errno convention. A value observed today need not be a universal property of Linux."
+    ],
+    "follow_up": "What should a program do when a limit cannot be determined in advance?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Identify required limit"
+        },
+        {
+          "id": "n1",
+          "label": "Query appropriate interface"
+        },
+        {
+          "id": "n2",
+          "label": "Interpret value or error"
+        },
+        {
+          "id": "n3",
+          "label": "Size operation"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-12",
+    "number": 12,
+    "group": "Foundations",
+    "title": "System and Process Information",
+    "chapter": "12",
+    "reference": "Chapter 12 · System and Process Information · pp. 223–232",
+    "pages": {
+      "start": 223,
+      "end": 232
+    },
+    "reading": "Read alongside Chapter 12. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A process disappears between listing its PID and reading its status. Is your monitor broken?",
+    "prompt": "A process disappears between listing its PID and reading its status. Is your monitor broken?",
+    "explanation": [
+      "System inspection is a view of a changing system. Information under procfs can change or vanish between operations, so disappearance is an ordinary case to handle.",
+      "A numeric PID can later be reused. Treat observations as time-bound and avoid assuming that separate reads form one atomic snapshot of the same process."
+    ],
+    "follow_up": "How could a tool describe partial observations without pretending they are a snapshot?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Enumerate process"
+        },
+        {
+          "id": "n1",
+          "label": "Read available information"
+        },
+        {
+          "id": "n2",
+          "label": "Handle change or disappearance"
+        },
+        {
+          "id": "n3",
+          "label": "Report observation"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-13",
+    "number": 13,
+    "group": "Files and storage",
+    "title": "File I/O Buffering",
+    "chapter": "13",
+    "reference": "Chapter 13 · File I/O Buffering · pp. 233–250",
+    "pages": {
+      "start": 233,
+      "end": 250
+    },
+    "reading": "Read alongside Chapter 13. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A printf succeeds and then power is lost. Were the bytes necessarily saved?",
+    "prompt": "A printf succeeds and then power is lost. Were the bytes necessarily saved?",
+    "explanation": [
+      "There are multiple buffering layers. A successful stdio operation may only update a user-space buffer; flushing that buffer moves data toward the kernel.",
+      "Kernel acceptance is distinct from durable storage. Synchronization calls have specific contracts and failure modes, so choose them according to what must survive rather than equating flush with persistence."
+    ],
+    "follow_up": "Why might duplicated stdio buffers matter after fork?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Application buffer"
+        },
+        {
+          "id": "n1",
+          "label": "stdio flush"
+        },
+        {
+          "id": "n2",
+          "label": "Kernel buffers"
+        },
+        {
+          "id": "n3",
+          "label": "Storage synchronization"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-14",
+    "number": 14,
+    "group": "Files and storage",
+    "title": "File Systems",
+    "chapter": "14",
+    "reference": "Chapter 14 · File Systems · pp. 251–278",
+    "pages": {
+      "start": 251,
+      "end": 278
+    },
+    "reading": "Read alongside Chapter 14. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why can two names expose the same file, and why can deleting one name leave its data accessible?",
+    "prompt": "Why can two names expose the same file, and why can deleting one name leave its data accessible?",
+    "explanation": [
+      "A directory entry associates a name with an underlying file. A file system organizes these objects, and mounts attach file-system trees into the pathname hierarchy.",
+      "Removing a name and releasing the underlying storage are different events. Remaining links or open references can keep a file accessible after one directory entry is removed."
+    ],
+    "follow_up": "What does a pathname tell you that an inode number alone does not?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Pathname"
+        },
+        {
+          "id": "n1",
+          "label": "Directory entry"
+        },
+        {
+          "id": "n2",
+          "label": "File-system object"
+        },
+        {
+          "id": "n3",
+          "label": "Data blocks"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-15",
+    "number": 15,
+    "group": "Files and storage",
+    "title": "File Attributes",
+    "chapter": "15",
+    "reference": "Chapter 15 · File Attributes · pp. 279–310",
+    "pages": {
+      "start": 279,
+      "end": 310
+    },
+    "reading": "Read alongside Chapter 15. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A program checks permissions, then opens the file. Can the file change between those steps?",
+    "prompt": "A program checks permissions, then opens the file. Can the file change between those steps?",
+    "explanation": [
+      "Metadata queries describe the object observed at that moment. A later pathname lookup can reach a different object if another process changes the directory entries.",
+      "Where suitable, inspect an already-open descriptor to keep the observation tied to that opened object. Permission bits, ownership and timestamps describe different aspects of a file; none makes a pathname immutable."
+    ],
+    "follow_up": "Which facts should be checked on the object actually opened?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Resolve name"
+        },
+        {
+          "id": "n1",
+          "label": "Obtain file reference"
+        },
+        {
+          "id": "n2",
+          "label": "Inspect attributes"
+        },
+        {
+          "id": "n3",
+          "label": "Use opened object"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-16",
+    "number": 16,
+    "group": "Files and storage",
+    "title": "Extended Attributes",
+    "chapter": "16",
+    "reference": "Chapter 16 · Extended Attributes · pp. 311–318",
+    "pages": {
+      "start": 311,
+      "end": 318
+    },
+    "reading": "Read alongside Chapter 16. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Could a backup preserve file contents yet lose information an application depends on?",
+    "prompt": "Could a backup preserve file contents yet lose information an application depends on?",
+    "explanation": [
+      "Extended attributes attach named values to file-system objects beyond the ordinary metadata fields. They have namespaces, access rules and size limits that depend on the system and file system.",
+      "A copy or backup tool must deliberately preserve supported attributes when needed. An attribute is metadata, not automatically an authorization mechanism merely because an application gives it a security-sounding name."
+    ],
+    "follow_up": "How would you detect that a destination cannot preserve an attribute?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "File object"
+        },
+        {
+          "id": "n1",
+          "label": "Attribute namespace and name"
+        },
+        {
+          "id": "n2",
+          "label": "Attribute value"
+        },
+        {
+          "id": "n3",
+          "label": "Application interpretation"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-17",
+    "number": 17,
+    "group": "Files and storage",
+    "title": "Access Control Lists",
+    "chapter": "17",
+    "reference": "Chapter 17 · Access Control Lists · pp. 319–338",
+    "pages": {
+      "start": 319,
+      "end": 338
+    },
+    "reading": "Read alongside Chapter 17. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "An ACL entry names a user, yet access is narrower than that entry appears to allow. Why?",
+    "prompt": "An ACL entry names a user, yet access is narrower than that entry appears to allow. Why?",
+    "explanation": [
+      "An access ACL can express permissions beyond the basic owner, group and other bits. The ACL mask limits permissions available through named user and group entries and the owning-group entry.",
+      "Default directory ACLs affect initialization of new objects; they are distinct from the directory's own access ACL. Read the effective permissions instead of inspecting a named entry in isolation."
+    ],
+    "follow_up": "How could changing the ACL mask affect several entries at once?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Identify matching ACL entry"
+        },
+        {
+          "id": "n1",
+          "label": "Apply applicable mask"
+        },
+        {
+          "id": "n2",
+          "label": "Effective permissions"
+        },
+        {
+          "id": "n3",
+          "label": "Access decision"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-18",
+    "number": 18,
+    "group": "Files and storage",
+    "title": "Directories and Links",
+    "chapter": "18",
+    "reference": "Chapter 18 · Directories and Links · pp. 339–374",
+    "pages": {
+      "start": 339,
+      "end": 374
+    },
+    "reading": "Read alongside Chapter 18. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A symbolic link points to a file that is renamed. Does the link follow that file?",
+    "prompt": "A symbolic link points to a file that is renamed. Does the link follow that file?",
+    "explanation": [
+      "A symbolic link stores a pathname to resolve later. A hard link is another directory entry for the same underlying object, so the two forms of link have different behavior.",
+      "Directory traversal and relative path resolution depend on context. Directory descriptors can anchor operations, but the exact flags and lookup semantics still matter."
+    ],
+    "follow_up": "What happens to a relative symbolic link when its containing directory moves?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Starting directory"
+        },
+        {
+          "id": "n1",
+          "label": "Resolve pathname components"
+        },
+        {
+          "id": "n2",
+          "label": "Follow links as required"
+        },
+        {
+          "id": "n3",
+          "label": "Referenced object"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-19",
+    "number": 19,
+    "group": "Files and storage",
+    "title": "Monitoring File Events",
+    "chapter": "19",
+    "reference": "Chapter 19 · Monitoring File Events · pp. 375–386",
+    "pages": {
+      "start": 375,
+      "end": 386
+    },
+    "reading": "Read alongside Chapter 19. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Your file watcher receives an overflow event. Can it keep treating its cached view as complete?",
+    "prompt": "Your file watcher receives an overflow event. Can it keep treating its cached view as complete?",
+    "explanation": [
+      "File notifications report changes through a bounded event mechanism. Events can be combined, watches can become invalid, and overflow means some information was lost.",
+      "A robust watcher needs a way to reconcile its state with the file system after losing events. An event is a reason to inspect current state, not a guarantee that the state is still unchanged when you inspect it."
+    ],
+    "follow_up": "What would a rescan restore that replaying the surviving events cannot?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "File-system change"
+        },
+        {
+          "id": "n1",
+          "label": "Notification queue"
+        },
+        {
+          "id": "n2",
+          "label": "Watcher reads events"
+        },
+        {
+          "id": "n3",
+          "label": "Reconcile current state"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-20",
+    "number": 20,
+    "group": "Signals and timers",
+    "title": "Signals: Fundamental Concepts",
+    "chapter": "20",
+    "reference": "Chapter 20 · Signals: Fundamental Concepts · pp. 387–420",
+    "pages": {
+      "start": 387,
+      "end": 420
+    },
+    "reading": "Read alongside Chapter 20. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A signal is generated while it is blocked. Has the process ignored it?",
+    "prompt": "A signal is generated while it is blocked. Has the process ignored it?",
+    "explanation": [
+      "Blocking delays delivery; ignoring is a signal disposition. A blocked signal can remain pending until delivery becomes possible, subject to the rules for that signal type.",
+      "A disposition determines the action on delivery. Ordinary signals can coalesce, so repeatedly generating one is not a reliable way to count separate events."
+    ],
+    "follow_up": "How would pending, blocked and ignored differ in a diagram?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Signal generated"
+        },
+        {
+          "id": "n1",
+          "label": "Pending signal"
+        },
+        {
+          "id": "n2",
+          "label": "Eligible for delivery"
+        },
+        {
+          "id": "n3",
+          "label": "Disposition takes effect"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-21",
+    "number": 21,
+    "group": "Signals and timers",
+    "title": "Signals: Signal Handlers",
+    "chapter": "21",
+    "reference": "Chapter 21 · Signals: Signal Handlers · pp. 421–446",
+    "pages": {
+      "start": 421,
+      "end": 446
+    },
+    "reading": "Read alongside Chapter 21. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why is calling a convenient library function from a signal handler sometimes dangerous?",
+    "prompt": "Why is calling a convenient library function from a signal handler sometimes dangerous?",
+    "explanation": [
+      "A handler may interrupt code while library state is inconsistent. Async-signal-safe functions have a special contract for this context; ordinary thread safety is not enough.",
+      "Keep handler work small and arrange for ordinary code to do complex work later. Shared state between a handler and interrupted code needs the documented signal-safe access rules."
+    ],
+    "follow_up": "How could the main loop learn about a signal without the handler formatting a message?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Interrupted execution"
+        },
+        {
+          "id": "n1",
+          "label": "Minimal handler work"
+        },
+        {
+          "id": "n2",
+          "label": "Handler returns"
+        },
+        {
+          "id": "n3",
+          "label": "Normal code handles work"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-22",
+    "number": 22,
+    "group": "Signals and timers",
+    "title": "Signals: Advanced Features",
+    "chapter": "22",
+    "reference": "Chapter 22 · Signals: Advanced Features · pp. 447–478",
+    "pages": {
+      "start": 447,
+      "end": 478
+    },
+    "reading": "Read alongside Chapter 22. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "You want a dedicated thread to consume signals. How does that differ from installing a handler?",
+    "prompt": "You want a dedicated thread to consume signals. How does that differ from installing a handler?",
+    "explanation": [
+      "Synchronous signal-wait interfaces let a thread accept selected pending signals in ordinary thread context. Arrange signal masks deliberately so another thread does not unexpectedly receive those signals instead.",
+      "Signal generation, routing and consumption are separate questions. Real-time signals have queuing semantics distinct from ordinary signals, but queues are still subject to limits."
+    ],
+    "follow_up": "Which threads should block a signal before a signal-waiting thread is started?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Block selected signals"
+        },
+        {
+          "id": "n1",
+          "label": "Signal becomes pending"
+        },
+        {
+          "id": "n2",
+          "label": "Waiting thread accepts signal"
+        },
+        {
+          "id": "n3",
+          "label": "Process event"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-23",
+    "number": 23,
+    "group": "Signals and timers",
+    "title": "Timers and Sleeping",
+    "chapter": "23",
+    "reference": "Chapter 23 · Timers and Sleeping · pp. 479–512",
+    "pages": {
+      "start": 479,
+      "end": 512
+    },
+    "reading": "Read alongside Chapter 23. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A sleep is interrupted early. Can restarting the original duration oversleep?",
+    "prompt": "A sleep is interrupted early. Can restarting the original duration oversleep?",
+    "explanation": [
+      "An interruption can leave part of a requested interval unelapsed. Repeating the entire original interval adds delay; relative retries can also accumulate drift.",
+      "Absolute deadlines tied to an appropriate clock can make repeated waiting easier to reason about. A timer's expiration and the application's opportunity to run are different moments."
+    ],
+    "follow_up": "What should happen if the deadline passes while the process is not scheduled?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Choose deadline and clock"
+        },
+        {
+          "id": "n1",
+          "label": "Wait"
+        },
+        {
+          "id": "n2",
+          "label": "Handle interruption"
+        },
+        {
+          "id": "n3",
+          "label": "Recheck deadline"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-24",
+    "number": 24,
+    "group": "Processes and execution",
+    "title": "Process Creation",
+    "chapter": "24",
+    "reference": "Chapter 24 · Process Creation · pp. 513–530",
+    "pages": {
+      "start": 513,
+      "end": 530
+    },
+    "reading": "Read alongside Chapter 24. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "After fork, are the parent and child taking turns inside one copy of a variable?",
+    "prompt": "After fork, are the parent and child taking turns inside one copy of a variable?",
+    "explanation": [
+      "Parent and child have separate virtual address spaces. Copy-on-write can share physical pages temporarily while preserving the appearance of separate writable memory.",
+      "Some kernel resources remain shared through inherited references. Separate ordinary variables from shared open file descriptions when predicting what the child can change for the parent."
+    ],
+    "follow_up": "Why can a file offset be shared while a local integer is independent?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "fork-memory",
+      "shared-offset"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Parent calls fork"
+        },
+        {
+          "id": "n1",
+          "label": "Parent address space"
+        },
+        {
+          "id": "n2",
+          "label": "Child's separate address space"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n0",
+          "target": "n2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-25",
+    "number": 25,
+    "group": "Processes and execution",
+    "title": "Process Termination",
+    "chapter": "25",
+    "reference": "Chapter 25 · Process Termination · pp. 531–540",
+    "pages": {
+      "start": 531,
+      "end": 540
+    },
+    "reading": "Read alongside Chapter 25. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A child terminates but still appears in a process listing. Is it still executing?",
+    "prompt": "A child terminates but still appears in a process listing. Is it still executing?",
+    "explanation": [
+      "Termination ends execution and releases most resources, but exit information can remain for a parent to collect. That residual process state is commonly called a zombie.",
+      "Returning from main or using exit runs user-space termination processing; _exit bypasses that processing. Buffered output and exit handlers make the choice observable."
+    ],
+    "follow_up": "Which information might a parent need after the child has stopped running?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "exit-wait"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Running process"
+        },
+        {
+          "id": "n1",
+          "label": "Termination"
+        },
+        {
+          "id": "n2",
+          "label": "Retained exit information"
+        },
+        {
+          "id": "n3",
+          "label": "Parent collects status"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-26",
+    "number": 26,
+    "group": "Processes and execution",
+    "title": "Monitoring Child Processes",
+    "chapter": "26",
+    "reference": "Chapter 26 · Monitoring Child Processes · pp. 541–562",
+    "pages": {
+      "start": 541,
+      "end": 562
+    },
+    "reading": "Read alongside Chapter 26. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A wait call returns a status integer. Is that integer simply the child's exit code?",
+    "prompt": "A wait call returns a status integer. Is that integer simply the child's exit code?",
+    "explanation": [
+      "The status encodes different kinds of state changes. Use the documented macros to distinguish normal exit, signal termination and other requested reports before extracting details.",
+      "Waiting can block, return without a report in nonblocking mode, or fail. With multiple children, the returned PID tells you which child's state was reported."
+    ],
+    "follow_up": "How would your handling differ for a child killed by a signal?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "exit-wait"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Choose child or set"
+        },
+        {
+          "id": "n1",
+          "label": "Wait for report"
+        },
+        {
+          "id": "n2",
+          "label": "Classify status"
+        },
+        {
+          "id": "n3",
+          "label": "Interpret matching details"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-27",
+    "number": 27,
+    "group": "Processes and execution",
+    "title": "Program Execution",
+    "chapter": "27",
+    "reference": "Chapter 27 · Program Execution · pp. 563–590",
+    "pages": {
+      "start": 563,
+      "end": 590
+    },
+    "reading": "Read alongside Chapter 27. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "If exec succeeds, where does the next line of the old program run?",
+    "prompt": "If exec succeeds, where does the next line of the old program run?",
+    "explanation": [
+      "Successful exec replaces the program image in the calling process. It does not create a new PID, and it does not return to the old program's next instruction.",
+      "Some process properties survive while others reset. Open descriptors normally survive unless close-on-exec applies, making launch preparation part of the program's resource boundary."
+    ],
+    "follow_up": "Why should an error path still exist after an exec call?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "exec-replacement"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Prepare arguments and environment"
+        },
+        {
+          "id": "n1",
+          "label": "Attempt exec"
+        },
+        {
+          "id": "n2",
+          "label": "New program image on success"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-28",
+    "number": 28,
+    "group": "Processes and execution",
+    "title": "Process Creation and Program Execution in More Detail",
+    "chapter": "28",
+    "reference": "Chapter 28 · Process Creation and Program Execution in More Detail · pp. 591–616",
+    "pages": {
+      "start": 591,
+      "end": 616
+    },
+    "reading": "Read alongside Chapter 28. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "How can a launcher distinguish a successful exec from a child that exits immediately?",
+    "prompt": "How can a launcher distinguish a successful exec from a child that exits immediately?",
+    "explanation": [
+      "A child can report launch failure through a pipe whose reporting descriptor is closed on successful exec. The parent must interpret EOF together with its descriptor ownership and protocol.",
+      "Process launch combines memory, descriptor and signal rules. Review each inherited resource deliberately rather than assuming that fork followed by exec erases the parent's context."
+    ],
+    "follow_up": "Which unused pipe ends must each process close for the protocol to work?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [
+      "process-inheritance",
+      "exec-replacement"
+    ],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Create launch channel"
+        },
+        {
+          "id": "n1",
+          "label": "Fork"
+        },
+        {
+          "id": "n2",
+          "label": "Child attempts exec"
+        },
+        {
+          "id": "n3",
+          "label": "Parent interprets channel and status"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-29",
+    "number": 29,
+    "group": "Threads",
+    "title": "Threads: Introduction",
+    "chapter": "29",
+    "reference": "Chapter 29 · Threads: Introduction · pp. 617–630",
+    "pages": {
+      "start": 617,
+      "end": 630
+    },
+    "reading": "Read alongside Chapter 29. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two threads update the same object. Does having separate stacks make the object private?",
+    "prompt": "Two threads update the same object. Does having separate stacks make the object private?",
+    "explanation": [
+      "Threads in a process share the address space and many process resources. Each thread has its own stack, but a pointer can expose stack storage to another thread while that storage exists.",
+      "Thread creation and joining govern execution and lifetime. Keep the referenced data alive until no thread can use it, and distinguish per-thread state from shared state."
+    ],
+    "follow_up": "Who owns the result object until a joining thread retrieves it?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Create thread with data"
+        },
+        {
+          "id": "n1",
+          "label": "Concurrent execution"
+        },
+        {
+          "id": "n2",
+          "label": "Thread completes"
+        },
+        {
+          "id": "n3",
+          "label": "Join collects result"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-30",
+    "number": 30,
+    "group": "Threads",
+    "title": "Threads: Thread Synchronization",
+    "chapter": "30",
+    "reference": "Chapter 30 · Threads: Thread Synchronization · pp. 631–654",
+    "pages": {
+      "start": 631,
+      "end": 654
+    },
+    "reading": "Read alongside Chapter 30. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A consumer checks that a queue is empty, then waits. Where can a missed notification arise?",
+    "prompt": "A consumer checks that a queue is empty, then waits. Where can a missed notification arise?",
+    "explanation": [
+      "A condition variable works with a mutex protecting a predicate. Check that predicate in a loop, and use the condition wait operation that releases the mutex and begins waiting as one coordinated operation.",
+      "A wakeup is an invitation to check the predicate again, not ownership of an item. The mutex protects the state; a notification alone does not preserve the condition for a particular waiter."
+    ],
+    "follow_up": "What if another consumer removes the item before the awakened thread obtains the mutex?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Lock mutex"
+        },
+        {
+          "id": "n1",
+          "label": "Check predicate"
+        },
+        {
+          "id": "n2",
+          "label": "Wait and reacquire if needed"
+        },
+        {
+          "id": "n3",
+          "label": "Use protected state"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-31",
+    "number": 31,
+    "group": "Threads",
+    "title": "Threads: Thread Safety and Per-Thread Storage",
+    "chapter": "31",
+    "reference": "Chapter 31 · Threads: Thread Safety and Per-Thread Storage · pp. 655–670",
+    "pages": {
+      "start": 655,
+      "end": 670
+    },
+    "reading": "Read alongside Chapter 31. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A function returns a pointer to static storage. What if another thread calls it before you use the result?",
+    "prompt": "A function returns a pointer to static storage. What if another thread calls it before you use the result?",
+    "explanation": [
+      "Shared internal storage can make a function unsafe for concurrent callers even when each caller uses a different local pointer. Reentrant interfaces often ask the caller to supply result storage.",
+      "Thread-specific storage gives each thread a separate value for a key, but it does not make everything reachable through that value private. Distinguish the pointer's storage from the object it points to."
+    ],
+    "follow_up": "Would locking only the function call protect later use of its returned static buffer?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Call function"
+        },
+        {
+          "id": "n1",
+          "label": "Locate result storage"
+        },
+        {
+          "id": "n2",
+          "label": "Concurrent call may modify it"
+        },
+        {
+          "id": "n3",
+          "label": "Caller uses result"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-32",
+    "number": 32,
+    "group": "Threads",
+    "title": "Threads: Thread Cancellation",
+    "chapter": "32",
+    "reference": "Chapter 32 · Threads: Thread Cancellation · pp. 671–680",
+    "pages": {
+      "start": 671,
+      "end": 680
+    },
+    "reading": "Read alongside Chapter 32. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A thread is canceled while holding a mutex. Who releases the mutex?",
+    "prompt": "A thread is canceled while holding a mutex. Who releases the mutex?",
+    "explanation": [
+      "Cancellation is a protocol for terminating a thread at defined opportunities, not a general substitute for cooperative shutdown. Deferred cancellation and cleanup handlers help define what must happen at those opportunities.",
+      "Resources acquired before a cancellation point need a deliberate cleanup strategy. Asynchronous cancellation makes safe resource management much harder because interruption can occur inside partially completed operations."
+    ],
+    "follow_up": "What resources must be restored if a worker is canceled during a wait?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Worker acquires resources"
+        },
+        {
+          "id": "n1",
+          "label": "Cancellation point"
+        },
+        {
+          "id": "n2",
+          "label": "Cleanup handlers"
+        },
+        {
+          "id": "n3",
+          "label": "Thread terminates"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-33",
+    "number": 33,
+    "group": "Threads",
+    "title": "Threads: Further Details",
+    "chapter": "33",
+    "reference": "Chapter 33 · Threads: Further Details · pp. 681–698",
+    "pages": {
+      "start": 681,
+      "end": 698
+    },
+    "reading": "Read alongside Chapter 33. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "After a multithreaded process forks, who can unlock a mutex held by a thread that was not copied?",
+    "prompt": "After a multithreaded process forks, who can unlock a mutex held by a thread that was not copied?",
+    "explanation": [
+      "Only the calling thread continues in the child, while the child's copied memory can include lock state left by other threads. This is one reason fork in multithreaded code requires care.",
+      "Until exec, the child is restricted to async-signal-safe operations under the POSIX rules. Process-wide actions and thread-local actions need separate treatment when designing library behavior."
+    ],
+    "follow_up": "Why is calling a complex library routine in that child risky?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Multiple parent threads"
+        },
+        {
+          "id": "n1",
+          "label": "One thread forks"
+        },
+        {
+          "id": "n2",
+          "label": "Single-threaded child with copied state"
+        },
+        {
+          "id": "n3",
+          "label": "Exec new program"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-34",
+    "number": 34,
+    "group": "Process control and security",
+    "title": "Process Groups, Sessions, and Job Control",
+    "chapter": "34",
+    "reference": "Chapter 34 · Process Groups, Sessions, and Job Control · pp. 699–732",
+    "pages": {
+      "start": 699,
+      "end": 732
+    },
+    "reading": "Read alongside Chapter 34. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why can pressing Ctrl-C affect every program in a pipeline instead of only the shell?",
+    "prompt": "Why can pressing Ctrl-C affect every program in a pipeline instead of only the shell?",
+    "explanation": [
+      "A terminal's foreground process group receives terminal-generated job-control signals. Process groups collect related jobs, while sessions and controlling terminals organize a broader context.",
+      "The shell manages which group is foreground and waits for job state changes. Parent-child relationships alone do not explain which processes receive a terminal signal."
+    ],
+    "follow_up": "How does a background job differ from a process with no controlling terminal?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Terminal input"
+        },
+        {
+          "id": "n1",
+          "label": "Foreground process group"
+        },
+        {
+          "id": "n2",
+          "label": "Signal delivered to job"
+        },
+        {
+          "id": "n3",
+          "label": "Shell observes job state"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-35",
+    "number": 35,
+    "group": "Process control and security",
+    "title": "Process Priorities and Scheduling",
+    "chapter": "35",
+    "reference": "Chapter 35 · Process Priorities and Scheduling · pp. 733–752",
+    "pages": {
+      "start": 733,
+      "end": 752
+    },
+    "reading": "Read alongside Chapter 35. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A worker has a higher scheduling priority. Does that guarantee it finishes before a lower-priority worker?",
+    "prompt": "A worker has a higher scheduling priority. Does that guarantee it finishes before a lower-priority worker?",
+    "explanation": [
+      "Scheduling policy and priority influence eligibility for CPU time. Blocking, multiple CPUs, competing work and the policy's rules all affect observed completion order.",
+      "Normal nice values and real-time scheduling priorities are different mechanisms. Reason about latency and resource needs before interpreting a priority value as a promise of throughput."
+    ],
+    "follow_up": "Could a high-priority thread waiting for a lock depend on a lower-priority thread?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Runnable work"
+        },
+        {
+          "id": "n1",
+          "label": "Scheduling policy and priority"
+        },
+        {
+          "id": "n2",
+          "label": "CPU selection"
+        },
+        {
+          "id": "n3",
+          "label": "Execution or blocking"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-36",
+    "number": 36,
+    "group": "Process control and security",
+    "title": "Process Resources",
+    "chapter": "36",
+    "reference": "Chapter 36 · Process Resources · pp. 753–766",
+    "pages": {
+      "start": 753,
+      "end": 766
+    },
+    "reading": "Read alongside Chapter 36. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "You lower a resource limit. Does the kernel immediately undo resources already in use?",
+    "prompt": "You lower a resource limit. Does the kernel immediately undo resources already in use?",
+    "explanation": [
+      "Resource limits constrain particular operations according to each limit's contract. They are not a general mechanism for reclaiming existing resources or isolating every kind of consumption.",
+      "Soft and hard limits have different roles, and resource-usage reports measure specific quantities. Inspect the relevant limit before predicting whether an allocation, file growth or process creation will fail."
+    ],
+    "follow_up": "Which operation would you expect to fail when a descriptor limit is reached?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Resource request"
+        },
+        {
+          "id": "n1",
+          "label": "Applicable limit check"
+        },
+        {
+          "id": "n2",
+          "label": "Operation allowed or fails"
+        },
+        {
+          "id": "n3",
+          "label": "Usage accounting"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-37",
+    "number": 37,
+    "group": "Process control and security",
+    "title": "Daemons",
+    "chapter": "37",
+    "reference": "Chapter 37 · Daemons · pp. 767–782",
+    "pages": {
+      "start": 767,
+      "end": 782
+    },
+    "reading": "Read alongside Chapter 37. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A long-running service has no terminal. What now handles its shutdown and diagnostics?",
+    "prompt": "A long-running service has no terminal. What now handles its shutdown and diagnostics?",
+    "explanation": [
+      "A traditional daemon detaches from terminal context and deliberately establishes its working directory, descriptors and process environment. Losing a terminal does not itself establish a complete service lifecycle.",
+      "Modern service managers can own much of that lifecycle and may expect the program to stay in the foreground. Match the launch contract instead of applying traditional daemonization mechanically."
+    ],
+    "follow_up": "Where should failure messages go before and after service startup completes?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Launch contract"
+        },
+        {
+          "id": "n1",
+          "label": "Establish service context"
+        },
+        {
+          "id": "n2",
+          "label": "Serve requests"
+        },
+        {
+          "id": "n3",
+          "label": "Handle shutdown and reporting"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-38",
+    "number": 38,
+    "group": "Process control and security",
+    "title": "Writing Secure Privileged Programs",
+    "chapter": "38",
+    "reference": "Chapter 38 · Writing Secure Privileged Programs · pp. 783–796",
+    "pages": {
+      "start": 783,
+      "end": 796
+    },
+    "reading": "Read alongside Chapter 38. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A privileged helper checks a pathname and later opens it. Which input can change in between?",
+    "prompt": "A privileged helper checks a pathname and later opens it. Which input can change in between?",
+    "explanation": [
+      "Privileged code must treat paths, environment, descriptors and input data as untrusted unless it has established otherwise. A check and a later use may observe different objects.",
+      "Keep authority narrow and minimize the code that runs with it. File-descriptor-based operations can keep work tied to an opened object, but correct flags, validation and lifetime handling still matter."
+    ],
+    "follow_up": "Can the task be split so the complex input parser runs without elevated authority?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Untrusted request"
+        },
+        {
+          "id": "n1",
+          "label": "Validate and identify object"
+        },
+        {
+          "id": "n2",
+          "label": "Minimal privileged action"
+        },
+        {
+          "id": "n3",
+          "label": "Drop unnecessary authority"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-39",
+    "number": 39,
+    "group": "Process control and security",
+    "title": "Capabilities",
+    "chapter": "39",
+    "reference": "Chapter 39 · Capabilities · pp. 797–816",
+    "pages": {
+      "start": 797,
+      "end": 816
+    },
+    "reading": "Read alongside Chapter 39. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A process is not UID 0 but can perform a normally privileged operation. How could that happen?",
+    "prompt": "A process is not UID 0 but can perform a normally privileged operation. How could that happen?",
+    "explanation": [
+      "Linux capabilities divide some traditional superuser powers into distinct privileges. Capability sets and transition rules help determine what a process can actually exercise.",
+      "Inspect the relevant sets and the operation's own checks rather than treating UID alone as a complete authority description. The book's historical discussion needs current kernel documentation when applying newer capability behavior."
+    ],
+    "follow_up": "Which single capability, if any, does the operation require?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Operation requested"
+        },
+        {
+          "id": "n1",
+          "label": "Relevant credentials and capability sets"
+        },
+        {
+          "id": "n2",
+          "label": "Kernel permission check"
+        },
+        {
+          "id": "n3",
+          "label": "Outcome"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-40",
+    "number": 40,
+    "group": "Process control and security",
+    "title": "Login Accounting",
+    "chapter": "40",
+    "reference": "Chapter 40 · Login Accounting · pp. 817–832",
+    "pages": {
+      "start": 817,
+      "end": 832
+    },
+    "reading": "Read alongside Chapter 40. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A login record says a user is present. Is that sufficient evidence to authorize an operation?",
+    "prompt": "A login record says a user is present. Is that sufficient evidence to authorize an operation?",
+    "explanation": [
+      "Login accounting records track session-related information. They serve an accounting purpose and should not replace credentials or an authorization check.",
+      "Records can be stale or reflect conventions of the programs maintaining them. Separate who a record describes from the credentials of the process asking to act now."
+    ],
+    "follow_up": "Which source would you use to display a session, and which to check access?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Session event"
+        },
+        {
+          "id": "n1",
+          "label": "Accounting record update"
+        },
+        {
+          "id": "n2",
+          "label": "Reader interprets record"
+        },
+        {
+          "id": "n3",
+          "label": "Session display"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-41",
+    "number": 41,
+    "group": "Libraries",
+    "title": "Fundamentals of Shared Libraries",
+    "chapter": "41",
+    "reference": "Chapter 41 · Fundamentals of Shared Libraries · pp. 833–858",
+    "pages": {
+      "start": 833,
+      "end": 858
+    },
+    "reading": "Read alongside Chapter 41. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why can a program start even though some of its function implementations are in another file?",
+    "prompt": "Why can a program start even though some of its function implementations are in another file?",
+    "explanation": [
+      "A dynamically linked executable identifies shared-library dependencies. The runtime linker maps objects and resolves symbols according to the executable format and loader rules.",
+      "Build-time linking and runtime loading are different stages. Library search paths, symbol visibility and ABI compatibility affect whether the implementation found at runtime is usable."
+    ],
+    "follow_up": "What could fail if the library name exists but its ABI changed?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Build executable with dependencies"
+        },
+        {
+          "id": "n1",
+          "label": "Runtime linker loads libraries"
+        },
+        {
+          "id": "n2",
+          "label": "Resolve symbols"
+        },
+        {
+          "id": "n3",
+          "label": "Run program"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-42",
+    "number": 42,
+    "group": "Libraries",
+    "title": "Advanced Features of Shared Libraries",
+    "chapter": "42",
+    "reference": "Chapter 42 · Advanced Features of Shared Libraries · pp. 859–876",
+    "pages": {
+      "start": 859,
+      "end": 876
+    },
+    "reading": "Read alongside Chapter 42. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A plugin is unloaded while a callback still points into it. Is the callback still usable?",
+    "prompt": "A plugin is unloaded while a callback still points into it. Is the callback still usable?",
+    "explanation": [
+      "Dynamic loading gives a program handles to objects and addresses of symbols, but those addresses have lifetimes. Unloading an object can invalidate code and data that users still reference.",
+      "A plugin protocol needs ownership and shutdown rules in addition to successful symbol lookup. Versioning and symbol interposition also affect which implementation a name selects."
+    ],
+    "follow_up": "How would the host know no thread can call into the plugin before unloading it?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Load object"
+        },
+        {
+          "id": "n1",
+          "label": "Find symbol"
+        },
+        {
+          "id": "n2",
+          "label": "Use under lifetime contract"
+        },
+        {
+          "id": "n3",
+          "label": "Release references before unload"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-43",
+    "number": 43,
+    "group": "IPC and memory",
+    "title": "Interprocess Communication Overview",
+    "chapter": "43",
+    "reference": "Chapter 43 · Interprocess Communication Overview · pp. 877–888",
+    "pages": {
+      "start": 877,
+      "end": 888
+    },
+    "reading": "Read alongside Chapter 43. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two processes need to exchange work. Should they share memory or send messages?",
+    "prompt": "Two processes need to exchange work. Should they share memory or send messages?",
+    "explanation": [
+      "Choose an IPC mechanism by asking what is being transferred, how peers find each other, and who owns lifetime and synchronization. Data movement and coordination are separate requirements.",
+      "Shared memory exposes common storage but does not provide a complete protocol. Message mechanisms offer boundaries or streams with their own capacity, ordering and lifetime rules."
+    ],
+    "follow_up": "How would each peer detect that the other has stopped making progress?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Define communication contract"
+        },
+        {
+          "id": "n1",
+          "label": "Choose transport"
+        },
+        {
+          "id": "n2",
+          "label": "Coordinate peers"
+        },
+        {
+          "id": "n3",
+          "label": "Handle failure and cleanup"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-44",
+    "number": 44,
+    "group": "IPC and memory",
+    "title": "Pipes and FIFOs",
+    "chapter": "44",
+    "reference": "Chapter 44 · Pipes and FIFOs · pp. 889–920",
+    "pages": {
+      "start": 889,
+      "end": 920
+    },
+    "reading": "Read alongside Chapter 44. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A pipe reader waits forever even though the intended writer has exited. What reference might remain?",
+    "prompt": "A pipe reader waits forever even though the intended writer has exited. What reference might remain?",
+    "explanation": [
+      "A pipe reader sees EOF only after all write-end references have been closed and buffered data has been consumed. An inherited, unused write descriptor can prevent that condition.",
+      "Pipes are byte streams; a read need not match one write. Close unused ends in every participating process and design framing if the receiver must distinguish messages."
+    ],
+    "follow_up": "Which descriptors does each child inherit in a two-stage pipeline?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Writer descriptor references"
+        },
+        {
+          "id": "n1",
+          "label": "Pipe byte buffer"
+        },
+        {
+          "id": "n2",
+          "label": "Reader consumes bytes"
+        },
+        {
+          "id": "n3",
+          "label": "EOF after all writers close"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-45",
+    "number": 45,
+    "group": "IPC and memory",
+    "title": "Introduction to System V IPC",
+    "chapter": "45",
+    "reference": "Chapter 45 · Introduction to System V IPC · pp. 921–936",
+    "pages": {
+      "start": 921,
+      "end": 936
+    },
+    "reading": "Read alongside Chapter 45. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A System V IPC object survives its creator. Who is responsible for removing it?",
+    "prompt": "A System V IPC object survives its creator. Who is responsible for removing it?",
+    "explanation": [
+      "System V IPC uses kernel-managed objects with identifiers, keys and permissions. Object lifetime is separate from the lifetime of a process that happens to use the object.",
+      "Creation, discovery and removal need an explicit ownership policy. Do not assume that choosing a key authenticates a peer or that a process exit automatically removes an object."
+    ],
+    "follow_up": "What should a second instance do if it finds an existing object with the chosen key?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Choose key and creation policy"
+        },
+        {
+          "id": "n1",
+          "label": "Obtain IPC identifier"
+        },
+        {
+          "id": "n2",
+          "label": "Use object"
+        },
+        {
+          "id": "n3",
+          "label": "Owner removes object"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-46",
+    "number": 46,
+    "group": "IPC and memory",
+    "title": "System V Message Queues",
+    "chapter": "46",
+    "reference": "Chapter 46 · System V Message Queues · pp. 937–964",
+    "pages": {
+      "start": 937,
+      "end": 964
+    },
+    "reading": "Read alongside Chapter 46. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A queue is full when a sender submits work. What should the application expect?",
+    "prompt": "A queue is full when a sender submits work. What should the application expect?",
+    "explanation": [
+      "System V message queues store discrete messages subject to queue limits. Send and receive operations have blocking and selection rules, and the receiving buffer must fit the chosen contract.",
+      "Message types influence selection but do not substitute for an application protocol. Account for removal of the queue and peer failure while a process is waiting."
+    ],
+    "follow_up": "Should a full queue slow producers, drop work or cause an explicit error in your design?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Producer builds typed message"
+        },
+        {
+          "id": "n1",
+          "label": "Queue capacity check"
+        },
+        {
+          "id": "n2",
+          "label": "Message queued"
+        },
+        {
+          "id": "n3",
+          "label": "Receiver selects message"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-47",
+    "number": 47,
+    "group": "IPC and memory",
+    "title": "System V Semaphores",
+    "chapter": "47",
+    "reference": "Chapter 47 · System V Semaphores · pp. 965–996",
+    "pages": {
+      "start": 965,
+      "end": 996
+    },
+    "reading": "Read alongside Chapter 47. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two operations on semaphore counters must happen together. Can another process observe only half?",
+    "prompt": "Two operations on semaphore counters must happen together. Can another process observe only half?",
+    "explanation": [
+      "System V semaphore operations can apply an array of changes atomically. A process can wait until the required conditions allow the operation set to proceed.",
+      "Initialization and removal still need coordination. SEM_UNDO can adjust specified operations on process exit, but it does not repair arbitrary shared data left inconsistent by that process."
+    ],
+    "follow_up": "What shared-data damage could remain even if semaphore counts are adjusted?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Prepare operation set"
+        },
+        {
+          "id": "n1",
+          "label": "Wait for conditions"
+        },
+        {
+          "id": "n2",
+          "label": "Apply set atomically"
+        },
+        {
+          "id": "n3",
+          "label": "Processes continue"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-48",
+    "number": 48,
+    "group": "IPC and memory",
+    "title": "System V Shared Memory",
+    "chapter": "48",
+    "reference": "Chapter 48 · System V Shared Memory · pp. 997–1016",
+    "pages": {
+      "start": 997,
+      "end": 1016
+    },
+    "reading": "Read alongside Chapter 48. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A shared-memory segment is attached at different addresses in two processes. Can they store raw pointers for each other?",
+    "prompt": "A shared-memory segment is attached at different addresses in two processes. Can they store raw pointers for each other?",
+    "explanation": [
+      "Processes can map the same segment at different virtual addresses. A pointer meaningful in one process may not identify the corresponding object in another.",
+      "Use a representation such as offsets from the segment base when cross-process references are needed. Shared storage still requires synchronization and a clear initialization and removal protocol."
+    ],
+    "follow_up": "What prevents a reader from seeing a half-initialized shared structure?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Create segment"
+        },
+        {
+          "id": "n1",
+          "label": "Attach in each address space"
+        },
+        {
+          "id": "n2",
+          "label": "Coordinate shared data access"
+        },
+        {
+          "id": "n3",
+          "label": "Detach and remove"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-49",
+    "number": 49,
+    "group": "IPC and memory",
+    "title": "Memory Mappings",
+    "chapter": "49",
+    "reference": "Chapter 49 · Memory Mappings · pp. 1017–1044",
+    "pages": {
+      "start": 1017,
+      "end": 1044
+    },
+    "reading": "Read alongside Chapter 49. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "You change a private file mapping. Should another process see that write through the file?",
+    "prompt": "You change a private file mapping. Should another process see that write through the file?",
+    "explanation": [
+      "MAP_PRIVATE gives copy-on-write semantics; modifications are private to that mapping rather than updates to the backing file. MAP_SHARED has different visibility and persistence behavior.",
+      "Mapping length, file size and lifetime matter. Shared visibility is not a locking protocol, and making dirty mapped pages durable is a separate concern."
+    ],
+    "follow_up": "What could happen if another process truncates a file beneath an existing mapping?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "File or anonymous backing"
+        },
+        {
+          "id": "n1",
+          "label": "Map into address space"
+        },
+        {
+          "id": "n2",
+          "label": "Access mapped pages"
+        },
+        {
+          "id": "n3",
+          "label": "Unmap when finished"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-50",
+    "number": 50,
+    "group": "IPC and memory",
+    "title": "Virtual Memory Operations",
+    "chapter": "50",
+    "reference": "Chapter 50 · Virtual Memory Operations · pp. 1045–1056",
+    "pages": {
+      "start": 1045,
+      "end": 1056
+    },
+    "reading": "Read alongside Chapter 50. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A memory region is mapped but not writable. What does an attempted write test?",
+    "prompt": "A memory region is mapped but not writable. What does an attempted write test?",
+    "explanation": [
+      "Virtual-memory protection is enforced on accesses to pages. A mapping's existence does not imply that every kind of access is permitted.",
+      "Protection changes, memory locking and advice interfaces serve different purposes. Locking memory into RAM addresses paging behavior; it is not a mutex for coordinating threads."
+    ],
+    "follow_up": "Which interface changes access permissions, and which coordinates concurrent modification?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Mapped region"
+        },
+        {
+          "id": "n1",
+          "label": "Page protection check"
+        },
+        {
+          "id": "n2",
+          "label": "Access succeeds or faults"
+        },
+        {
+          "id": "n3",
+          "label": "Program handles outcome"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-51",
+    "number": 51,
+    "group": "IPC and memory",
+    "title": "Introduction to POSIX IPC",
+    "chapter": "51",
+    "reference": "Chapter 51 · Introduction to POSIX IPC · pp. 1057–1062",
+    "pages": {
+      "start": 1057,
+      "end": 1062
+    },
+    "reading": "Read alongside Chapter 51. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "An IPC object has a name. Does closing your handle remove that name for everyone?",
+    "prompt": "An IPC object has a name. Does closing your handle remove that name for everyone?",
+    "explanation": [
+      "POSIX IPC mechanisms distinguish naming and open references, but each mechanism's lifetime rules must be read separately. Closing a local handle and unlinking a named object are distinct operations.",
+      "A reusable name also creates a discovery problem: peers need to agree which instance they are opening. Plan creation permissions, stale-object handling and cleanup ownership."
+    ],
+    "follow_up": "What happens when a new object reuses a name while old peers retain references?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Agree on name"
+        },
+        {
+          "id": "n1",
+          "label": "Create or open object"
+        },
+        {
+          "id": "n2",
+          "label": "Use local reference"
+        },
+        {
+          "id": "n3",
+          "label": "Close and unlink as appropriate"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-52",
+    "number": 52,
+    "group": "IPC and memory",
+    "title": "POSIX Message Queues",
+    "chapter": "52",
+    "reference": "Chapter 52 · POSIX Message Queues · pp. 1063–1088",
+    "pages": {
+      "start": 1063,
+      "end": 1088
+    },
+    "reading": "Read alongside Chapter 52. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A high-priority message arrives after several ordinary messages. Must the receiver read it last?",
+    "prompt": "A high-priority message arrives after several ordinary messages. Must the receiver read it last?",
+    "explanation": [
+      "POSIX message queues preserve message boundaries and select messages by priority, with FIFO order among messages of the same priority. They do not behave like a plain byte stream.",
+      "Capacity and maximum message size constrain both senders and receivers. Notification has registration rules; avoid assuming one registration gives an endless stream of notifications."
+    ],
+    "follow_up": "How could continuous high-priority traffic affect low-priority messages?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Producer sets message priority"
+        },
+        {
+          "id": "n1",
+          "label": "Queue orders messages"
+        },
+        {
+          "id": "n2",
+          "label": "Receiver obtains next message"
+        },
+        {
+          "id": "n3",
+          "label": "Process payload"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-53",
+    "number": 53,
+    "group": "IPC and memory",
+    "title": "POSIX Semaphores",
+    "chapter": "53",
+    "reference": "Chapter 53 · POSIX Semaphores · pp. 1089–1106",
+    "pages": {
+      "start": 1089,
+      "end": 1106
+    },
+    "reading": "Read alongside Chapter 53. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A semaphore starts at three. What does a successful wait mean for a pool of three resources?",
+    "prompt": "A semaphore starts at three. What does a successful wait mean for a pool of three resources?",
+    "explanation": [
+      "A semaphore represents a count that wait decrements when possible and post increments. It can control admission to a finite resource pool if the application keeps the count consistent.",
+      "A semaphore does not know which resource a worker owns. Unlike a mutex, it does not encode a thread owner; the program must define which operations justify posting."
+    ],
+    "follow_up": "What would an accidental extra post do to the pool's capacity invariant?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Available count"
+        },
+        {
+          "id": "n1",
+          "label": "Wait reserves capacity"
+        },
+        {
+          "id": "n2",
+          "label": "Worker uses resource"
+        },
+        {
+          "id": "n3",
+          "label": "Post returns capacity"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-54",
+    "number": 54,
+    "group": "IPC and memory",
+    "title": "POSIX Shared Memory",
+    "chapter": "54",
+    "reference": "Chapter 54 · POSIX Shared Memory · pp. 1107–1116",
+    "pages": {
+      "start": 1107,
+      "end": 1116
+    },
+    "reading": "Read alongside Chapter 54. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two programs open the same shared-memory object. Can they immediately assume its contents are ready?",
+    "prompt": "Two programs open the same shared-memory object. Can they immediately assume its contents are ready?",
+    "explanation": [
+      "A POSIX shared-memory object supplies storage that processes map into their address spaces. Creation, sizing, mapping and initialization are separate steps.",
+      "One process can observe the object before initialization is complete unless the protocol prevents that race. Place synchronization where both processes can use it and document the ownership of cleanup."
+    ],
+    "follow_up": "How would a late-arriving process distinguish initialized data from a partial setup?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Create or open object"
+        },
+        {
+          "id": "n1",
+          "label": "Set required size"
+        },
+        {
+          "id": "n2",
+          "label": "Map shared storage"
+        },
+        {
+          "id": "n3",
+          "label": "Synchronize initialization and use"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-55",
+    "number": 55,
+    "group": "IPC and memory",
+    "title": "File Locking",
+    "chapter": "55",
+    "reference": "Chapter 55 · File Locking · pp. 1117–1148",
+    "pages": {
+      "start": 1117,
+      "end": 1148
+    },
+    "reading": "Read alongside Chapter 55. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "One program locks part of a file. Will every other program be prevented from writing there?",
+    "prompt": "One program locks part of a file. Will every other program be prevented from writing there?",
+    "explanation": [
+      "Many file locks are advisory: cooperating programs consult the lock protocol, while ordinary I/O is not automatically prohibited. Different locking interfaces also have different ownership and release semantics.",
+      "Treat the locked byte range as part of an agreed protocol and understand what closing descriptors does for the chosen lock type. Locking alone does not make a multi-step update crash-safe."
+    ],
+    "follow_up": "What must another writer do to participate in the same protocol?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Agree on byte range"
+        },
+        {
+          "id": "n1",
+          "label": "Acquire appropriate lock"
+        },
+        {
+          "id": "n2",
+          "label": "Perform coordinated update"
+        },
+        {
+          "id": "n3",
+          "label": "Release lock"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-56",
+    "number": 56,
+    "group": "Networking",
+    "title": "Sockets: Introduction",
+    "chapter": "56",
+    "reference": "Chapter 56 · Sockets: Introduction · pp. 1149–1164",
+    "pages": {
+      "start": 1149,
+      "end": 1164
+    },
+    "reading": "Read alongside Chapter 56. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A socket descriptor is readable. Does that mean it contains one complete application message?",
+    "prompt": "A socket descriptor is readable. Does that mean it contains one complete application message?",
+    "explanation": [
+      "Socket type determines communication semantics. A stream provides ordered bytes without application message boundaries; a datagram preserves message boundaries with different delivery properties.",
+      "An address identifies an endpoint using rules of its domain. Keep domain, type and protocol distinct when choosing the interface and designing framing."
+    ],
+    "follow_up": "How will a stream receiver know where one request ends?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Choose domain and type"
+        },
+        {
+          "id": "n1",
+          "label": "Create socket"
+        },
+        {
+          "id": "n2",
+          "label": "Establish endpoint relationship"
+        },
+        {
+          "id": "n3",
+          "label": "Exchange data"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-57",
+    "number": 57,
+    "group": "Networking",
+    "title": "Sockets: UNIX Domain",
+    "chapter": "57",
+    "reference": "Chapter 57 · Sockets: UNIX Domain · pp. 1165–1178",
+    "pages": {
+      "start": 1165,
+      "end": 1178
+    },
+    "reading": "Read alongside Chapter 57. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Two local programs connect through a UNIX-domain socket. What makes the peer trustworthy?",
+    "prompt": "Two local programs connect through a UNIX-domain socket. What makes the peer trustworthy?",
+    "explanation": [
+      "Local communication does not automatically make every peer trusted. Path permissions and available peer-credential interfaces can help an application enforce its own authorization policy.",
+      "UNIX-domain sockets can also pass descriptor references, conveying access to already-open resources. Receiving a descriptor needs an ownership and validation rule just as receiving ordinary data does."
+    ],
+    "follow_up": "What authority could a received descriptor grant without revealing its original pathname?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Local endpoint"
+        },
+        {
+          "id": "n1",
+          "label": "Connect and identify peer"
+        },
+        {
+          "id": "n2",
+          "label": "Exchange bytes or descriptors"
+        },
+        {
+          "id": "n3",
+          "label": "Validate authority and ownership"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-58",
+    "number": 58,
+    "group": "Networking",
+    "title": "Sockets: Fundamentals of TCP/IP Networks",
+    "chapter": "58",
+    "reference": "Chapter 58 · Sockets: Fundamentals of TCP/IP Networks · pp. 1179–1196",
+    "pages": {
+      "start": 1179,
+      "end": 1196
+    },
+    "reading": "Read alongside Chapter 58. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why does an IP address alone fail to identify which server process should receive a request?",
+    "prompt": "Why does an IP address alone fail to identify which server process should receive a request?",
+    "explanation": [
+      "IP addresses identify network endpoints at the network layer, while transport ports distinguish services using that transport protocol. Routing and transport delivery solve different parts of the path.",
+      "TCP provides a reliable byte stream; UDP provides datagrams without TCP's delivery guarantees. Neither supplies the application's own authentication, message format or authorization policy."
+    ],
+    "follow_up": "Which part of an endpoint distinguishes two services on the same host?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Application data"
+        },
+        {
+          "id": "n1",
+          "label": "Transport protocol and ports"
+        },
+        {
+          "id": "n2",
+          "label": "IP routing"
+        },
+        {
+          "id": "n3",
+          "label": "Peer transport and application"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-59",
+    "number": 59,
+    "group": "Networking",
+    "title": "Sockets: Internet Domains",
+    "chapter": "59",
+    "reference": "Chapter 59 · Sockets: Internet Domains · pp. 1197–1238",
+    "pages": {
+      "start": 1197,
+      "end": 1238
+    },
+    "reading": "Read alongside Chapter 59. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A hostname resolves to several addresses. Which one should a client try?",
+    "prompt": "A hostname resolves to several addresses. Which one should a client try?",
+    "explanation": [
+      "Name resolution can return multiple candidate addresses and address families. Iterate according to a deliberate connection policy and handle failures rather than assuming the first address always works.",
+      "A listening socket accepts connections into separate connected sockets. The listening descriptor's role is different from the descriptor used to exchange a particular client's data."
+    ],
+    "follow_up": "Which descriptor should a server pass to a worker that handles one connection?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Resolve host and service"
+        },
+        {
+          "id": "n1",
+          "label": "Try candidate address"
+        },
+        {
+          "id": "n2",
+          "label": "Connect to listener"
+        },
+        {
+          "id": "n3",
+          "label": "Exchange through connected socket"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-60",
+    "number": 60,
+    "group": "Networking",
+    "title": "Sockets: Server Design",
+    "chapter": "60",
+    "reference": "Chapter 60 · Sockets: Server Design · pp. 1239–1252",
+    "pages": {
+      "start": 1239,
+      "end": 1252
+    },
+    "reading": "Read alongside Chapter 60. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A slow client stops reading. How can it affect unrelated clients served by the same program?",
+    "prompt": "A slow client stops reading. How can it affect unrelated clients served by the same program?",
+    "explanation": [
+      "Server structure determines where blocking and resource use accumulate. A sequential server can stop making progress for other clients while one connection occupies it.",
+      "Processes, threads and event loops make different tradeoffs in concurrency and shared state. Every design still needs connection limits, buffer limits and a policy for slow or failed peers."
+    ],
+    "follow_up": "Where does backpressure reach the producer in your design?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Accept connection"
+        },
+        {
+          "id": "n1",
+          "label": "Assign execution context"
+        },
+        {
+          "id": "n2",
+          "label": "Process request under limits"
+        },
+        {
+          "id": "n3",
+          "label": "Send response or close"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-61",
+    "number": 61,
+    "group": "Networking",
+    "title": "Sockets: Advanced Topics",
+    "chapter": "61",
+    "reference": "Chapter 61 · Sockets: Advanced Topics · pp. 1253–1288",
+    "pages": {
+      "start": 1253,
+      "end": 1288
+    },
+    "reading": "Read alongside Chapter 61. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "A successful send returns. Has the peer application processed the request?",
+    "prompt": "A successful send returns. Has the peer application processed the request?",
+    "explanation": [
+      "Success usually means the local networking stack accepted bytes, not that the peer application consumed or committed them. Application acknowledgments are a separate protocol decision.",
+      "Partial transfers, half-close, socket options and ancillary data add distinct state transitions. Check the contract of each operation rather than treating a connected socket as an atomic request channel."
+    ],
+    "follow_up": "What acknowledgment would be meaningful if the client needs confirmation of a durable update?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Application send"
+        },
+        {
+          "id": "n1",
+          "label": "Local stack accepts bytes"
+        },
+        {
+          "id": "n2",
+          "label": "Peer receives bytes"
+        },
+        {
+          "id": "n3",
+          "label": "Peer application acknowledges work"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-62",
+    "number": 62,
+    "group": "Terminals and event loops",
+    "title": "Terminals",
+    "chapter": "62",
+    "reference": "Chapter 62 · Terminals · pp. 1289–1324",
+    "pages": {
+      "start": 1289,
+      "end": 1324
+    },
+    "reading": "Read alongside Chapter 62. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "Why does typing a character not always make it immediately available to a reading program?",
+    "prompt": "Why does typing a character not always make it immediately available to a reading program?",
+    "explanation": [
+      "The terminal line discipline can collect and edit input before delivering it. Canonical and noncanonical modes change that behavior along with related terminal settings.",
+      "Echo is a terminal behavior, not proof that the application has read the character. Programs that change settings should restore them appropriately on normal shutdown and relevant interruption paths."
+    ],
+    "follow_up": "Which settings would you inspect when a password prompt echoes input?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Keyboard input"
+        },
+        {
+          "id": "n1",
+          "label": "Terminal line discipline"
+        },
+        {
+          "id": "n2",
+          "label": "Application read"
+        },
+        {
+          "id": "n3",
+          "label": "Application response"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-63",
+    "number": 63,
+    "group": "Terminals and event loops",
+    "title": "Alternative I/O Models",
+    "chapter": "63",
+    "reference": "Chapter 63 · Alternative I/O Models · pp. 1325–1374",
+    "pages": {
+      "start": 1325,
+      "end": 1374
+    },
+    "reading": "Read alongside Chapter 63. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "An event loop is told a descriptor is readable. Can its next read still require careful error handling?",
+    "prompt": "An event loop is told a descriptor is readable. Can its next read still require careful error handling?",
+    "explanation": [
+      "Readiness means an operation can be attempted under the interface's rules; it does not reserve data for a particular reader. Nonblocking I/O lets an event loop handle changed conditions without blocking unexpectedly.",
+      "With edge-triggered epoll, draining until EAGAIN is a key part of the usual protocol. Readiness, EOF and error conditions must all feed the application's state machine."
+    ],
+    "follow_up": "Why can processing only one chunk lose progress with edge-triggered notification?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Wait for readiness"
+        },
+        {
+          "id": "n1",
+          "label": "Attempt nonblocking I/O"
+        },
+        {
+          "id": "n2",
+          "label": "Update state and drain as required"
+        },
+        {
+          "id": "n3",
+          "label": "Wait again"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chapter-64",
+    "number": 64,
+    "group": "Terminals and event loops",
+    "title": "Pseudoterminals",
+    "chapter": "64",
+    "reference": "Chapter 64 · Pseudoterminals · pp. 1375–1400",
+    "pages": {
+      "start": 1375,
+      "end": 1400
+    },
+    "reading": "Read alongside Chapter 64. Start with the question below, then use the chapter to examine the assumptions in your answer.",
+    "summary": "How does a terminal emulator make a shell behave as if it has a terminal?",
+    "prompt": "How does a terminal emulator make a shell behave as if it has a terminal?",
+    "explanation": [
+      "A pseudoterminal provides a master/slave pair. The application on the slave side sees terminal semantics, while the program controlling the master exchanges the byte stream.",
+      "Setting up a login-like environment also involves sessions, a controlling terminal, window size and job control. A pty supplies terminal behavior; it does not by itself isolate the child process."
+    ],
+    "follow_up": "What should happen when the emulator's window size changes?",
+    "boundary": "This chapter has an authored concept map. The focused investigations below are separate, reviewed routes into the indexed kernel; an unmapped chapter does not imply missing Linux behavior.",
+    "terms": [],
+    "checkpoints": [],
+    "related": [],
+    "flow": {
+      "title": "A way to trace this concept",
+      "nodes": [
+        {
+          "id": "n0",
+          "label": "Terminal emulator at master"
+        },
+        {
+          "id": "n1",
+          "label": "Pseudoterminal pair"
+        },
+        {
+          "id": "n2",
+          "label": "Slave line discipline"
+        },
+        {
+          "id": "n3",
+          "label": "Shell and foreground job"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n0",
+          "target": "n1"
+        },
+        {
+          "source": "n1",
+          "target": "n2"
+        },
+        {
+          "source": "n2",
+          "target": "n3"
+        }
+      ]
+    }
+  }
+]

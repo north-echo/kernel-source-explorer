@@ -84,3 +84,38 @@ def test_real_kernel_learning_checkpoints_have_readable_evidence():
                 assert response.status_code == 200
                 if 'edge' in selection:
                     assert selection['edge']['resolution'] == 'compiler_resolved'
+
+
+def test_entire_book_catalog_has_original_guides_and_valid_concept_maps(tmp_path):
+    with TestClient(create_app(tmp_path / 'absent.sqlite'), base_url='http://localhost') as client:
+        content = client.get('/api/learning').json()
+        chapters = content['chapters']
+        assert [c['number'] for c in chapters] == list(range(1, 65))
+        all_topics = chapters + content['lessons']
+        ids = {c['id'] for c in all_topics}
+        assert len(ids) == 70
+        assert chapters[5]['pages']['start'] == 113
+        assert chapters[19]['title'] == 'Signals: Fundamental Concepts'
+        assert chapters[46]['title'] == 'System V Semaphores'
+        assert chapters[-1]['pages'] == {'start': 1375, 'end': 1400}
+        for chapter in chapters:
+            assert len(chapter['explanation']) >= 2
+            assert chapter['prompt'].endswith('?') and chapter['follow_up'].endswith('?')
+            assert chapter['checkpoints'] == []  # Reading coverage does not fabricate kernel coverage.
+            assert set(chapter['related']).issubset(ids)
+            assert client.get('/api/learning/' + chapter['id'] + '/experiment').status_code == 404
+        for topic in all_topics:
+            flow = topic['flow']
+            node_ids = {n['id'] for n in flow['nodes']}
+            assert len(node_ids) == len(flow['nodes'])
+            assert all(n['label'] for n in flow['nodes'])
+            assert all(e['source'] in node_ids and e['target'] in node_ids for e in flow['edges'])
+            connected = {e[k] for e in flow['edges'] for k in ('source', 'target')}
+            assert connected == node_ids
+
+
+def test_profile_accepts_full_book_reading_place(tmp_path):
+    from explorer.learning import reader_profile
+    profile = tmp_path / 'reader.json'
+    profile.write_text(json.dumps({'reading_lesson':'chapter-64', 'reading_reference':'Pseudoterminals'}))
+    assert reader_profile(profile)['reading_lesson'] == 'chapter-64'

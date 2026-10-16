@@ -6,11 +6,15 @@ A local reading companion and source explorer for learning how Linux works. Brin
 
 ## Start with a question
 
-The **Learn** home accompanies selected topics from Michael Kerrisk's *The Linux Programming Interface*: process inheritance, identity, memory after fork, shared file offsets, exit/wait and program replacement. Each topic provides a reading pointer, an optional question, an explanation you reveal when ready, glossary terms, guided kernel locations and an optional original C experiment.
+The **Learn** home accompanies all **64 chapters** of Michael Kerrisk's *The Linux Programming Interface*. Browse by subject or search by chapter number, title or idea. Each chapter has an original question, an explanation you reveal when ready, a follow-up question, printed-page references and an interactive concept diagram. You can bookmark any chapter and move to adjacent chapters.
+
+Six focused investigations add glossary terms, **14 reviewed source checkpoints** and **six original C experiments** covering process inheritance, identity, memory after fork, shared file offsets, exit/wait and program replacement. The other chapter guides do not yet have reviewed kernel checkpoints or dedicated experiments.
 
 There are no scores, deadlines, chapter gates or mandatory labs. Reading notes are optional. Discussion, reasoning through code and personally running an experiment are kept distinct.
 
-The **Explorer** tab provides coordinated symbol search, relationship graphs, source navigation and saved trails. A guided source visit opens a short excerpt with what to notice and what can wait, and lets you return to the same topic.
+The **Explorer** tab provides coordinated symbol search, relationship graphs, source navigation and saved trails. A guided source visit opens a short excerpt beside a focused compiler graph, with what to notice and what can wait. Hide the graph if you prefer, open a function in the full Explorer, or return to the same topic. Authored concept diagrams are labeled separately from compiler evidence.
+
+![Chapter concept flow](docs/chapter-flow.png)
 
 ![Guided source visit](docs/guided-source.png)
 
@@ -99,7 +103,7 @@ Fixture and learning browser checks use port 8765; real-kernel checks use 8766. 
 - `explorer/cli.py`: explicit sequential indexing, SQLite ingestion and atomic publication.
 - `explorer/schema.sql`: schema v1; schema changes require a version bump and rebuild.
 - `explorer/api.py`: read-only local service; source is limited to registered, hash-verified roots.
-- `explorer/lessons.json`, `explorer/learning.py`, `explorer/experiments/`: original shared reading collection and evidence resolution.
+- `explorer/chapters.json`, `explorer/lessons.json`, `explorer/learning.py`, `explorer/experiments/`: original shared reading collection and evidence resolution.
 - `web/`: React/TypeScript, Cytoscape.js and locally bundled highlighting.
 
 For UI development, run the API on port 8000 and `npm run dev --prefix web`; Vite serves port 5173 and proxies `/api`. Production serves the built UI from FastAPI.

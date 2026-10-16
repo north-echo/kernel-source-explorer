@@ -6,7 +6,7 @@ test('reading starts with one optional question, saves local thinking, and disti
   await page.route('**/api/reader-profile', route=>route.fulfill({json:{reading_lesson:'process-inheritance',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
   await page.goto('/');
   await expect(page.getByRole('heading',{name:'What are you reading?'})).toBeVisible();
-  await page.screenshot({path:fileURLToPath(new URL('../../docs/learning-home.png',import.meta.url)),fullPage:true});
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/learning-home.png',import.meta.url))});
   await page.getByRole('link',{name:'Start with processes'}).click();
   await expect(page.getByRole('heading',{name:'A new process, inherited access',exact:true})).toBeVisible();
   await expect(page.locator('.authored-explanation')).toHaveCount(0);
@@ -31,7 +31,7 @@ test('reading starts with one optional question, saves local thinking, and disti
   await expect(page.getByLabel('My observation (optional)')).toHaveValue('Reasoned through; not executed by me.');
   await page.getByRole('button',{name:'Look at the source',exact:true}).click();
   await expect(page.getByRole('button',{name:'Open checkpoint',exact:true})).toHaveCount(0);
-  await expect(page.locator('.source-invitations')).toContainText('You can still use the reading and experiment.');
+  await expect(page.locator('.source-invitations')).toContainText('You can still use the reading guide.');
   await page.setViewportSize({width:390,height:844});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   expect(errors).toEqual([]);
@@ -46,4 +46,36 @@ test('a separate reader gets a generic profile and can choose another reading pl
   await expect(page.locator('.reading-place')).toContainText('Chapter 27');
   await page.reload();
   await expect(page.locator('.reading-place')).toContainText('Chapter 27');
+});
+
+test('full book discovery, interactive concept flows and chapter bookmarks work on a phone', async ({page}) => {
+  const errors:string[]=[]; page.on('pageerror', e=>errors.push(e.message));
+  await page.route('**/api/reader-profile',route=>route.fulfill({json:{reading_lesson:'process-inheritance',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
+  await page.goto('/#learn/catalog');
+  await expect(page.locator('.chapter-grid>a')).toHaveCount(64);
+  await page.getByLabel('Find a chapter').fill('signals');
+  await expect(page.locator('.chapter-grid>a')).toHaveCount(3);
+  await page.locator('.chapter-grid>a').filter({hasText:'Signals: Fundamental Concepts'}).click();
+  await expect(page.locator('.topic-header')).toContainText('pp. 387–420');
+  await expect(page.locator('.authored-explanation')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Optional experiment',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Pending signal',exact:true}).click();
+  await expect(page.locator('.concept-connections')).toContainText('Signal generated → Pending signal');
+  await page.getByRole('button',{name:'Look at the source',exact:true}).click();
+  await expect(page.locator('.source-invitations')).toContainText('does not yet have a reviewed compiler checkpoint');
+  await page.getByRole('button',{name:'Keep my reading place here'}).click();
+  await page.getByRole('link',{name:'All reading topics'}).click();
+  await page.reload();
+  await expect(page.locator('.reading-place')).toContainText('Chapter 20');
+  await page.setViewportSize({width:390,height:844});
+  await page.getByLabel('Find a chapter').fill('64');
+  await page.locator('.chapter-grid>a').click();
+  await expect(page.getByRole('heading',{name:'Pseudoterminals',exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/chapter-flow-mobile.png',import.meta.url)),fullPage:true});
+  await page.setViewportSize({width:1512,height:982});
+  await page.goto('/#learn/chapter-20');
+  await expect(page.locator('.concept-flow')).toBeVisible();
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/chapter-flow.png',import.meta.url)),fullPage:true});
+  expect(errors).toEqual([]);
 });
