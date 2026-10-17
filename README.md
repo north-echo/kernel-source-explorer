@@ -18,7 +18,7 @@ Open **[Chapter 2 companion Lab 001 at the fork segment](http://127.0.0.1:8000/#
 
 ![Chapter 2 code walkthrough](docs/followup-phone-fork.png)
 
-The **Explorer** retains compiler-evidenced search, graphs, exact source and trails. Guided/source links survive refresh, sharing and browser Back/Forward on the matching dataset. Source paging is contiguous and keeps the evidence anchor separate from the browsed window. Graph groups expose their individual evidence rather than silently choosing a call site.
+The **Explorer** offers five familiar C questions alongside free symbol search and trails. **[Start with process creation](http://127.0.0.1:8000/#explore?guide=fork-memory)**: inspect one explained call, open its callee’s definition, and return to the question. Selection orientation explains definitions versus call sites, reviewed responsibilities and structural facts. Nodes preview navigation; arrows select compiler evidence; the selected source token is marked. Guided/free links survive refresh with the originating question and source position. Source paging remains contiguous and graph groups expose individual evidence. See [the Explorer handoff](docs/EXPLORER_PASS.md) for annotation scope and validation.
 
 ![Guided source visit](docs/guided-source.png)
 

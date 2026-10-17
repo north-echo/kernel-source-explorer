@@ -6,10 +6,12 @@ export function CheckpointGraph({
   selection,
   onSymbol,
   onEdge,
+  selectedEdge,
 }: {
   selection: Selection;
   onSymbol: (id: string) => void;
   onEdge: (edge: Edge) => void;
+  selectedEdge?: number;
 }) {
   const { nodes, edges } = useMemo(() => {
     const edge = selection.edge;
@@ -30,7 +32,7 @@ export function CheckpointGraph({
   }, [selection]);
   return (
     <aside className="checkpoint-graph" aria-label="Checkpoint compiler graph">
-      <h2>Checkpoint graph</h2>
+      <h2 tabIndex={-1}>Checkpoint graph</h2>
       <p>
         {selection.edge
           ? "Compiler-verified direct call. Select the arrow to return to its call site; open a function to explore further."
@@ -42,7 +44,7 @@ export function CheckpointGraph({
         active={selection.symbol_id}
         onSymbol={onSymbol}
         onEdge={onEdge}
-        selectedEdge={selection.edge?.id}
+        selectedEdge={selectedEdge}
       />
       <div className="checkpoint-graph-links">
         {selection.edge && (

@@ -27,6 +27,15 @@ import type {
   Trail,
 } from "./types";
 import "./style.css";
+import "./explorer.css";
+import { ExplorerWelcome } from "./ExplorerWelcome";
+import { ExplorerOrientation, jumpTo } from "./ExplorerOrientation";
+import {
+  checkpointContext,
+  matchingQuestions,
+  sourceCategory,
+} from "./explorerTeaching";
+import { SourceToken } from "./SourceToken";
 hljs.registerLanguage("c", c);
 
 function App() {
@@ -37,6 +46,10 @@ function App() {
   );
   const [guided, setGuided] = useState<GuidedContext>();
   const [fullExplorer, setFullExplorer] = useState(false);
+  const sourceBefore =
+    guided && !fullExplorer
+      ? Math.max(4, guided.checkpoint.reading?.before || 4)
+      : 12;
   const [showCheckpointGraph, setShowCheckpointGraph] = useState(true);
   useEffect(() => {
     const changed = () =>
@@ -192,6 +205,7 @@ function App() {
       lesson: context?.lesson.id,
       checkpoint: context?.checkpoint.id,
       returnTo: context?.returnTo,
+      journey: context?.journey,
       q: query,
       path,
       direction,
@@ -224,6 +238,32 @@ function App() {
       try {
         const route = readExplorerHash(window.location.hash);
         if (!route) return;
+        if (route.guide) {
+          linkValid.current = false;
+          const content = await api<Curriculum>(
+            "learning",
+            ds,
+            controller.signal,
+          );
+          const lesson = content.lessons.find(
+            (t) => t.id === route.guide && t.explorer_start,
+          );
+          if (!lesson)
+            throw new Error(
+              "This guided question is unavailable. Choose one of the starting questions.",
+            );
+          const checkpoint = lesson.checkpoints.find(
+            (c) => c.id === lesson.explorer_start!.checkpoint,
+          );
+          if (!checkpoint?.available)
+            throw new Error(
+              checkpoint?.reason ||
+                "No reviewed source is available for this question. Read the C investigation first.",
+            );
+          if (!controller.signal.aborted)
+            openCheckpoint(checkpointContext(lesson, checkpoint));
+          return;
+        }
         if (route.dataset !== ds) {
           linkValid.current = false;
           setGuided(undefined);
@@ -256,7 +296,17 @@ function App() {
             throw new Error(
               "The originating checkpoint is unavailable in this dataset.",
             );
-          context = { lesson, checkpoint, returnTo: route.returnTo };
+          if (
+            route.journey &&
+            !content.lessons.some((l) => l.id === route.journey)
+          )
+            throw new Error("The originating question is unavailable.");
+          context = {
+            lesson,
+            checkpoint,
+            returnTo: route.returnTo,
+            journey: route.journey,
+          };
         }
         const selectedEdge = route.evidence
           ? await api<Edge>(
@@ -275,7 +325,10 @@ function App() {
           );
         if (controller.signal.aborted) return;
         const location =
-          route.location || context?.checkpoint.selection?.location;
+          route.location ||
+          (route.symbol === context?.checkpoint.selection?.symbol_id
+            ? context?.checkpoint.selection?.location
+            : undefined);
         if (!route.symbol) {
           setActive("");
           setSelected(undefined);
@@ -452,7 +505,7 @@ function App() {
         new URLSearchParams({
           file: focus.file,
           line: String(browseLine ?? focus.line),
-          before: guided && !fullExplorer ? "4" : "12",
+          before: String(sourceBefore),
           after: guided && !fullExplorer ? "12" : "30",
         }),
       ds,
@@ -465,10 +518,24 @@ function App() {
     return () => controller.abort();
   }, [focus, browseLine, ds, guided, fullExplorer]);
   useEffect(() => {
-    if (mode === "explore")
-      document
-        .querySelector(".source-line.current")
-        ?.scrollIntoView({ block: "nearest" });
+    if (mode !== "explore") return;
+    const region = document.querySelector<HTMLElement>(".source-code");
+    const line = region?.querySelector<HTMLElement>(".source-line.current");
+    const token = line?.querySelector<HTMLElement>(".selected-token");
+    if (region && line) {
+      region.scrollTop +=
+        line.getBoundingClientRect().top -
+        region.getBoundingClientRect().top -
+        40;
+      if (token)
+        region.scrollLeft = Math.max(
+          0,
+          region.scrollLeft +
+            token.getBoundingClientRect().left -
+            region.getBoundingClientRect().left -
+            region.clientWidth / 3,
+        );
+    }
   }, [source, mode]);
   useEffect(() => {
     if (!guided || !ds || !source || !guided.checkpoint.selection) return;
@@ -535,7 +602,7 @@ function App() {
     setShowCheckpointGraph(true);
     setDirection("outgoing");
     setKind("direct_call");
-    if (active === selection.symbol_id) {
+    if (activeRef.current === selection.symbol_id) {
       setEdge(selection.edge);
       setFocus({ ...selection.location });
     } else {
@@ -544,7 +611,8 @@ function App() {
         location: selection.location,
         edge: selection.edge,
       };
-      choose(selection.symbol_id);
+      setActive(selection.symbol_id);
+      setError("");
     }
     setBrowseLine(undefined);
     writeRoute(
@@ -556,6 +624,41 @@ function App() {
       false,
       false,
     );
+  }
+  function readDefinition() {
+    const location = locations.find((l) => l.is_definition);
+    if (!location) return;
+    setEdge(undefined);
+    setBrowseLine(undefined);
+    setFocus(location);
+    writeRoute(active, location, undefined, undefined, guided);
+  }
+  function openSymbolDefinition(id: string) {
+    if (id === active) {
+      setFullExplorer(true);
+      readDefinition();
+      return;
+    }
+    setFullExplorer(true);
+    setActive(id);
+    setEdge(undefined);
+    setBrowseLine(undefined);
+    setError("");
+    writeRoute(id, undefined, undefined, undefined, guided, false, true);
+  }
+  function showCallers() {
+    setFullExplorer(true);
+    setDirection("incoming");
+    setKind("direct_call");
+    writeRoute(active, focus, edge, browseLine, guided, false, true);
+    jumpTo(".relationships-pane h2");
+  }
+  function showSurrounding() {
+    if (!focus) return;
+    const center = Math.max(1, focus.line - 6);
+    setBrowseLine(center);
+    writeRoute(active, focus, edge, center, guided);
+    jumpTo(".source-pane h2");
   }
   async function expand(offset = 0) {
     const generation = viewGeneration.current;
@@ -671,11 +774,12 @@ function App() {
     if (mode === "explore") {
       document.title =
         (selected?.name || "Source explorer") + " · Kernel Source Explorer";
-      document
-        .getElementById("workspace-content")
-        ?.focus({ preventScroll: true });
+      jumpTo(selected ? ".explorer-orientation h2" : ".explorer-welcome h1");
     }
-  }, [mode, selected?.id]);
+  }, [mode, selected?.id, edge?.id, focus?.file, focus?.line, focus?.column]);
+  const originLesson = startingPoints?.lessons.find(
+    (l) => l.id === (guided?.journey || guided?.lesson.id),
+  );
   const successful =
     dataset?.coverage.filter((t) => t.status === "successful").length || 0;
   return (
@@ -802,6 +906,7 @@ function App() {
         />
       </div>
       <div
+        data-selected={!!active}
         hidden={mode !== "explore"}
         className={
           guided && !fullExplorer
@@ -809,6 +914,12 @@ function App() {
             : "explorer-shell"
         }
       >
+        {!active && (
+          <ExplorerWelcome
+            content={startingPoints}
+            onFree={() => jumpTo(".search-pane input")}
+          />
+        )}
         {guided && (
           <section className="guided-context" aria-label="Guided source visit">
             <div className="guided-return">
@@ -818,11 +929,15 @@ function App() {
                   "#learn/" + guided.lesson.id + "?view=source"
                 }
               >
-                Return to {guided.lesson.title}
+                Return to {originLesson?.title || guided.lesson.title}
               </a>
               <button
                 onClick={() => {
-                  setFullExplorer(!fullExplorer);
+                  if (fullExplorer) {
+                    openCheckpoint(guided);
+                    return;
+                  }
+                  setFullExplorer(true);
                   writeRoute(
                     active,
                     focus,
@@ -842,14 +957,14 @@ function App() {
             <span className="book-reference">
               {guided.lesson.reference} / authored teaching note
             </span>
+            <p className="guided-origin">
+              Guided exploration
+              {originLesson?.explorer_start
+                ? " · " + originLesson.explorer_start.question
+                : ""}
+            </p>
             <h1>{guided.checkpoint.title}</h1>
             <p className="guided-question">{guided.checkpoint.question}</p>
-            <p>
-              <strong>Notice:</strong> {guided.checkpoint.notice}
-            </p>
-            <p>
-              <strong>Leave for later:</strong> {guided.checkpoint.ignore}
-            </p>
           </section>
         )}
         {guided && !fullExplorer && (
@@ -878,21 +993,41 @@ function App() {
               : "workspace"
           }
         >
+          {selected && (
+            <ExplorerOrientation
+              content={startingPoints}
+              dataset={ds}
+              selected={selected}
+              focus={focus}
+              edge={edge}
+              locations={locations}
+              guided={guided}
+              onDefinition={readDefinition}
+              onCallee={() =>
+                edge?.target_id && openSymbolDefinition(edge.target_id)
+              }
+              onCallers={showCallers}
+              onSurrounding={showSurrounding}
+              onCheckpoint={openCheckpoint}
+            />
+          )}
           {guided &&
             !fullExplorer &&
             showCheckpointGraph &&
             guided.checkpoint.selection && (
               <CheckpointGraph
                 selection={guided.checkpoint.selection}
-                onSymbol={(id) => {
-                  setFullExplorer(true);
-                  choose(id);
-                }}
+                onSymbol={openSymbolDefinition}
                 onEdge={inspectEdge}
+                selectedEdge={edge?.id}
               />
             )}
           <aside className="search-pane">
-            <h1>Find a symbol</h1>
+            <h1>Free exploration</h1>
+            <p className="search-introduction">
+              Search exact indexed names or a familiar API. Curated questions
+              below are separate from compiler matches.
+            </p>
             <label>
               Symbol name
               <input
@@ -937,7 +1072,35 @@ function App() {
             <div className="result-count">{hits.length} results shown</div>
             {query.trim() && startingPoints && (
               <section className="curated-matches">
-                <h2>Related reading (curated)</h2>
+                <h2>Curated API questions</h2>
+                <p>
+                  Teaching links across layers, not compiler-resolved edges.
+                </p>
+                {matchingQuestions(startingPoints, query).map((lesson) => (
+                  <div className="curated-question" key={lesson.id}>
+                    <a href={"#explore?guide=" + lesson.id}>
+                      {lesson.explorer_start!.question}
+                    </a>
+                    <p>
+                      {lesson.checkpoints.find(
+                        (c) => c.id === lesson.explorer_start!.checkpoint,
+                      )?.available
+                        ? "Reviewed source available"
+                        : "Source unavailable in this index; the question remains readable in the starting questions."}
+                    </p>
+                    <a
+                      href={
+                        "#learn/" +
+                        lesson.id +
+                        "?view=code&segment=" +
+                        lesson.explorer_start!.segment
+                      }
+                    >
+                      Read its C walkthrough
+                    </a>
+                  </div>
+                ))}
+                <h3>Related reading (curated)</h3>
                 <p>
                   Concept suggestions, separate from indexed symbol matches.
                 </p>
@@ -987,7 +1150,7 @@ function App() {
                 )}
               {!query.trim() && !path && !symbolKind && !definitionsOnly && (
                 <section className="explorer-starts">
-                  <h2>Verified starting points</h2>
+                  <h2>Recent exploration</h2>
                   {recent.length > 0 && (
                     <section className="recent-selections">
                       <h3>Recent symbol selections</h3>
@@ -1002,19 +1165,6 @@ function App() {
                     These teaching suggestions link concepts to reviewed
                     compiler locations; they are not cross-layer compiler edges.
                   </p>
-                  {startingPoints?.lessons.map((lesson) => {
-                    const checkpoint = lesson.checkpoints.find(
-                      (c) => c.available,
-                    );
-                    return checkpoint ? (
-                      <button
-                        key={lesson.id}
-                        onClick={() => openCheckpoint({ lesson, checkpoint })}
-                      >
-                        {lesson.title}
-                      </button>
-                    ) : null;
-                  })}
                   <p>
                     For book ideas or API names,{" "}
                     <a href="#learn/catalog">search the chapter library</a>.
@@ -1030,7 +1180,7 @@ function App() {
           </aside>
           <section className="relationships-pane">
             <div className="pane-heading">
-              <h2>Relationships</h2>
+              <h2 tabIndex={-1}>Relationships</h2>
               <div>
                 <button
                   aria-label="Previous selection"
@@ -1086,7 +1236,7 @@ function App() {
                   }
                   edges={edges}
                   active={active}
-                  onSymbol={choose}
+                  onSymbol={openSymbolDefinition}
                   onEdge={inspectEdge}
                   selectedEdge={edge?.id}
                 />
@@ -1149,7 +1299,7 @@ function App() {
                         <button
                           className="follow"
                           aria-label={"Follow " + e.target_name}
-                          onClick={() => choose(e.target_id!)}
+                          onClick={() => openSymbolDefinition(e.target_id!)}
                         >
                           Open
                         </button>
@@ -1181,9 +1331,23 @@ function App() {
           </section>
           <section className="source-pane">
             <div className="pane-heading">
-              <h2>{selected?.name || "Source"}</h2>
+              <h2 tabIndex={-1}>{selected?.name || "Source"}</h2>
               <span>{selected?.kind}</span>
             </div>
+            {selected && (
+              <p className="source-caption">
+                {sourceCategory(selected, focus, edge, locations)}.{" "}
+                {source &&
+                focus &&
+                (focus.line < source.start ||
+                  focus.line >= source.start + source.lines.length) ? (
+                  "The selected anchor is outside this window; Return to selected location recovers it."
+                ) : (
+                  <>The darker token marks source column {focus?.column}.</>
+                )}{" "}
+                Paging changes the window, not this anchor.
+              </p>
+            )}
             {selected && (
               <div className="definition-picker">
                 <label>
@@ -1277,12 +1441,13 @@ function App() {
                       <span className="line-number">
                         {source.start + index}
                       </span>
-                      <code
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            hljs.highlight(text, { language: "c" }).value ||
-                            " ",
-                        }}
+                      <SourceToken
+                        text={text}
+                        column={
+                          source.start + index === focus?.line
+                            ? focus.column
+                            : undefined
+                        }
                       />
                     </div>
                   ))}
@@ -1295,7 +1460,7 @@ function App() {
                         source.start,
                         source.lines.length,
                         source.total_lines,
-                        guided && !fullExplorer ? 4 : 12,
+                        sourceBefore,
                         guided && !fullExplorer ? 12 : 30,
                         "earlier",
                       );
@@ -1333,7 +1498,7 @@ function App() {
                         source.start,
                         source.lines.length,
                         source.total_lines,
-                        guided && !fullExplorer ? 4 : 12,
+                        sourceBefore,
                         guided && !fullExplorer ? 12 : 30,
                         "later",
                       );

@@ -212,7 +212,23 @@
           },
           "notice": "The new task’s file setup is delegated to copy_files. Read the call and its error branch.",
           "ignore": "The neighboring scheduler, tracing and memory setup can wait.",
-          "question": "What responsibility has this function handed to copy_files?"
+          "question": "What responsibility has this function handed to copy_files?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Prepares a new task (a kernel execution record) and its memory, file and other resource state.",
+            "callee": "Sets up the new task’s table of open-file descriptor entries.",
+            "statement": "copy_process delegates file-table setup to copy_files.",
+            "inputs": "clone_flags selects creation options; p is the new task; args->no_files supplies the request’s no-files choice.",
+            "result": "retval is checked immediately; a nonzero result takes a cleanup branch.",
+            "syntax": "Three comma-separated arguments supply inputs. A descriptor table is a collection of entries, not the bytes of the files.",
+            "next": [
+              {
+                "lesson": "process-inheritance",
+                "checkpoint": "duplicate-table",
+                "question": "Does this path share a whole table or create a separate table?"
+              }
+            ]
+          }
         },
         {
           "id": "duplicate-table",
@@ -225,7 +241,24 @@
           },
           "notice": "Read the CLONE_FILES branch and the later dup_fd call. Ordinary fork takes the table-duplication path; sharing a whole table is a separate option.",
           "ignore": "The helper’s allocation mechanics are not needed for this question.",
-          "question": "How is sharing a table different from two tables pointing to the same open file?"
+          "question": "How is sharing a table different from two tables pointing to the same open file?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Sets up the new task’s table of open-file descriptor entries.",
+            "callee": "Creates a separate descriptor table, retaining references to existing open files.",
+            "statement": "copy_files calls dup_fd after the whole-table-sharing branch.",
+            "inputs": "oldf is the existing file-table context. NULL supplies no punch-hole range for this duplication. Ordinary fork does not request CLONE_FILES.",
+            "result": "IS_ERR checks the returned pointer for an encoded kernel error. On success tsk->files receives newf.",
+            "syntax": "A pointer is a value locating an object. IS_ERR/PTR_ERR are kernel conventions, different from libc’s -1/errno convention.",
+            "next": [
+              {
+                "lesson": "shared-offset",
+                "checkpoint": "file-references",
+                "question": "Which open-file references are kept inside the new table?"
+              }
+            ],
+            "before": 7
+          }
         },
         {
           "id": "close-exec",
@@ -238,7 +271,17 @@
           },
           "notice": "This call handles descriptors marked to close during exec. Inspect the surrounding comments.",
           "ignore": "Credential transitions and binary-format dispatch are separate topics.",
-          "question": "Why can an unmarked descriptor still be useful to the replacement program?"
+          "question": "Why can an unmarked descriptor still be useful to the replacement program?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Carries out core state transitions during program replacement.",
+            "callee": "Closes entries marked close-on-exec in the supplied descriptor-table context.",
+            "statement": "begin_new_exec calls do_close_on_exec with this task’s files context.",
+            "inputs": "me->files selects the current task’s file-table context. The preceding comment places this after the point of no return and table unsharing.",
+            "result": "There is no return value tested at this call. Later replacement work continues; this line alone does not inventory all retained access.",
+            "syntax": "A call used as a statement can perform work without assigning a result. FD_CLOEXEC applies to descriptor entries; losing one entry does not revoke other references.",
+            "next": []
+          }
         }
       ],
       "flow": {
@@ -446,7 +489,23 @@
         "launcher",
         "inherited authority",
         "containment"
-      ]
+      ],
+      "explorer_start": {
+        "question": "How does a child inherit access to an open file?",
+        "situation": "Your program opens a file before creating a child.",
+        "establishes": "Distinguish a copied descriptor table from the open-file references it contains.",
+        "prerequisite": "A descriptor is an integer naming an open-resource entry in one process.",
+        "segment": "fork",
+        "checkpoint": "copy-files",
+        "terms": [
+          "file descriptors",
+          "open",
+          "fork",
+          "inherit",
+          "dup",
+          "FD_CLOEXEC"
+        ]
+      }
     },
     {
       "id": "process-identity",
@@ -499,7 +558,23 @@
           },
           "notice": "The handler is written using SYSCALL_DEFINE0(getpid); this arm64 build indexes it as __arm64_sys_getpid. Focus on the return expression rather than memorizing the generated name.",
           "ignore": "The generated wrapper plumbing and RCU details in neighboring handlers can wait.",
-          "question": "What identity does the handler ask for?"
+          "question": "What identity does the handler ask for?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Handles the getpid request in this indexed arm64 build.",
+            "callee": "Returns the task’s process ID in the caller’s PID namespace. Threads in one process share this ID.",
+            "statement": "The handler returns task_tgid_vnr(current).",
+            "inputs": "current identifies the calling task. getpid exposes its thread-group identity, which differs from gettid for other threads in a group.",
+            "result": "return sends the helper’s value back through the kernel handler. This is not a permission check.",
+            "syntax": "SYSCALL_DEFINE0(getpid) generates this build’s __arm64_sys_getpid name. The zero denotes no syscall arguments; users need not memorize the generated name.",
+            "next": [
+              {
+                "lesson": "process-identity",
+                "checkpoint": "task-record",
+                "question": "What sort of kernel record holds task state?"
+              }
+            ]
+          }
         },
         {
           "id": "task-record",
@@ -511,7 +586,17 @@
           },
           "notice": "This structure is the kernel’s task record. Its size is a reason to follow one field or responsibility at a time.",
           "ignore": "You do not need to read or memorize this entire structure.",
-          "question": "Which kinds of state would you expect a task record to refer to?"
+          "question": "Which kinds of state would you expect a task record to refer to?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Defines the kernel’s task record and references to task state.",
+            "callee": "",
+            "statement": "struct task_struct begins a type definition, not a function call.",
+            "inputs": "Its fields describe or refer to parts of task state; configuration controls which fields are present.",
+            "result": "A type definition produces no runtime return value. Follow one field only when you have a question about it.",
+            "syntax": "struct defines a record with named fields. #ifdef includes fields conditionally while compiling this configuration.",
+            "next": []
+          }
         }
       ],
       "flow": {
@@ -624,7 +709,22 @@
         "launcher",
         "inherited authority",
         "containment"
-      ]
+      ],
+      "explorer_start": {
+        "question": "What does a process ID identify?",
+        "situation": "Your C program calls getpid() to observe its identity.",
+        "establishes": "Read the arm64 handler’s request for a namespace-relative thread-group ID.",
+        "prerequisite": "An ID names a process in a namespace; threads add a distinction from individual task IDs.",
+        "segment": "identity",
+        "checkpoint": "getpid-handler",
+        "terms": [
+          "pid",
+          "getpid",
+          "getppid",
+          "process ID",
+          "identity"
+        ]
+      }
     },
     {
       "id": "fork-memory",
@@ -676,7 +776,23 @@
           },
           "notice": "Read the memory-setup call and the failure check.",
           "ignore": "Other resource-copying calls are separate responsibilities.",
-          "question": "What needs to succeed before creation continues?"
+          "question": "What needs to succeed before creation continues?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Prepares a new task (a kernel execution record) and its memory, file and other resource state.",
+            "callee": "Chooses whether the new task shares or duplicates the record describing its memory.",
+            "statement": "copy_process calls copy_mm and stores its result in retval.",
+            "inputs": "clone_flags carries creation choices; p identifies the new task being prepared.",
+            "result": "The following if (retval) branches to cleanup when setup reports failure. Creation has more work afterward.",
+            "syntax": "Arguments are inputs between parentheses. = stores the call result; the following if tests it. The kernel convention here uses zero for success.",
+            "next": [
+              {
+                "lesson": "fork-memory",
+                "checkpoint": "memory-choice",
+                "question": "Which branch duplicates the memory context for ordinary fork?"
+              }
+            ]
+          }
         },
         {
           "id": "memory-choice",
@@ -689,7 +805,17 @@
           },
           "notice": "Read the CLONE_VM condition and the else branch containing dup_mm.",
           "ignore": "Page-table details inside helpers can wait.",
-          "question": "Which branch fits the experiment’s ordinary fork?"
+          "question": "Which branch fits the experiment’s ordinary fork?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Chooses whether the new task shares or duplicates the record describing its memory.",
+            "callee": "Creates a new memory-management record based on the existing one.",
+            "statement": "In the else branch, copy_mm calls dup_mm and keeps the returned pointer in mm.",
+            "inputs": "The earlier CLONE_VM test distinguishes shared context from this duplication path. tsk is the new task; current->mm is the calling task’s context.",
+            "result": "A null mm result returns -ENOMEM. Later assignments attach the resulting context to the new task.",
+            "syntax": "-> selects a field through a pointer. !mm tests for a null pointer here. This is not yet a page-by-page copy-on-write walkthrough.",
+            "next": []
+          }
         }
       ],
       "flow": {
@@ -898,7 +1024,21 @@
         "launcher",
         "inherited authority",
         "containment"
-      ]
+      ],
+      "explorer_start": {
+        "question": "What happens when my program creates a child?",
+        "situation": "Your C program calls fork(), then branches on its return value.",
+        "establishes": "See where task creation delegates memory setup and checks whether it succeeded.",
+        "prerequisite": "Understand one variable, a function call and an if branch; Lab 001 introduces each.",
+        "segment": "fork",
+        "checkpoint": "memory-setup",
+        "terms": [
+          "fork",
+          "child",
+          "process creation",
+          "private memory"
+        ]
+      }
     },
     {
       "id": "shared-offset",
@@ -950,7 +1090,24 @@
           },
           "notice": "The dup_fd call duplicates the table for this path.",
           "ignore": "CLONE_FILES is a distinct sharing option; ordinary fork does not request it.",
-          "question": "Does a new table imply new open-file descriptions?"
+          "question": "Does a new table imply new open-file descriptions?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Sets up the new task’s table of open-file descriptor entries.",
+            "callee": "Creates a separate descriptor table, retaining references to existing open files.",
+            "statement": "The new table is obtained through dup_fd; a new table alone does not establish new open-file descriptions.",
+            "inputs": "oldf is the existing table context. The earlier CLONE_FILES branch instead retains the whole table.",
+            "result": "On success the new task’s files field receives newf; encoded pointer errors are returned before assignment.",
+            "syntax": "IS_ERR recognizes a kernel error encoded in a pointer. It does not mean every non-null pointer is failure.",
+            "next": [
+              {
+                "lesson": "shared-offset",
+                "checkpoint": "file-references",
+                "question": "Where are existing file objects retained?"
+              }
+            ],
+            "before": 7
+          }
         },
         {
           "id": "file-references",
@@ -963,7 +1120,17 @@
           },
           "notice": "Read the get_file call and the neighboring assignment into the new table. The code retains a reference to an existing file object.",
           "ignore": "The surrounding allocation and resizing mechanics can wait.",
-          "question": "Which objects are retained by reference?"
+          "question": "Which objects are retained by reference?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Creates a separate descriptor table, retaining references to existing open files.",
+            "callee": "Keeps an additional counted reference to an already open file object.",
+            "statement": "For a non-null file entry, dup_fd calls get_file(f), then assigns f into the new descriptor table.",
+            "inputs": "f is the existing struct file pointer. The neighboring loop reads old entries and populates new ones.",
+            "result": "get_file returns the same file pointer; this statement ignores that return value. Its important effect retains a counted reference, and the later assignment stores f in the new table. It does not open the pathname again or create an independent file position.",
+            "syntax": "if (f) selects a present entry. The assignments are pointer references, not a copy of the file’s contents.",
+            "next": []
+          }
         }
       ],
       "flow": {
@@ -1219,7 +1386,17 @@
           },
           "notice": "This call handles the exiting task’s memory-management context.",
           "ignore": "Other cleanup responsibilities can be studied separately.",
-          "question": "Why is cleanup broader than returning an exit number?"
+          "question": "Why is cleanup broader than returning an exit number?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Carries out task termination and its cleanup sequence.",
+            "callee": "Releases the exiting task’s association with its memory-management context.",
+            "statement": "do_exit calls exit_mm as one part of termination.",
+            "inputs": "This call has no explicit arguments. Neighboring calls handle different resources.",
+            "result": "This statement does not perform the parent’s wait operation or decode an exit status.",
+            "syntax": "Empty parentheses here supply no arguments. A sequence of call statements delegates separate responsibilities; it is not a proof that every resource has already been released.",
+            "next": []
+          }
         },
         {
           "id": "wait-operation",
@@ -1232,7 +1409,24 @@
           },
           "notice": "Focus on the wait operation and the surrounding status-handling code.",
           "ignore": "Compatibility wrappers and tracing helpers can wait.",
-          "question": "Which side of the parent-child relationship is waiting here?"
+          "question": "Which side of the parent-child relationship is waiting here?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Prepares and completes a wait4-style kernel wait request.",
+            "callee": "Performs the wait operation using the supplied wait options.",
+            "statement": "kernel_wait4 calls do_wait(&wo), storing its result in ret.",
+            "inputs": "&wo supplies the address of the prepared wait-options record; fields above select eligible children and requested reports.",
+            "result": "After releasing the PID reference, a positive result and non-null status address lead to put_user of wo.wo_stat. A copy failure changes ret to -EFAULT.",
+            "syntax": "& means address. && stops at the first false condition; put_user is reached only after the earlier tests pass. This is kernel code, not the learner’s waitpid wrapper.",
+            "next": [
+              {
+                "lesson": "exit-wait",
+                "checkpoint": "release-memory",
+                "question": "How is a child’s termination cleanup different from collecting its result?"
+              }
+            ],
+            "before": 9
+          }
         }
       ],
       "flow": {
@@ -1378,7 +1572,23 @@
         "launcher",
         "inherited authority",
         "containment"
-      ]
+      ],
+      "explorer_start": {
+        "question": "How does a parent collect a child’s result?",
+        "situation": "Your child ends; the parent calls waitpid() to collect completion information.",
+        "establishes": "See a kernel wait request and where collected status is copied toward the caller.",
+        "prerequisite": "The returned PID and the encoded status written through &status are separate outputs.",
+        "segment": "wait",
+        "checkpoint": "wait-operation",
+        "terms": [
+          "wait",
+          "waitpid",
+          "wait4",
+          "exit",
+          "child status",
+          "reap"
+        ]
+      }
     },
     {
       "id": "exec-replacement",
@@ -1431,7 +1641,23 @@
           },
           "notice": "Follow the prepared binary-parameter structure into the execution helper.",
           "ignore": "Argument copying and security-hook details are further investigations.",
-          "question": "What is being handed to the helper?"
+          "question": "What is being handed to the helper?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Prepares a userspace program-replacement request.",
+            "callee": "Processes the prepared binary parameters toward program replacement.",
+            "statement": "do_execveat_common returns the result of bprm_execve(bprm).",
+            "inputs": "bprm points to the prepared linux_binprm request record; this is not the learner’s raw argv array.",
+            "result": "return forwards the helper’s result. Inspecting this delegation does not establish that loading will succeed.",
+            "syntax": "A pointer argument refers to a record already prepared by preceding code. return can forward another call’s result.",
+            "next": [
+              {
+                "lesson": "exec-replacement",
+                "checkpoint": "exec-format",
+                "question": "How does the request proceed toward binary-format handling?"
+              }
+            ]
+          }
         },
         {
           "id": "exec-format",
@@ -1444,7 +1670,23 @@
           },
           "notice": "This is a call into binary-format handling. Handler selection can involve indirect calls; the explorer does not guess their targets.",
           "ignore": "Tracing and credential details can wait.",
-          "question": "Why should the graph avoid inventing a direct edge to a particular format handler?"
+          "question": "Why should the graph avoid inventing a direct edge to a particular format handler?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Processes the prepared binary parameters toward program replacement.",
+            "callee": "Runs binary-format processing for the prepared request.",
+            "statement": "bprm_execve stores the result of exec_binprm(bprm) in retval.",
+            "inputs": "bprm carries the prepared request. Earlier checks, including the credentials security hook, can take the out path before this call.",
+            "result": "A negative retval goes to out. Only the subsequent path reaches the comment that execve succeeded.",
+            "syntax": "< 0 compares a result with zero. Handler dispatch deeper down can be indirect; this static call does not resolve those targets.",
+            "next": [
+              {
+                "lesson": "exec-replacement",
+                "checkpoint": "exec-descriptors",
+                "question": "Which descriptor entries are explicitly closed during replacement?"
+              }
+            ]
+          }
         },
         {
           "id": "exec-descriptors",
@@ -1457,7 +1699,17 @@
           },
           "notice": "Close-on-exec handling occurs during replacement.",
           "ignore": "A complete launcher security review requires more than this single checkpoint.",
-          "question": "Which descriptor choice can the application make before exec?"
+          "question": "Which descriptor choice can the application make before exec?",
+          "reading": {
+            "reviewed": "2026-10-17",
+            "caller": "Carries out core state transitions during program replacement.",
+            "callee": "Closes entries marked close-on-exec in the supplied descriptor-table context.",
+            "statement": "begin_new_exec calls do_close_on_exec with this task’s files context.",
+            "inputs": "me->files selects the current task’s file-table context. The preceding comment places this after the point of no return and table unsharing.",
+            "result": "There is no return value tested at this call. Later replacement work continues; this line alone does not inventory all retained access.",
+            "syntax": "A call used as a statement can perform work without assigning a result. FD_CLOEXEC applies to descriptor entries; losing one entry does not revoke other references.",
+            "next": []
+          }
         }
       ],
       "flow": {
@@ -1618,7 +1870,21 @@
         "launcher",
         "inherited authority",
         "containment"
-      ]
+      ],
+      "explorer_start": {
+        "question": "What changes when a process executes another program?",
+        "situation": "Your C program calls an exec interface to replace its code and data.",
+        "establishes": "Inspect a prepared replacement request and one explicit close-on-exec step.",
+        "prerequisite": "Know that successful exec replaces the program image; it does not create a new PID.",
+        "segment": "exec",
+        "checkpoint": "exec-request",
+        "terms": [
+          "exec",
+          "execve",
+          "execl",
+          "program replacement"
+        ]
+      }
     },
     {
       "id": "launcher-preparation",

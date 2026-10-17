@@ -238,3 +238,38 @@ def test_followup_teaching_has_connected_statement_steps_and_precise_filter_trac
     assert cases['variation-usr1-inherited-ignored-blocked']['exit_code'] == 0
     assert cases['simulated-zero-getppid']['exit_code'] == 0
     assert cases['simulated-zero-getuid']['exit_code'] == 0
+
+
+def test_explorer_starts_and_reading_annotations_are_bound_to_reviewed_evidence():
+    from explorer.learning import learning_content
+    content = learning_content()
+    starts = [lesson for lesson in content['lessons'] if lesson.get('explorer_start')]
+    assert {l['id'] for l in starts} == {'fork-memory','process-inheritance','exec-replacement','exit-wait','process-identity'}
+    for lesson in starts:
+        start = lesson['explorer_start']
+        assert start['segment'] in {s['id'] for s in lesson['walkthrough']}
+        checkpoint = next(c for c in lesson['checkpoints'] if c['id']==start['checkpoint'])
+        assert not checkpoint['available'] and checkpoint['reason_code']=='index_missing'
+        assert all(start[k] for k in ['question','situation','establishes','prerequisite','terms'])
+    for lesson in content['lessons']:
+        for checkpoint in lesson['checkpoints']:
+            reading = checkpoint['reading']
+            assert isinstance(reading.get('before',4),int) and 4 <= reading.get('before',4) <= 30
+            assert all(reading[k] for k in ['reviewed','caller','statement','inputs','result','syntax'])
+            for target in reading['next']:
+                topic = next(t for t in content['lessons'] if t['id']==target['lesson'])
+                assert target['checkpoint'] in {c['id'] for c in topic['checkpoints']}
+    index = Path('data/learning/index.sqlite')
+    if index.exists():
+        with TestClient(create_app(index),base_url='http://localhost') as client:
+            resolved = client.get('/api/learning').json()
+            dataset = client.get('/api/dataset').json()['metadata']
+            for lesson in resolved['lessons']:
+                for checkpoint in lesson['checkpoints']:
+                    assert checkpoint['available'] and checkpoint['dataset_id']==dataset['dataset_id']
+                    selection=checkpoint['selection']
+                    anchor=selection['location']
+                    source=client.get('/api/source',params=anchor).json()
+                    line=source['lines'][anchor['line']-source['start']]
+                    if selection.get('edge'):
+                        assert selection['edge']['target_name'] in line

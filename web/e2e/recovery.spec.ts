@@ -61,6 +61,8 @@ test("schema migration preserves annotations and does not manufacture a lab or r
 test("paging calculations cover every line at boundaries for both window sizes", () => {
   for (const [before, after] of [
     [4, 12],
+    [7, 12],
+    [9, 12],
     [12, 30],
   ])
     for (const total of [1, 2, 17, 43, 100, 1000]) {
@@ -213,13 +215,11 @@ test("v1 notes migrate and export/import preview round trips book, lab and self-
       JSON.parse(localStorage.getItem("kse-reader-v1")!),
     ),
   ).toEqual(exported);
-  await page
-    .getByLabel("Import a notes file")
-    .setInputFiles({
-      name: "bad.json",
-      mimeType: "application/json",
-      buffer: Buffer.from("{bad"),
-    });
+  await page.getByLabel("Import a notes file").setInputFiles({
+    name: "bad.json",
+    mimeType: "application/json",
+    buffer: Buffer.from("{bad"),
+  });
   await expect(page.locator(".reader-settings [role=alert]")).toBeVisible();
   expect(
     await page.evaluate(() =>
@@ -389,13 +389,11 @@ test("oversized ordinary edits and oversized final merges preserve the prior rec
     ...defaultReader(),
     notes: { additional: { ...note, thinking: "漢".repeat(9999) } },
   };
-  await page
-    .getByLabel("Import a notes file")
-    .setInputFiles({
-      name: "notes.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify(incoming)),
-    });
+  await page.getByLabel("Import a notes file").setInputFiles({
+    name: "notes.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(incoming)),
+  });
   await page.getByRole("button", { name: "Merge imported notes" }).click();
   await expect(page.locator(".reader-settings [role=alert]")).toContainText(
     "Recovery was not applied",

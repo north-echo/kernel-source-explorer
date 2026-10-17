@@ -1,6 +1,8 @@
 import { validLessonReturn } from "./lessonRoute";
 import type { Loc } from "./types";
 export type ExplorerRoute = {
+  guide?: string;
+  journey?: string;
   dataset: string;
   symbol: string;
   location?: Loc;
@@ -28,6 +30,7 @@ export function explorerHash(route: ExplorerRoute) {
     p.set("column", String(route.location.column));
   }
   for (const key of [
+    "journey",
     "returnTo",
     "browse",
     "evidence",
@@ -49,6 +52,16 @@ export function readExplorerHash(hash: string): ExplorerRoute | null {
   if (!hash.startsWith("#explore?")) return null;
   if (hash.length > 16000) throw new Error("This source link is too long.");
   const p = new URLSearchParams(hash.slice(9));
+  const guide = p.get("guide");
+  if (guide) {
+    if (!/^[a-z0-9-]{1,100}$/.test(guide))
+      throw new Error("Invalid guided question in this link.");
+    if (p.has("dataset") || p.has("symbol"))
+      throw new Error(
+        "Use either a starting question or an exact source link.",
+      );
+    return { dataset: "", symbol: "", guide };
+  }
   const dataset = p.get("dataset") || "",
     symbol = p.get("symbol") || "";
   if (!dataset || symbol.length > 4000)
@@ -100,10 +113,14 @@ export function readExplorerHash(hash: string): ExplorerRoute | null {
       throw new Error("Invalid view flag in this link.");
     return v === "true";
   };
+  const journey = p.get("journey") || undefined;
+  if (journey && !/^[a-z0-9-]{1,100}$/.test(journey))
+    throw new Error("Invalid originating question.");
   return {
+    journey,
     returnTo: validLessonReturn(
       p.get("returnTo") || undefined,
-      p.get("lesson") || undefined,
+      journey || p.get("lesson") || undefined,
     ),
     dataset,
     symbol,

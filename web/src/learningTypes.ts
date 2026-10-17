@@ -5,7 +5,28 @@ export type Selection = {
   location: Loc;
   edge?: Edge;
 };
+export type ExplorerStart = {
+  question: string;
+  situation: string;
+  establishes: string;
+  prerequisite: string;
+  segment: string;
+  checkpoint: string;
+  terms: string[];
+};
+export type CheckpointReading = {
+  before?: number;
+  reviewed: string;
+  caller: string;
+  callee: string;
+  statement: string;
+  inputs: string;
+  result: string;
+  syntax: string;
+  next: { lesson: string; checkpoint: string; question: string }[];
+};
 export type Checkpoint = {
+  reading?: CheckpointReading;
   id: string;
   title: string;
   notice: string;
@@ -72,6 +93,7 @@ export type Experiment = {
   troubleshooting: string[];
 };
 export type Topic = {
+  explorer_start?: ExplorerStart;
   id: string;
   title: string;
   chapter: string;
@@ -154,6 +176,7 @@ export type ReaderState = {
   notes: Record<string, TopicNotes>;
 };
 export type GuidedContext = {
+  journey?: string;
   returnTo?: string;
   lesson: Pick<Topic, "id" | "title" | "reference">;
   checkpoint: Checkpoint;

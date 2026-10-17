@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import cytoscape from "cytoscape";
+import { relationshipMeaning } from "./explorerTeaching";
 import type { Edge, SymbolInfo } from "./types";
 
 const PAGE_SIZE = 8;
@@ -21,11 +22,14 @@ export function Graph({
   const root = useRef<HTMLDivElement>(null);
   const instance = useRef<cytoscape.Core | null>(null);
   const [page, setPage] = useState(0);
+  const [nodePreview, setNodePreview] = useState<string>();
   const [candidates, setCandidates] = useState<Edge[]>([]);
   useEffect(() => {
     setPage(0);
     setCandidates([]);
+    setNodePreview(undefined);
   }, [active]);
+  useEffect(() => setNodePreview(undefined), [selectedEdge]);
   const names = new Map(nodes.map((n) => [n.id, n.name]));
   const neighbors = [
     ...new Set(
@@ -44,7 +48,7 @@ export function Graph({
     if (!root.current) return;
     const allowed = new Set([active, ...visible]);
     // Aggregate only the same source, target and relationship kind. Each graph edge opens
-    // one actual evidence record; all call sites remain individually available in the list.
+    // the individual evidence chooser; call sites remain available in the list.
     const groups = new Map<string, Edge[]>();
     for (const e of edges) {
       const target = e.target_id || "unresolved-" + e.id;
@@ -65,7 +69,7 @@ export function Graph({
     const label = (id: string) => {
       const name =
         names.get(id) ||
-        (id.startsWith("unresolved-") ? "Unresolved callback" : id);
+        (id.startsWith("unresolved-") ? "Target not resolved" : id);
       return name.length > 23 ? name.slice(0, 21) + "…" : name;
     };
     const cy = cytoscape({
@@ -169,7 +173,7 @@ export function Graph({
     instance.current = cy;
     cy.on("tap", "node", (event) => {
       const id = event.target.id();
-      if (!id.startsWith("unresolved-")) onSymbol(id);
+      setNodePreview(id);
     });
     cy.on("tap", "edge", (event) => {
       const group = [...groups.values()].find(
@@ -183,7 +187,7 @@ export function Graph({
     cy.on("mouseover", "node", (event) => {
       if (root.current)
         root.current.title =
-          names.get(event.target.id()) || "Unresolved callback";
+          names.get(event.target.id()) || "Target not resolved";
     });
     const observer = new ResizeObserver(() => {
       cy.resize();
@@ -220,6 +224,38 @@ export function Graph({
   );
   return (
     <>
+      <div className="graph-meaning">
+        <p>
+          Each symbol node names an indexed function, type or variable. Select
+          an arrow to inspect evidence; select a node to preview opening its
+          definition.
+        </p>
+        <details>
+          <summary>What do these arrows and boxes mean?</summary>
+          <p>
+            A direct-call arrow points from caller to callee. Reference arrows
+            record uses; declared-type arrows connect a declaration to its
+            referenced type, including through pointer or array types.
+          </p>
+          <p>
+            A dashed indirect-call arrow ends at a placeholder when the compiler
+            supplied no resolved target. That box is a call-site placeholder,
+            not an invented function.
+          </p>
+          <p>
+            × counts loaded evidence records, which can come from different
+            source locations or translation units (source files compiled with
+            their options and included headers). Choose the individual record
+            before interpreting it.
+          </p>
+          <p>
+            Filters, loaded evidence pages and indexed coverage limit this view.
+            These static relationships are not a runtime trace or execution
+            order; conditions, failures and indirect dispatch affect actual
+            execution.
+          </p>
+        </details>
+      </div>
       <div
         className="graph-canvas"
         ref={root}
@@ -263,24 +299,61 @@ export function Graph({
           Fit
         </button>
       </div>
+      {nodePreview && (
+        <section className="graph-node-preview" aria-label="Preview graph node">
+          <h3>{names.get(nodePreview) || "Unresolved call site"}</h3>
+          {nodePreview.startsWith("unresolved-") ? (
+            <>
+              <p>
+                This box marks a call site without a compiler-resolved target.
+                No callee can be opened from it.
+              </p>
+              <button
+                onClick={() => {
+                  const e = edges.find(
+                    (e) => "unresolved-" + e.id === nodePreview,
+                  );
+                  if (e) onEdge(e);
+                }}
+              >
+                Inspect unresolved call evidence
+              </button>
+            </>
+          ) : (
+            <>
+              <p>
+                This node represents an indexed{" "}
+                {nodes.find((n) => n.id === nodePreview)?.kind || "symbol"}.
+                Opening it selects that symbol and reads its indexed definition
+                when available, or its declaration. It does not execute code or
+                select an arrow.
+              </p>
+              <button onClick={() => onSymbol(nodePreview)}>
+                Open {names.get(nodePreview) || nodePreview} definition
+              </button>
+            </>
+          )}
+          <button onClick={() => setNodePreview(undefined)}>
+            Close node preview
+          </button>
+        </section>
+      )}
       <details className="graph-symbol-names">
         <summary>Neighbor names and grouped evidence</summary>
         <p>
           Full symbol names; each group contains individual call sites or
           translation-unit records.
         </p>
-        {[...new Set([active, ...neighbors])]
-          .filter((id) => !id.startsWith("unresolved-"))
-          .map((id) => (
-            <button key={id} onClick={() => onSymbol(id)}>
-              {names.get(id) || id}
-            </button>
-          ))}
+        {[...new Set([active, ...neighbors])].map((id) => (
+          <button key={id} onClick={() => setNodePreview(id)}>
+            Preview {names.get(id) || "unresolved call site"}
+          </button>
+        ))}
         {allGroups.map((group) => (
           <button key={group[0].id} onClick={() => setCandidates(group)}>
             {group[0].source_name} →{" "}
             {group[0].target_name || "unresolved target"} · {group.length}{" "}
-            evidence records
+            evidence records · {group[0].kind.replaceAll("_", " ")}
           </button>
         ))}
       </details>
@@ -290,6 +363,12 @@ export function Graph({
           aria-label="Choose relationship evidence"
         >
           <h3>Choose a compiler evidence location</h3>
+          <p>{relationshipMeaning(candidates[0])}</p>
+          <p>
+            Repeated records may describe separate call sites or translation
+            units. Choosing one highlights that actual location; it does not
+            follow the callee.
+          </p>
           {candidates.map((e) => (
             <button
               key={e.id}
@@ -298,8 +377,8 @@ export function Graph({
             >
               {e.source_name} → {e.target_name || "unresolved target"}
               <small>
-                {e.file}:{e.line}:{e.column} · TU {e.tu} · {e.status} ·{" "}
-                {e.origin}
+                {e.kind.replaceAll("_", " ")} · {e.file}:{e.line}:{e.column} ·
+                TU {e.tu} · {e.status} · {e.origin}
               </small>
             </button>
           ))}
