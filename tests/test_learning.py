@@ -273,3 +273,35 @@ def test_explorer_starts_and_reading_annotations_are_bound_to_reviewed_evidence(
                     line=source['lines'][anchor['line']-source['start']]
                     if selection.get('edge'):
                         assert selection['edge']['target_name'] in line
+
+
+def test_memory_journey_keeps_existing_selectors_and_exposes_the_actual_branch():
+    lesson = next(l for l in curriculum()['lessons'] if l['id'] == 'fork-memory')
+    assert [s['checkpoint'] for s in lesson['guided_path']['steps']] == ['memory-setup', 'memory-choice']
+    assert lesson['guided_path']['comparison_segment'] in {s['id'] for s in lesson['walkthrough']}
+    assert [c['selector']['callee'] for c in lesson['checkpoints']] == ['copy_mm', 'dup_mm']
+    assert all(c['reading']['steps'] and c['reading']['prerequisites'] for c in lesson['checkpoints'])
+    index = Path('data/learning/index.sqlite')
+    if not index.exists():
+        import pytest
+        pytest.skip('Pinned kernel dataset unavailable; content assertions above are not source validation')
+    with TestClient(create_app(index), base_url='http://localhost') as client:
+        resolved = next(l for l in client.get('/api/learning').json()['lessons'] if l['id'] == 'fork-memory')
+        first, second = resolved['checkpoints']
+        assert first['available'] and second['available']
+        def excerpt(checkpoint):
+            return '\n'.join(client.get('/api/source', params={**checkpoint['selection']['location'],
+                'before': checkpoint['reading'].get('before', 4), 'after': 12}).json()['lines'])
+        text = excerpt(first)
+        assert 'retval = copy_mm(clone_flags, p);\n\tif (retval)\n\t\tgoto bad_fork_cleanup_signal;' in text
+        text = excerpt(second)
+        for statement in ['oldmm = current->mm;', 'if (clone_flags & CLONE_VM)', 'mmget(oldmm);',
+                          'mm = oldmm;', '} else {', 'mm = dup_mm(tsk, current->mm);',
+                          'if (!mm)', 'return -ENOMEM;', 'tsk->mm = mm;', 'tsk->active_mm = mm;', 'return 0;']:
+            assert statement in text
+        # The helper documents NULL rather than the ERR_PTR convention used by other kernel APIs.
+        edge = second['selection']['edge']
+        locs = client.get('/api/symbol', params={'id': edge['target_id']}).json()['locations']
+        definition = next(loc for loc in locs if loc['is_definition'])
+        text = '\n'.join(client.get('/api/source', params={**definition, 'before': 12, 'after': 3}).json()['lines'])
+        assert 'Return: the duplicated mm or NULL on failure.' in text

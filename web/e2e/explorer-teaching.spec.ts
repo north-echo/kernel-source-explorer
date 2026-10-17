@@ -260,3 +260,27 @@ test("source token anchors use UTF-8 columns without changing the displayed sour
   expect(sourceParts("é helper()", 2)).toBeUndefined();
   expect(sourceParts("helper()", 1)?.prefix).toBe("");
 });
+
+test("memory connection routes retain position and origin and reject invented stages", () => {
+  const route = {
+    dataset: "pinned",
+    symbol: "copy_mm",
+    lesson: "fork-memory",
+    checkpoint: "memory-choice",
+    journey: "fork-memory",
+    stage: "connection" as const,
+    returnTo: "#learn/fork-memory?view=code&segment=child",
+    full: true,
+    evidence: 42,
+    location: { file: "kernel/fork.c", line: 1594, column: 8 },
+  };
+  expect(readExplorerHash(explorerHash(route))).toMatchObject(route);
+  expect(() =>
+    readExplorerHash(
+      explorerHash(route).replace("stage=connection", "stage=done"),
+    ),
+  ).toThrow("Invalid guided position");
+  expect(() =>
+    readExplorerHash(explorerHash({ ...route, checkpoint: "memory-setup" })),
+  ).toThrow("Invalid guided position");
+});

@@ -6,6 +6,8 @@ export type Selection = {
   edge?: Edge;
 };
 export type ExplorerStart = {
+  purpose?: string;
+  introduction?: string;
   question: string;
   situation: string;
   establishes: string;
@@ -15,6 +17,9 @@ export type ExplorerStart = {
   terms: string[];
 };
 export type CheckpointReading = {
+  steps?: string[];
+  prerequisites?: { title: string; text: string }[];
+  names?: string[][];
   before?: number;
   reviewed: string;
   caller: string;
@@ -93,6 +98,13 @@ export type Experiment = {
   troubleshooting: string[];
 };
 export type Topic = {
+  guided_path?: {
+    title: string;
+    steps: { checkpoint: string; title: string }[];
+    connection_title: string;
+    connection: string[];
+    comparison_segment: string;
+  };
   explorer_start?: ExplorerStart;
   id: string;
   title: string;
@@ -176,6 +188,7 @@ export type ReaderState = {
   notes: Record<string, TopicNotes>;
 };
 export type GuidedContext = {
+  stage?: "connection";
   journey?: string;
   returnTo?: string;
   lesson: Pick<Topic, "id" | "title" | "reference">;

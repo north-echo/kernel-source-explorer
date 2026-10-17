@@ -307,3 +307,111 @@
 .source-pane .hljs-comment {
   color: #596f7e;
 }
+
+/* For the memory question, put the statement explanation beside the source.
+   The supporting graph follows them; it does not become a required detour. */
+.explorer-shell[data-memory-path="true"] .workspace {
+  display: grid;
+  max-width: 1400px;
+  grid-template-columns: minmax(310px, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+}
+.explorer-shell[data-memory-path="true"] .explorer-orientation {
+  grid-column: 1;
+  grid-row: 1;
+}
+.explorer-shell[data-memory-path="true"] .source-pane {
+  grid-column: 2;
+  grid-row: 1;
+}
+.explorer-shell[data-memory-path="true"] .checkpoint-graph {
+  grid-column: 1/-1;
+  grid-row: 2;
+}
+.explorer-shell[data-connection="true"] .source-pane {
+  display: none;
+}
+.explorer-shell[data-connection="true"] .journey-connection {
+  grid-column: 1/-1;
+  max-width: 850px;
+  margin: auto;
+}
+.memory-reading .checkpoint-reading li {
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.memory-reading ol {
+  padding-left: 22px;
+}
+.memory-reading h3 {
+  margin-top: 16px;
+}
+.memory-reading table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.memory-reading th,
+.memory-reading td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+}
+.memory-reading caption {
+  text-align: left;
+  margin-block: 12px;
+}
+.guided-path p {
+  margin-bottom: 8px;
+}
+.guided-path ol {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+.guided-path li {
+  flex: 1;
+  min-width: 170px;
+}
+.guided-path button {
+  width: 100%;
+  text-align: left;
+  height: 100%;
+  line-height: 1.5;
+}
+.guided-path button[aria-current="step"] {
+  border: 2px solid #215d91;
+  background: #e1edf7;
+}
+.guided-path small {
+  display: block;
+}
+.recommended-continuation {
+  margin-block: 16px;
+}
+.recommended-continuation .primary-link {
+  white-space: normal;
+}
+@media (max-width: 900px) {
+  .explorer-shell[data-memory-path="true"] .workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .explorer-shell[data-memory-path="true"] .explorer-orientation {
+    width: 100%;
+    order: 0;
+  }
+  .explorer-shell[data-memory-path="true"] .source-pane {
+    width: 100%;
+    order: 1;
+  }
+  .explorer-shell[data-memory-path="true"] .checkpoint-graph {
+    width: 100%;
+    order: 2;
+  }
+}

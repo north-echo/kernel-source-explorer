@@ -35,6 +35,7 @@ import {
   matchingQuestions,
   sourceCategory,
 } from "./explorerTeaching";
+import { GuidedPath, JourneyConnection } from "./GuidedPath";
 import { SourceToken } from "./SourceToken";
 hljs.registerLanguage("c", c);
 
@@ -206,6 +207,7 @@ function App() {
       checkpoint: context?.checkpoint.id,
       returnTo: context?.returnTo,
       journey: context?.journey,
+      stage: context?.stage,
       q: query,
       path,
       direction,
@@ -237,7 +239,19 @@ function App() {
       routeController.current = controller;
       try {
         const route = readExplorerHash(window.location.hash);
-        if (!route) return;
+        if (!route) {
+          if (window.location.hash === "#explore") {
+            setGuided(undefined);
+            setActive("");
+            setSelected(undefined);
+            setFocus(undefined);
+            setSource(undefined);
+            setEdge(undefined);
+            setBrowseLine(undefined);
+            setFullExplorer(true);
+          }
+          return;
+        }
         if (route.guide) {
           linkValid.current = false;
           const content = await api<Curriculum>(
@@ -306,6 +320,7 @@ function App() {
             checkpoint,
             returnTo: route.returnTo,
             journey: route.journey,
+            stage: route.stage,
           };
         }
         const selectedEdge = route.evidence
@@ -625,18 +640,18 @@ function App() {
       false,
     );
   }
-  function readDefinition() {
+  function readDefinition(layout = fullExplorer) {
     const location = locations.find((l) => l.is_definition);
     if (!location) return;
     setEdge(undefined);
     setBrowseLine(undefined);
     setFocus(location);
-    writeRoute(active, location, undefined, undefined, guided);
+    writeRoute(active, location, undefined, undefined, guided, false, layout);
   }
   function openSymbolDefinition(id: string) {
     if (id === active) {
       setFullExplorer(true);
-      readDefinition();
+      readDefinition(true);
       return;
     }
     setFullExplorer(true);
@@ -776,10 +791,23 @@ function App() {
         (selected?.name || "Source explorer") + " · Kernel Source Explorer";
       jumpTo(selected ? ".explorer-orientation h2" : ".explorer-welcome h1");
     }
-  }, [mode, selected?.id, edge?.id, focus?.file, focus?.line, focus?.column]);
+  }, [
+    mode,
+    selected?.id,
+    edge?.id,
+    focus?.file,
+    focus?.line,
+    focus?.column,
+    guided?.stage,
+    fullExplorer,
+  ]);
   const originLesson = startingPoints?.lessons.find(
     (l) => l.id === (guided?.journey || guided?.lesson.id),
   );
+  const memoryPath =
+    originLesson?.guided_path && guided?.lesson.id === originLesson.id
+      ? originLesson
+      : undefined;
   const successful =
     dataset?.coverage.filter((t) => t.status === "successful").length || 0;
   return (
@@ -913,6 +941,8 @@ function App() {
             ? "explorer-shell guided-explorer"
             : "explorer-shell"
         }
+        data-memory-path={!!memoryPath && !fullExplorer}
+        data-connection={!!guided?.stage && !fullExplorer}
       >
         {!active && (
           <ExplorerWelcome
@@ -950,7 +980,9 @@ function App() {
                 }}
               >
                 {fullExplorer
-                  ? "Focus on this checkpoint"
+                  ? memoryPath
+                    ? "Return to guided step"
+                    : "Focus on this checkpoint"
                   : "Show full explorer"}
               </button>
             </div>
@@ -963,11 +995,39 @@ function App() {
                 ? " · " + originLesson.explorer_start.question
                 : ""}
             </p>
-            <h1>{guided.checkpoint.title}</h1>
-            <p className="guided-question">{guided.checkpoint.question}</p>
+            <h1>{memoryPath?.guided_path?.title || guided.checkpoint.title}</h1>
+            {memoryPath ? (
+              <>
+                <p>
+                  From the C fork() question, we start inside a kernel helper:
+                  two reviewed calls explain memory preparation, without tracing
+                  the library or syscall boundary.
+                </p>
+                <GuidedPath
+                  lesson={memoryPath}
+                  context={guided}
+                  onVisit={openCheckpoint}
+                />
+                <a
+                  href="#explore"
+                  onClick={() => {
+                    setGuided(undefined);
+                    setActive("");
+                    setSelected(undefined);
+                    setFocus(undefined);
+                    setEdge(undefined);
+                    setSource(undefined);
+                  }}
+                >
+                  Choose another starting question
+                </a>
+              </>
+            ) : (
+              <p className="guided-question">{guided.checkpoint.question}</p>
+            )}
           </section>
         )}
-        {guided && !fullExplorer && (
+        {guided && !fullExplorer && !guided.stage && (
           <div className="checkpoint-graph-toggle">
             <button
               aria-expanded={showCheckpointGraph}
@@ -993,7 +1053,25 @@ function App() {
               : "workspace"
           }
         >
-          {selected && (
+          {memoryPath && guided?.stage && !fullExplorer && (
+            <JourneyConnection
+              lesson={memoryPath}
+              context={guided}
+              onDeeper={() => {
+                setFullExplorer(true);
+                writeRoute(
+                  active,
+                  focus,
+                  edge,
+                  browseLine,
+                  guided,
+                  false,
+                  true,
+                );
+              }}
+            />
+          )}
+          {selected && !(guided?.stage && !fullExplorer) && (
             <ExplorerOrientation
               content={startingPoints}
               dataset={ds}
@@ -1002,7 +1080,10 @@ function App() {
               edge={edge}
               locations={locations}
               guided={guided}
-              onDefinition={readDefinition}
+              focused={!!guided && !fullExplorer}
+              onDefinition={() =>
+                memoryPath ? openSymbolDefinition(active) : readDefinition()
+              }
               onCallee={() =>
                 edge?.target_id && openSymbolDefinition(edge.target_id)
               }
@@ -1013,6 +1094,7 @@ function App() {
           )}
           {guided &&
             !fullExplorer &&
+            !guided.stage &&
             showCheckpointGraph &&
             guided.checkpoint.selection && (
               <CheckpointGraph

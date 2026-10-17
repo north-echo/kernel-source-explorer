@@ -1,5 +1,7 @@
 # Beginner Explorer pass
 
+The process-creation path has since been refined into two connected checkpoints and a C stopping point; see [MEMORY_JOURNEY_PASS.md](MEMORY_JOURNEY_PASS.md) for current behavior and validation.
+
 Implemented locally on October 17, 2026, after reading the repository implementation and the recent improvement/follow-up handoffs. The existing source/notes/curriculum work was preserved; the unrelated untracked `KERNEL_EXPLORER_REVIEW.md` remains untouched. No commit, push, publication or deployment was performed.
 
 ## What changed
@@ -46,7 +48,7 @@ This pass read the installed bounded **Linux 7.2.11 arm64** source index at revi
 
 ## Open and reproduce
 
-The local app remains available at http://127.0.0.1:8000. Recommended first visit: **[What happens when my program creates a child?](http://127.0.0.1:8000/#explore?guide=fork-memory)**. Use **Read this statement in small pieces**, then **Inspect called function: copy_mm**; the reviewed-checkpoint and Learn-return controls let you come back without changing your saved lab.
+The local app remains available at http://127.0.0.1:8000. Recommended first visit: **[What happens when my program creates a child?](http://127.0.0.1:8000/#explore?guide=fork-memory)**. Follow **Continue: examine the memory-sharing choice**, then **Connect this result to the C experiment**. Full definitions remain optional detours with a guided return; navigating does not change your saved lab.
 
 ```sh
 npm run build --prefix web

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-test.beforeEach(async ({ page }) => {
-  await page.route("**/api/reader-profile", (r) =>
+test.beforeEach(async ({ context }) => {
+  await context.route("**/api/reader-profile", (r) =>
     r.fulfill({
       json: {
         reading_lesson: "chapter-02",
@@ -11,77 +11,135 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test("a beginner starts at process creation, reads the call, opens its callee and returns after refresh", async ({
+test("memory journey connects two reviewed calls, an optional detour, and the originating C segment", async ({
   page,
 }) => {
   await page.goto("/#explore");
   const first = page
     .locator(".guided-starts article")
     .filter({ hasText: "What happens when my program creates a child?" });
-  await first
-    .getByText("What this visit establishes and what to know first", {
-      exact: true,
-    })
-    .click();
-  await expect(first).toContainText("function call and an if branch");
-  await page.screenshot({
-    path: "../docs/explorer-starts-desktop.png",
-    fullPage: true,
+  await expect(first).toContainText("not a trace through the C library", {
+    timeout: 15000,
   });
   await first.getByRole("link", { name: "Start guided visit" }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator(".explorer-orientation")).toContainText(
-    "copy_process",
-  );
   await expect(page.locator(".source-line.current")).toContainText(
     "retval = copy_mm(clone_flags, p);",
   );
   await expect(page.locator(".source-line.current mark")).toHaveText("copy_mm");
-  await page
-    .getByText("Read this statement in small pieces", { exact: true })
-    .click();
-  await expect(page.locator(".checkpoint-reading")).toContainText(
-    "following if (retval)",
+  await expect(page.getByLabel("Statement breakdown")).toContainText(
+    "goto bad_fork_cleanup_signal",
   );
-  await expect(page.locator(".checkpoint-reading")).toContainText(
-    "clone_flags",
+  await expect(page.getByLabel("Statement breakdown")).toContainText(
+    "different from userspace fork",
   );
   await page.screenshot({
-    path: "../docs/explorer-guided-creation.png",
+    path: "../docs/memory-journey-first.png",
     fullPage: true,
   });
-  const original = page.url();
+  const firstURL = page.url();
   await page
     .getByRole("button", {
-      name: "Inspect called function: copy_mm",
-      exact: true,
+      name: "Continue: examine the memory-sharing choice",
     })
     .focus();
   await page.keyboard.press("Enter");
+  await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  await expect(page.locator(".source-code")).toContainText(
+    "if (clone_flags & CLONE_VM)",
+  );
+  await expect(page.getByLabel("Statement breakdown")).toContainText(
+    "receives the new-task pointer as tsk",
+  );
+  await expect(page.getByLabel("Statement breakdown")).toContainText(
+    "NULL on failure",
+  );
+  await expect(page.locator(".guided-explorer")).toBeVisible();
+  await expect(page.getByLabel("Symbol name")).toBeHidden();
+  await page.screenshot({
+    path: "../docs/memory-journey-choice.png",
+    fullPage: true,
+  });
+  const secondURL = page.url();
+  await page.reload();
+  await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  await page
+    .getByText("Binary & versus an address such as &status", { exact: true })
+    .click();
+  await expect(page.locator(".memory-reading")).toContainText(
+    "number of operands changes the meaning",
+  );
+  await page
+    .getByText("How the names connect across the two functions", {
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("table")).toContainText(
+    "Caller and callee do not need the same variable name",
+  );
+  await page
+    .getByText("Optional definitions and deeper exploration", { exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Optional: read the full dup_mm function",
+      exact: true,
+    })
+    .click();
   await expect(page.locator(".source-pane .pane-heading h2")).toHaveText(
-    "copy_mm",
+    "dup_mm",
   );
   await expect(page.locator(".explorer-orientation")).toContainText(
     "Function definition",
   );
-  await expect(page.locator(".explorer-orientation")).toContainText(
-    "Chooses whether the new task",
-  );
-  const callee = page.url();
+  const detourURL = page.url();
   await page.reload();
-  await expect(page).toHaveURL(callee);
-  await expect(page.locator(".source-pane .pane-heading h2")).toHaveText(
-    "copy_mm",
-  );
+  await expect(page).toHaveURL(detourURL);
   await page
-    .getByRole("button", { name: "Return to the reviewed checkpoint" })
-    .focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator(".source-line.current")).toContainText(
-    "retval = copy_mm(clone_flags, p);",
-  );
+    .getByRole("button", { name: "Return to guided step", exact: true })
+    .click();
+  await expect(page).toHaveURL(secondURL);
+  await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
   await page
-    .getByRole("link", { name: "Return to Lab 001: Follow a fork call" })
+    .getByRole("button", {
+      name: "Connect this result to the C experiment",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "A useful stopping point" }),
+  ).toBeFocused();
+  await expect(page.getByLabel("Connection to the C experiment")).toContainText(
+    "not a compiler-resolved edge",
+  );
+  await expect(page.getByLabel("Connection to the C experiment")).toContainText(
+    "does not establish a complete sandbox",
+  );
+  const endURL = page.url();
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "A useful stopping point" }),
+  ).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(secondURL);
+  await page.goBack();
+  await expect(page).toHaveURL(detourURL);
+  await page.goBack();
+  await expect(page).toHaveURL(secondURL);
+  await page.goBack();
+  await expect(page).toHaveURL(firstURL);
+  await expect(page.locator(".source-line.current mark")).toHaveText("copy_mm");
+  await page.goto(endURL);
+  await page
+    .getByRole("link", {
+      name: "Compare the parent and child variables",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByLabel("Walkthrough segment")).toHaveValue("finish");
+  await page.goBack();
+  await page
+    .getByRole("link", { name: "Return to the C fork experiment", exact: true })
     .click();
   await expect(page.getByLabel("Walkthrough segment")).toHaveValue("fork");
   expect(
@@ -89,7 +147,23 @@ test("a beginner starts at process creation, reads the call, opens its callee an
       () => JSON.parse(localStorage.getItem("kse-reader-v1")!).activeLab,
     ),
   ).toBeUndefined();
-  expect(original).toContain("journey=fork-memory");
+  await page.goto(firstURL);
+  await page
+    .getByRole("link", { name: "Choose another starting question" })
+    .click();
+  await expect(
+    page.getByRole("heading", {
+      name: "Start with a question from your C program",
+    }),
+  ).toBeVisible();
+  await page.goBack();
+  await expect(page.locator(".source-line.current mark")).toHaveText("copy_mm");
+  await page.goForward();
+  await expect(
+    page.getByRole("heading", {
+      name: "Start with a question from your C program",
+    }),
+  ).toBeVisible();
 });
 
 test("familiar API suggestions reach real source while retaining search filters", async ({
@@ -216,4 +290,115 @@ test("phone keyboard route preserves original question through reviewed cross-le
   await expect(page.locator(".notice-first")).toContainText(
     "a new table alone does not establish new open-file descriptions",
   );
+});
+
+test("phone memory path preserves a chosen C origin and saved bookmark through paging, copied links and detours", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/#learn/fork-memory?view=code&segment=fork");
+  await page
+    .getByRole("button", { name: "Save this lab segment", exact: true })
+    .click();
+  await page.goto("/#learn/fork-memory?view=code&segment=child");
+  await page
+    .getByText("Optional reviewed source checkpoints", { exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: /Creation delegates memory setup/ })
+    .click();
+  await expect(page.locator(".explorer-orientation h2")).toBeFocused();
+  const origin = "#learn/fork-memory?view=code&segment=child";
+  await page
+    .getByRole("button", {
+      name: "Continue: examine the memory-sharing choice",
+    })
+    .focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  const source = page.locator(".source-pane");
+  const end = Number(
+    await page.locator(".source-line").last().getAttribute("data-line"),
+  );
+  await page.getByRole("button", { name: "Later lines", exact: true }).click();
+  await expect(page.locator(".source-line").first()).toHaveAttribute(
+    "data-line",
+    String(end + 1),
+  );
+  await expect(page.locator(".source-line.current")).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "Return to call site", exact: true })
+    .click();
+  await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  await page.evaluate(() => {
+    document.body.style.zoom = "1.5";
+  });
+  await page.getByRole("button", { name: "Source", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(source.locator(".pane-heading h2")).toBeFocused();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: "../docs/memory-journey-phone.png",
+    fullPage: true,
+  });
+  await page.evaluate(() => {
+    document.body.style.zoom = "1";
+  });
+  await page
+    .getByText("Optional definitions and deeper exploration", { exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Optional: read the full copy_mm function",
+      exact: true,
+    })
+    .click();
+  const copied = await context.newPage();
+  await copied.goto(page.url());
+  await expect(copied.locator(".source-pane .pane-heading h2")).toHaveText(
+    "copy_mm",
+  );
+  await expect(copied.locator(".explorer-orientation")).toContainText(
+    "Function definition",
+  );
+  await copied
+    .getByRole("button", { name: "Return to guided step", exact: true })
+    .click();
+  await expect(copied.locator(".source-line.current mark")).toHaveText(
+    "dup_mm",
+  );
+  await copied.close();
+  await page
+    .getByRole("button", { name: "Return to guided step", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Connect this result to the C experiment",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("button", { name: "Optional: explore deeper", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Return to guided step", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "A useful stopping point" }),
+  ).toBeVisible();
+  await page
+    .getByRole("link", { name: "Return to the C fork experiment", exact: true })
+    .click();
+  await expect(page).toHaveURL(new RegExp(origin.replaceAll("?", "\\?")));
+  await expect(page.getByLabel("Walkthrough segment")).toHaveValue("child");
+  const state = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("kse-reader-v1")!),
+  );
+  expect(state.activeLab).toEqual({ lesson: "fork-memory", segment: "fork" });
+  expect(state.readingLesson).toBe("chapter-02");
 });

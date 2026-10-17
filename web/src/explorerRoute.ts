@@ -1,6 +1,7 @@
 import { validLessonReturn } from "./lessonRoute";
 import type { Loc } from "./types";
 export type ExplorerRoute = {
+  stage?: "connection";
   guide?: string;
   journey?: string;
   dataset: string;
@@ -30,6 +31,7 @@ export function explorerHash(route: ExplorerRoute) {
     p.set("column", String(route.location.column));
   }
   for (const key of [
+    "stage",
     "journey",
     "returnTo",
     "browse",
@@ -116,7 +118,19 @@ export function readExplorerHash(hash: string): ExplorerRoute | null {
   const journey = p.get("journey") || undefined;
   if (journey && !/^[a-z0-9-]{1,100}$/.test(journey))
     throw new Error("Invalid originating question.");
+  const stage = p.get("stage") || undefined;
+  if (
+    stage &&
+    (stage !== "connection" ||
+      p.get("lesson") !== "fork-memory" ||
+      p.get("checkpoint") !== "memory-choice" ||
+      (journey && journey !== "fork-memory"))
+  )
+    throw new Error(
+      "Invalid guided position. Choose a starting question to restart the visit.",
+    );
   return {
+    stage: stage === "connection" ? stage : undefined,
     journey,
     returnTo: validLessonReturn(
       p.get("returnTo") || undefined,

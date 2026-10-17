@@ -1,0 +1,43 @@
+# Process-creation memory journey refinement
+
+Focused local refinement on October 17, 2026. Read the current implementation and `EXPLORER_PASS.md` first; no applicable repository/parent `AGENTS.md` was present. Existing free exploration, notes and curriculum remain. The unrelated untracked `KERNEL_EXPLORER_REVIEW.md` was not edited. No commit, push, publication or deployment was performed.
+
+## Recommended path
+
+The creation question now introduces its narrower purpose before entry: a C program calls `fork()`, but this source visit starts inside a kernel helper and examines memory preparation. It does not trace libc, the syscall boundary or intervening calls.
+
+1. **Locate the memory-setup call:** existing `copy_process → copy_mm` checkpoint. Its explanation opens beside the statement and follows the arguments, assignment to `retval`, integer success/error convention, failure cleanup and remaining creation work.
+2. **Understand the memory-sharing choice:** visible primary continuation opens the existing `copy_mm → dup_mm` checkpoint in the same compact view. The widened excerpt includes `oldmm`, the `CLONE_VM` test, both branches, null-result check and assignments to the new task. Explanations distinguish binary `&` from unary address-of, the caller's `p` from the parameter `tsk`, the executing task `current`, and pointer results from integer status.
+3. **Connect the result back to the C experiment:** an explicit authored stopping point connects the separate-context path to the ordinary private variable, states what the two static checkpoints leave unresolved, and offers a return to the originating C activity or optional deeper exploration. The separate parent/child comparison opens the existing `finish` segment; it does not save a new bookmark.
+
+The position indicator is freely navigable and records no completion or mastery. Optional prerequisite reminders explain pointer values, structures/fields, null pointers and notation locally. A scoped name table connects the two calls. Full function definitions and ordinary graph navigation remain explicit detours, with a prominent **Return to guided step** action. Source paging, evidence anchors, token highlighting, filters and provenance remain available. On desktop the explanation and source sit side by side, with the graph below; on phones they form a reading sequence with keyboard-accessible source/graph shortcuts.
+
+## Evidence and teaching review
+
+Inspected the installed pinned Linux 7.2.11 arm64 source, revision `a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea`: `kernel/fork.c` around lines 1516–1603 and 2287–2306. `copy_mm` returns integer status; `dup_mm` explicitly documents a duplicated record or NULL, rather than an error-encoded pointer. The first call's error jump is `bad_fork_cleanup_signal`. The second call is in the `else` branch of `clone_flags & CLONE_VM`. No selectors or indexed coverage were added.
+
+The ordinary-fork interpretation is authored teaching supported by the [fork interface contract](https://man7.org/linux/man-pages/man2/fork.2.html), [clone's CLONE_VM contract](https://man7.org/linux/man-pages/man2/clone.2.html) and the reviewed source branch, not a compiler edge from the demo. Those current Linux man-pages were checked during this pass. We do not describe eagerly copying all physical pages or claim to have followed the complete copy-on-write implementation. The final connection keeps shared mappings and inherited credentials/descriptors outside this visit's conclusions.
+
+The teaching review followed the account from delegation to branch choice to the C variable, checking that each name has a concrete subject, every return value has a stated type/convention, and failure handling remains visible. Existing Lab 001 introduces variables, calls and `if`; reminders here support that background. Reading C function signatures and longer nested cleanup paths still requires practice. Helper implementations, page tables, reference-count implementation and write-fault handling remain optional deeper work. This is a content/layout review, not a novice participant study.
+
+## Validation
+
+- **31 Python checks passed** on macOS / Python 3.14, including native compiler fixtures, all existing storage/curriculum/source checks and the new exact pinned-source memory-branch/return-contract regression. Both existing memory selectors resolve; all 14 existing reviewed checkpoints remain available on the installed matching dataset.
+- **33 fixture/learning Playwright checks passed** (25 browser flows and eight pure state/route/context/token checks), including the new connection-stage round trip and invalid-position rejection, plus existing notes, corruption recovery, migration, import/export, hidden predictions, canonical source/download and index-failure checks.
+- **10 real-kernel-index Chromium journeys passed**. The connected path checks default-open explanations, both selected tokens, the actual branch in the excerpt, primary continuation staying focused, name/notation reminders, optional callee/current-function definition detours, refresh, copied detour links, the authored ending, comparison navigation and the exact C return. Back/Forward recovers the guided steps and starting questions. A phone path enters from the child C segment while retaining a separately saved fork bookmark and Chapter 2 book position. It tests contiguous paging, the stable evidence anchor, keyboard focus/Enter, 390×844 layout and 150% enlarged source navigation. Desktop coverage uses 1512×982.
+- **TypeScript/Vite production build passed**; `git diff --check` is clean. The existing bundle-size warning remains (about 759 kB raw / 240 kB gzip), along with existing Node 26 / anyio deprecation warnings. No dependency was added.
+- Manually reviewed actual rendered screenshots and the explanatory account against source: [first call](memory-journey-first.png), [sharing choice](memory-journey-choice.png), and [enlarged phone](memory-journey-phone.png). On desktop the line and breakdown are adjacent; on a phone the Source shortcut moves focus to the code and both branches remain readable with internal horizontal scrolling. Browser interaction assertions are automated Chromium checks, not a novice study or a complete native-browser manual audit.
+
+No C source changed or new Linux runtime experiment ran. The host validation is macOS; the indexed Linux 7.2.11 arm64 source is static evidence, not its running kernel. The earlier runtime report used Ubuntu 26.04 aarch64 / kernel 7.0.0-28-generic and remains historical. No Fedora, x86 runtime or Safari validation is claimed. A native Firefox starting view was inspected at a separate generic-profile test origin; a full Firefox journey was not validated. Browser tests use isolated contexts and generic profiles, including copied-link tabs; personal notes are not used. Actual indexed source checks are distinct from fixture compiler checks and runtime experiments.
+
+## Open
+
+Use the running local app: [start the memory preparation visit](http://127.0.0.1:8000/#explore?guide=fork-memory). To start at the introduction among all questions, open [Explorer](http://127.0.0.1:8000/#explore).
+
+The normal start returns to `#learn/fork-memory?view=code&segment=fork`. When entering from another C segment, that originating activity is retained instead. **Compare the parent and child variables** is an additional explicit choice. Neither navigation action moves an explicitly saved lab or book position.
+
+Reproduce with `npm run build --prefix web`, `.venv/bin/pytest -q`, `npm run test:e2e --prefix web`, and `npm run test:kernel --prefix web` (the last requires the matching optional `data/learning` source/index). Restart the Python server after changing packaged lesson content, which is cached. The app remains on its existing local address; no hosted deployment is involved.
+
+## Limits
+
+Only this memory journey has the connected three-position path. Other questions retain their existing reviewed annotations and free navigation. Coverage remains seven translation units and 14 reviewed checkpoints; unavailable or mismatched datasets cannot supply this guided source visit, while reading remains available. Source-window positions and evidence survive routes, but exact pixel scroll and disclosure-open state are not persisted across refresh. No new C experiments or runtime Linux execution were needed or performed; previous runtime reports remain historical, and the indexed version is not the host's running kernel. Safari and a full screen-reader audit were not performed.

@@ -20,12 +20,14 @@ export function ExplorerOrientation({
   edge,
   locations,
   guided,
+  focused,
   onDefinition,
   onCallee,
   onCallers,
   onSurrounding,
   onCheckpoint,
 }: {
+  focused?: boolean;
   content?: Curriculum;
   dataset?: string;
   selected: SymbolInfo;
@@ -83,6 +85,136 @@ export function ExplorerOrientation({
   const evidenceHere = !edge || sameLocation(focus, edge);
   const definition = locations.find((l) => l.is_definition);
   const kind = sourceCategory(selected, focus, edge, locations);
+  if (focused && exact && reading?.steps) {
+    const path = exact.lesson.guided_path;
+    const index =
+      path?.steps.findIndex((s) => s.checkpoint === exact.checkpoint.id) ?? -1;
+    const next = path?.steps[index + 1];
+    const checkpoint = exact.lesson.checkpoints.find(
+      (c) => c.id === next?.checkpoint,
+    );
+    return (
+      <section
+        className="explorer-orientation memory-reading"
+        aria-label="Selection orientation"
+      >
+        <div className="orientation-heading">
+          <div>
+            <h2 tabIndex={-1}>{selected.name}</h2>
+            <p>
+              {kind} · {focus?.file}:{focus?.line}:{focus?.column}
+            </p>
+          </div>
+          <nav aria-label="Explorer panes">
+            <button onClick={() => jumpTo(".source-pane h2")}>Source</button>
+            <button onClick={() => jumpTo(".checkpoint-graph h2")}>
+              Graph
+            </button>
+          </nav>
+        </div>
+        <p>
+          <strong>Why here:</strong>{" "}
+          {index === 0
+            ? "This call delegates memory setup; the following check decides whether creation can continue."
+            : "This call sits in the duplication branch. Read the CLONE_VM choice just above it."}
+        </p>
+        <section
+          className="checkpoint-reading"
+          aria-label="Statement breakdown"
+        >
+          <h3>Read this statement in small pieces</h3>
+          <ol>
+            {reading.steps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </section>
+        <div className="explorer-actions recommended-continuation">
+          {checkpoint ? (
+            <button
+              className="primary-link"
+              disabled={!checkpoint.available}
+              onClick={() =>
+                onCheckpoint({
+                  ...checkpointContext(exact.lesson, checkpoint),
+                  journey: guided?.journey,
+                  returnTo: guided?.returnTo,
+                })
+              }
+            >
+              Continue: examine the memory-sharing choice
+            </button>
+          ) : (
+            <button
+              className="primary-link"
+              onClick={() => onCheckpoint({ ...guided!, stage: "connection" })}
+            >
+              Connect this result to the C experiment
+            </button>
+          )}
+          {checkpoint && !checkpoint.available && <p>{checkpoint.reason}</p>}
+        </div>
+        {reading.prerequisites?.map((p) => (
+          <details key={p.title}>
+            <summary>{p.title}</summary>
+            <p>{p.text}</p>
+          </details>
+        ))}
+        {reading.names && (
+          <details>
+            <summary>How the names connect across the two functions</summary>
+            <table>
+              <caption>Names in this visit</caption>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reading.names.map(([name, meaning]) => (
+                  <tr key={name}>
+                    <th scope="row">{name}</th>
+                    <td>{meaning}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        )}
+        <details className="definition-detours">
+          <summary>Optional definitions and deeper exploration</summary>
+          <p>
+            The highlighted line is a call site. A definition shows the called
+            function’s body. Opening it switches to free exploration; Return to
+            guided step restores this position.
+          </p>
+          <div className="explorer-actions">
+            <button onClick={onDefinition}>
+              Optional: read the full {selected.name} function
+            </button>
+            {edge?.target_id && (
+              <button onClick={onCallee}>
+                Optional: read the full {edge.target_name} function
+              </button>
+            )}
+          </div>
+          <p>
+            {exact.checkpoint.ignore} Reviewed {reading.reviewed} against the
+            pinned source. Graph arrows are compiler evidence, not execution
+            order.
+          </p>
+          {exact.lesson.references
+            ?.filter((r) => /fork\.2|clone\.2/.test(r.title))
+            .map((r) => (
+              <p key={r.url}>
+                <a href={r.url}>{r.title}</a>
+              </p>
+            ))}
+        </details>
+      </section>
+    );
+  }
   return (
     <section
       className="explorer-orientation"

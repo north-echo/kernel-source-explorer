@@ -35,7 +35,8 @@ export function ExplorerWelcome({
             return (
               <article key={lesson.id}>
                 <h2>{start.question}</h2>
-                <p>{start.situation}</p>
+                {start.purpose && <h3>{start.purpose}</h3>}
+                <p>{start.introduction || start.situation}</p>
                 <details>
                   <summary>
                     What this visit establishes and what to know first
