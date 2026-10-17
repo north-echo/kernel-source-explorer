@@ -35,6 +35,9 @@ export function ExplorerWelcome({
             return (
               <article key={lesson.id}>
                 <h2>{start.question}</h2>
+                {lesson.guided_path?.definition && (
+                  <p>{lesson.guided_path.definition}</p>
+                )}
                 {start.purpose && <h3>{start.purpose}</h3>}
                 <p>{start.introduction || start.situation}</p>
                 <details>

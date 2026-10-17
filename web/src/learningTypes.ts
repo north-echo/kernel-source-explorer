@@ -17,6 +17,7 @@ export type ExplorerStart = {
   terms: string[];
 };
 export type CheckpointReading = {
+  groups?: { title: string; steps: string[] }[];
   steps?: string[];
   prerequisites?: { title: string; text: string }[];
   names?: string[][];
@@ -99,6 +100,7 @@ export type Experiment = {
 };
 export type Topic = {
   guided_path?: {
+    definition?: string;
     title: string;
     steps: { checkpoint: string; title: string }[];
     connection_title: string;

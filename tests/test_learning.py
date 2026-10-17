@@ -280,7 +280,9 @@ def test_memory_journey_keeps_existing_selectors_and_exposes_the_actual_branch()
     assert [s['checkpoint'] for s in lesson['guided_path']['steps']] == ['memory-setup', 'memory-choice']
     assert lesson['guided_path']['comparison_segment'] in {s['id'] for s in lesson['walkthrough']}
     assert [c['selector']['callee'] for c in lesson['checkpoints']] == ['copy_mm', 'dup_mm']
-    assert all(c['reading']['steps'] and c['reading']['prerequisites'] for c in lesson['checkpoints'])
+    assert all((c['reading'].get('steps') or c['reading'].get('groups')) and c['reading']['prerequisites'] for c in lesson['checkpoints'])
+    assert [g['title'] for g in lesson['checkpoints'][1]['reading']['groups']] == ['Existing memory', 'Sharing requested?', 'Separate context']
+    assert 'not the contents of an individual C variable' in lesson['guided_path']['definition']
     index = Path('data/learning/index.sqlite')
     if not index.exists():
         import pytest

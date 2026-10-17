@@ -829,14 +829,6 @@
             "syntax": "-> selects a field through a pointer. !mm tests for a null pointer here. This is not yet a page-by-page copy-on-write walkthrough.",
             "next": [],
             "before": 11,
-            "steps": [
-              "copy_mm receives the new-task pointer as tsk. Earlier, oldmm = current->mm reads the executing task’s existing memory-management record. The -> notation selects a named part (a field) through a pointer. Our ordinary userspace process has one; the earlier !oldmm return handles a different case, such as a kernel thread.",
-              "Flags encode individual choices as bits (binary digits). CLONE_VM names the memory-sharing bit. In clone_flags & CLONE_VM, binary & keeps bits present in both values. A nonzero result selects the sharing branch: mmget retains a reference and mm = oldmm selects the existing record.",
-              "Ordinary fork does not request CLONE_VM, so its relevant path is else. This is an authored connection supported by the fork/clone interface contracts and this source, not a compiler-resolved edge from our C program.",
-              "mm = dup_mm(tsk, current->mm) asks for a new memory-management record and stores the returned pointer in mm. The helper’s source comment documents a pointer to the duplicated record on success, or NULL on failure. NULL is a null pointer: it identifies no object.",
-              "if (!mm) tests for that null pointer and returns -ENOMEM on failure. Otherwise tsk->mm = mm and tsk->active_mm = mm attach the selected record to the new task. The final return 0 reports copy_mm’s integer success status.",
-              "This shows context selection and its failure handling. It does not show eager copying of every physical page or the complete copy-on-write implementation."
-            ],
             "prerequisites": [
               {
                 "title": "Records, fields, and the arrow in current->mm",
@@ -872,6 +864,34 @@
                 "retval",
                 "In copy_process, the integer status returned by copy_mm."
               ]
+            ],
+            "groups": [
+              {
+                "title": "Existing memory",
+                "steps": [
+                  "copy_mm receives the new-task pointer as tsk. This is the caller’s p under a different parameter name.",
+                  "current identifies the task executing this code. current->mm reads its memory-management record; -> selects a named part (a field) through a pointer. oldmm = current->mm stores that pointer in oldmm.",
+                  "Our ordinary userspace process has a memory context. The earlier !oldmm return handles a different case, such as a kernel thread."
+                ]
+              },
+              {
+                "title": "Sharing requested?",
+                "steps": [
+                  "Flags encode individual choices as bits (binary digits). CLONE_VM names the memory-sharing bit.",
+                  "In clone_flags & CLONE_VM, binary & keeps bits present in both values. This tests bits; unary & in &status instead obtains an address.",
+                  "A nonzero result selects the sharing branch: mmget retains a reference and mm = oldmm selects the existing record.",
+                  "Ordinary fork does not request CLONE_VM, so its relevant path is else. This is an authored connection supported by the fork/clone interface contracts and this source, not a compiler-resolved edge from our C program."
+                ]
+              },
+              {
+                "title": "Separate context",
+                "steps": [
+                  "mm = dup_mm(tsk, current->mm) asks for a new memory-management record and stores the returned pointer in mm. The helper’s source comment documents a pointer to the duplicated record on success, or NULL on failure. NULL is a null pointer: it identifies no object.",
+                  "if (!mm) tests for that null pointer and returns -ENOMEM on failure. Otherwise tsk->mm = mm and tsk->active_mm = mm attach the selected record to the new task.",
+                  "The final return 0 reports copy_mm’s integer success status. That status is different from the pointer returned by dup_mm.",
+                  "This shows context selection and its failure handling. It does not show eager copying of every physical page or the complete copy-on-write implementation."
+                ]
+              }
             ]
           }
         }
@@ -1122,7 +1142,8 @@
           "Together with the fork interface contract, this supports the private-variable model: the child can change its ordinary int from 42 to 7 without updating the parent’s int. This is an authored connection to the C experiment, not a compiler-resolved edge or an observation of that experiment running.",
           "We have not inspected all copy-on-write machinery, explicit shared mappings, or every inherited resource. Separate private memory does not establish a complete sandbox: credentials and open descriptors still matter."
         ],
-        "comparison_segment": "finish"
+        "comparison_segment": "finish",
+        "definition": "A memory context is the kernel’s bookkeeping describing a process’s memory—not the contents of an individual C variable."
       }
     },
     {

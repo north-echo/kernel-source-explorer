@@ -415,3 +415,26 @@
     order: 2;
   }
 }
+.memory-explanation-group {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.memory-explanation-group h4 {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.memory-explanation-group p {
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.memory-names th,
+.memory-names td {
+  overflow-wrap: anywhere;
+}
+.memory-names th:first-child {
+  width: 25%;
+  min-width: 7ch;
+  overflow-wrap: normal;
+}

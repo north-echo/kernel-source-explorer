@@ -85,7 +85,7 @@ export function ExplorerOrientation({
   const evidenceHere = !edge || sameLocation(focus, edge);
   const definition = locations.find((l) => l.is_definition);
   const kind = sourceCategory(selected, focus, edge, locations);
-  if (focused && exact && reading?.steps) {
+  if (focused && exact && (reading?.steps || reading?.groups)) {
     const path = exact.lesson.guided_path;
     const index =
       path?.steps.findIndex((s) => s.checkpoint === exact.checkpoint.id) ?? -1;
@@ -123,11 +123,22 @@ export function ExplorerOrientation({
           aria-label="Statement breakdown"
         >
           <h3>Read this statement in small pieces</h3>
-          <ol>
-            {reading.steps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
+          {reading.groups ? (
+            reading.groups.map((group) => (
+              <section className="memory-explanation-group" key={group.title}>
+                <h4>{group.title}</h4>
+                {group.steps.map((step) => (
+                  <p key={step}>{step}</p>
+                ))}
+              </section>
+            ))
+          ) : (
+            <ol>
+              {reading.steps?.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          )}
         </section>
         <div className="explorer-actions recommended-continuation">
           {checkpoint ? (
@@ -161,7 +172,7 @@ export function ExplorerOrientation({
           </details>
         ))}
         {reading.names && (
-          <details>
+          <details className="memory-names" key={exact.checkpoint.id} open>
             <summary>How the names connect across the two functions</summary>
             <table>
               <caption>Names in this visit</caption>

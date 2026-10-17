@@ -21,6 +21,12 @@ test("memory journey connects two reviewed calls, an optional detour, and the or
   await expect(first).toContainText("not a trace through the C library", {
     timeout: 15000,
   });
+  await expect(first).toContainText(
+    "bookkeeping describing a process’s memory",
+  );
+  expect(await first.locator("p").first().textContent()).toContain(
+    "not the contents of an individual C variable",
+  );
   await first.getByRole("link", { name: "Start guided visit" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".source-line.current")).toContainText(
@@ -60,6 +66,23 @@ test("memory journey connects two reviewed calls, an optional detour, and the or
     path: "../docs/memory-journey-choice.png",
     fullPage: true,
   });
+  await expect(page.locator(".memory-explanation-group h4")).toHaveText([
+    "Existing memory",
+    "Sharing requested?",
+    "Separate context",
+  ]);
+  const names = page.locator(".memory-names");
+  await expect(names.locator("table")).toBeVisible();
+  await names.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(names.locator("table")).toBeHidden();
+  await page
+    .getByRole("button", { name: "Hide checkpoint graph", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Show checkpoint graph", exact: true })
+    .click();
+  await expect(names.locator("table")).toBeHidden();
   const secondURL = page.url();
   await page.reload();
   await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
@@ -69,11 +92,7 @@ test("memory journey connects two reviewed calls, an optional detour, and the or
   await expect(page.locator(".memory-reading")).toContainText(
     "number of operands changes the meaning",
   );
-  await page
-    .getByText("How the names connect across the two functions", {
-      exact: true,
-    })
-    .click();
+  await expect(page.locator(".memory-names")).toHaveAttribute("open", "");
   await expect(page.getByRole("table")).toContainText(
     "Caller and callee do not need the same variable name",
   );
@@ -317,6 +336,11 @@ test("phone memory path preserves a chosen C origin and saved bookmark through p
     .focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  const names = page.locator(".memory-names");
+  await expect(names.locator("table")).toBeVisible();
+  await names.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(names.locator("table")).toBeHidden();
   const source = page.locator(".source-pane");
   const end = Number(
     await page.locator(".source-line").last().getAttribute("data-line"),
@@ -331,9 +355,15 @@ test("phone memory path preserves a chosen C origin and saved bookmark through p
     .getByRole("button", { name: "Return to call site", exact: true })
     .click();
   await expect(page.locator(".source-line.current mark")).toHaveText("dup_mm");
+  await expect(names.locator("table")).toBeHidden();
+  await names.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(names.locator("table")).toBeVisible();
   await page.evaluate(() => {
     document.body.style.zoom = "1.5";
   });
+  await expect(page.locator(".memory-names table")).toBeVisible();
+  await names.screenshot({ path: test.info().outputPath("memory-names-phone.png") });
   await page.getByRole("button", { name: "Source", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(source.locator(".pane-heading h2")).toBeFocused();

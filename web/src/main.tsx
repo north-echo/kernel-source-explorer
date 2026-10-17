@@ -998,6 +998,7 @@ function App() {
             <h1>{memoryPath?.guided_path?.title || guided.checkpoint.title}</h1>
             {memoryPath ? (
               <>
+                <p>{memoryPath.guided_path?.definition}</p>
                 <p>
                   From the C fork() question, we start inside a kernel helper:
                   two reviewed calls explain memory preparation, without tracing
