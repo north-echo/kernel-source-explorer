@@ -1,0 +1,100 @@
+{
+  "distribution": {
+    "ID": "ubuntu",
+    "VERSION_ID": "26.04"
+  },
+  "kernel_configuration": {
+    "CONFIG_SECCOMP": "y",
+    "CONFIG_SECCOMP_FILTER": "y"
+  },
+  "system": "Linux",
+  "running_kernel": "7.0.0-28-generic",
+  "architecture": "aarch64",
+  "effective_uid": 501,
+  "compiler": "Ubuntu clang version 22.1.2 (1ubuntu1)",
+  "mechanism_policy": "Exit 77 or installation failure is a failed validation, never a successful seccomp test.",
+  "note": "Execution on this host is distinct from compiler evidence for the indexed kernel version.",
+  "results": [
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "arguments": [],
+      "stdout": "helper inherited descriptor=yes data=demo only\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "arguments": [
+        "--cloexec"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "arguments": [
+        "--close-child"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e940dfb3cfab91c774728ee4b949e87c6ab511e19c7b0e489cb5127fa47ffe29",
+      "experiment": "process_identity",
+      "arguments": [],
+      "stdout": "pid=2519 parent=2492\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e4a50c878734777042fd6df78965b3fb387dd21d564f96967391c25ff1e7d0e3",
+      "experiment": "fork_variables",
+      "arguments": [],
+      "stdout": "child value=7\nparent value=42\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "3ea090bf9cc6a5c1642ead8ad115c4ba802a49171e104253a4b25cc2181300ca",
+      "experiment": "fork_file_offset",
+      "arguments": [],
+      "stdout": "parent next byte=c\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e69c223b1d3aa89bb5c4d85a04b1d3e8b53041464d20d851a4339898ea48ec3c",
+      "experiment": "exit_wait",
+      "arguments": [],
+      "stdout": "waited for child=yes exit status=42\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "fc03f27a6c8ea7598b9d71439fecb461b5e121862f630710f714419aaaedc6ae",
+      "experiment": "exec_identity",
+      "arguments": [],
+      "stdout": "before exec pid=2538 value=42\nafter exec pid=2538 value=7\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "4140a82a542b33f16939e3af34375ae8a075a9c560352e1d778240ba04912e30",
+      "experiment": "launcher_prepare",
+      "arguments": [],
+      "stdout": "prepared argument=hello env=worker\nworker cwd=temporary directory\nparent cwd unchanged=yes\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e1bc251a9c4bf963754d0aa641e78b0f058e0081012ef19c09ab7af638c8ead6",
+      "experiment": "supervise_child",
+      "arguments": [],
+      "stdout": "child ready=yes terminated=SIGTERM reaped=yes\n",
+      "result": "passed"
+    },
+    {
+      "source_sha256": "bf235b0f9d12f9f870f9138ac1d86dc07298cb3e6fb7787e7d6b9d9da13a7261",
+      "experiment": "seccomp_boundary",
+      "arguments": [],
+      "stdout": "getppid before=allowed after=EPERM getpid=allowed\n",
+      "result": "passed"
+    }
+  ]
+}

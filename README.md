@@ -6,17 +6,23 @@ A local reading companion and source explorer for learning how Linux works. Brin
 
 ## Start with a question
 
-The **Learn** home accompanies all **64 chapters** of Michael Kerrisk's *The Linux Programming Interface*. Browse by subject or search by chapter number, title or idea. Each chapter has an original question, an explanation you reveal when ready, a follow-up question, printed-page references and an interactive concept diagram. You can bookmark any chapter and move to adjacent chapters.
+The **Learn** home accompanies all **64 chapters** of Michael Kerrisk's *The Linux Programming Interface*, with a recurring question: **What authority does this process have, where did it come from, and what would actually restrict it?**
 
-Six focused investigations add glossary terms, **14 reviewed source checkpoints** and **six original C experiments** covering process inheritance, identity, memory after fork, shared file offsets, exit/wait and program replacement. The other chapter guides do not yet have reviewed kernel checkpoints or dedicated experiments.
+Every chapter has a concise question and optional depth: concrete situations, API names, glossary terms, assumptions, counterexamples and primary references. Search by chapter, interface or concept. Explanations and diagrams stay behind separate reveals so the initial prediction does not contain its answer.
 
-There are no scores, deadlines, chapter gates or mandatory labs. Reading notes are optional. Discussion, reasoning through code and personally running an experiment are kept distinct.
+**Nine focused investigations** offer complete commented C files, numbered source, selectable walkthrough segments, optional experiments and variations. Each segment connects what happens, how C expresses it, and optional Linux depth, with just-in-time prerequisites. Previous/next controls and copied activity links preserve navigation independently of saved stops. Three additional examples cover launch preparation, child supervision and one actual seccomp boundary. The six mapped investigations retain **14 reviewed source checkpoints**. The additional examples have no authored kernel mapping.
 
-The **Explorer** tab provides coordinated symbol search, relationship graphs, source navigation and saved trails. A guided source visit opens a short excerpt beside a focused compiler graph, with what to notice and what can wait. Hide the graph if you prefer, open a function in the full Explorer, or return to the same topic. Authored concept diagrams are labeled separately from compiler evidence.
+Book position, saved lab segment and recent exploration are independent. Notes are optional and local, with schema migration, validated import/export, recovery previews and retained raw backups. There are no scores, deadlines, chapter gates or mandatory labs.
 
-![Chapter concept flow](docs/chapter-flow.png)
+Open **[Chapter 2 companion Lab 001 at the fork segment](http://127.0.0.1:8000/#learn/fork-memory?view=code&segment=fork)**. Choose **Save this lab segment** to make Home → **Resume saved lab segment** return to `pid_t child_pid = fork();`. This does not advance the book or mark the experiment run.
+
+![Chapter 2 code walkthrough](docs/followup-phone-fork.png)
+
+The **Explorer** retains compiler-evidenced search, graphs, exact source and trails. Guided/source links survive refresh, sharing and browser Back/Forward on the matching dataset. Source paging is contiguous and keeps the evidence anchor separate from the browsed window. Graph groups expose their individual evidence rather than silently choosing a call site.
 
 ![Guided source visit](docs/guided-source.png)
+
+The optional **Containment investigations** track distinguishes private state, descriptor access, launch inputs, lifecycle supervision, credentials, resource control and syscall mediation. Namespaces, cgroups and Landlock are explicitly reading-only in this pass. The seccomp example denies one syscall and leaves almost everything else allowed; it is not a composed sandbox.
 
 This is an independent companion, unaffiliated with the book's author or publisher. The PDF and book examples are not distributed. Explanations and experiments are original. You can use the reading topics without an index or without owning the book; reading pointers refer you to your own copy when available.
 
@@ -82,9 +88,9 @@ Linux **7.2.11**, commit `a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea`, was signatu
 
 All seven succeeded with zero diagnostics. The run produced **91,590 symbols**, **413,584 relationship evidence records** and **14 available learning checkpoints** in **55.02 seconds**. This remains a bounded partial kernel index. It does not infer indirect-call targets or provide automatic security analysis.
 
-Six original experiment programs passed eight unprivileged cases on an Ubuntu VM running Linux 7.0.0-28-generic. That running system is separate from the indexed 7.2.11 source. Fedora is a suitable study environment, but this validation was not performed on Fedora or a booted 7.2.11 kernel.
+Nine original experiment programs passed 23 unprivileged validation cases (11 canonical runs, eight variations, two deliberately broken launchers detected, and two explicitly simulated zero-baseline checks) on an Ubuntu 26.04 aarch64 VM running Linux 7.0.0-28-generic, UID 501, with Clang 22.1.2. Seccomp was installed successfully with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER enabled; an actual getppid syscall was rejected with EPERM while getpid remained allowed. That running system is separate from the indexed 7.2.11 source. Fedora and x86-64 execution were not validated. The VM refused the optional actual PID-namespace creation probe; zero-baseline branch checks do not claim namespace execution. No privileged host-policy changes were needed.
 
-See [validation and limitations](docs/VALIDATION.md), [learning-index measurements](docs/learning-validation.json) and [experiment results](docs/experiment-validation.json).
+See [validation and limitations](docs/VALIDATION.md), [learning-index measurements](docs/learning-validation.json) and [current experiment results](docs/followup-experiment-validation.json).
 
 ## Checks and development
 
@@ -97,7 +103,7 @@ npm run test:e2e
 npm run test:kernel                 # optional: requires data/learning and its matching demo trail
 ```
 
-Fixture and learning browser checks use port 8765; real-kernel checks use 8766. The normal service on port 8000 can remain running. The CI workflow builds the native fixture, runs the Python tests and exercises the reading/explorer UI; it does not download or claim a real kernel index.
+Fixture and learning browser checks use port 8765; real-kernel checks use 8766. The normal service on port 8000 can remain running. This improvement pass is local and has not been pushed or run in remote CI. The existing CI workflow builds the native fixture, runs the Python tests and exercises the reading/explorer UI; it does not download or claim a real kernel index.
 
 - `indexer/`: standalone single-TU C++ Clang LibTooling analysis.
 - `explorer/cli.py`: explicit sequential indexing, SQLite ingestion and atomic publication.
@@ -105,6 +111,8 @@ Fixture and learning browser checks use port 8765; real-kernel checks use 8766. 
 - `explorer/api.py`: read-only local service; source is limited to registered, hash-verified roots.
 - `explorer/chapters.json`, `explorer/lessons.json`, `explorer/learning.py`, `explorer/experiments/`: original shared reading collection and evidence resolution.
 - `web/`: React/TypeScript, Cytoscape.js and locally bundled highlighting.
+
+For the review findings, acceptance evidence and remaining limits, see [the improvement report](docs/IMPROVEMENT_PASS.md).
 
 For UI development, run the API on port 8000 and `npm run dev --prefix web`; Vite serves port 5173 and proxies `/api`. Production serves the built UI from FastAPI.
 

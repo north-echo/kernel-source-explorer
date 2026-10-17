@@ -1,81 +1,142 @@
-# A reading companion, with a separate personal layer
+# Reading, C, and containment
 
-The Learn tab is the default home. It offers reading pointers, one question at a time, explanations hidden until requested, optional source visits, and optional C experiments. There are no scores, deadlines, required notes, chapter gates, or completion checklists. The Explorer tab retains free-form symbol navigation.
+The companion's recurring question is: **What authority does this process have, where did it come from, and what would actually restrict it?** Learn the ordinary systems-programming mechanism first, then examine that question against a concrete example. No score, deadline, chapter gate, mandatory note or experiment is imposed.
 
-## Shared curriculum
+## Three independent places
 
-The collection accompanies all 64 core chapters in Michael Kerrisk's *The Linux Programming Interface*. Each chapter has printed-page references, an original question, two explanatory paragraphs, a follow-up and an interactive conceptual map. Search the chapter library by number, title or idea, filter by subject, and keep your reading place in any chapter. The appendices and published exercise solutions are not reproduced.
+- **Book position** is changed by `Keep my reading place here` or your explicit settings edit. Browsing a later chapter or opening source does not advance it.
+- **Saved lab segment** is chosen with `Save this lab segment` in a code walkthrough. Selecting another segment, reading an explanation or visiting source does not replace that stopping point.
+- **Recent exploration** records the last reading topic and last successfully loaded source link separately. These are navigation history, not completion or demonstrated understanding.
 
-Six focused investigations provide the deeper source and experiment routes listed below. The other chapters currently provide reading guidance and concept maps; they have no dedicated experiment or reviewed kernel checkpoint. It contains original explanations and original C experiments, with chapter/section references to consult in your own copy. It does not bundle the PDF, book examples, or substantial book text. It is an independent companion, unaffiliated with the author or publisher. Reading and experiments remain available without a source index.
+The home presents each separately. A discussion reminder from a private local profile is also separate from experiment status.
 
-| Topic | Reading pointer | Experiment |
+## Chapter 2 companion Lab 001
+
+Open [Lab 001 at the fork segment](http://127.0.0.1:8000/#learn/fork-memory?view=code&segment=fork). The stable investigation ID remains `fork-memory`, preserving existing notes. Its primary reference is now Chapter 2 companion Lab 001; Chapter 24, §24.2.2 is the optional deeper reading.
+
+The selected canonical segment contains:
+
+```c
+pid_t child_pid = fork();
+```
+
+Choose **Save this lab segment** when that is where you want to return. Home → **Resume saved lab segment** then reopens that exact segment. The book bookmark stays at Chapter 2 unless you explicitly move it. You need not mark anything completed or run. Old records without a saved lab remain without one; the migration does not infer a stopping point from browsing history.
+
+The walkthrough covers headers, `pid_t`, declarations and initialization, the three return cases, assignment versus comparison, format strings, `&status`, `waitpid`, short-circuit conditions, buffering, `_exit`, and cleanup. You can choose any segment or display the complete source.
+
+## Optional lesson paths
+
+A developed investigation offers a neutral scenario and one prediction question, an optional local thought field, a revealed explanation, separately revealed explanatory diagram, complete commented code, selectable code segments, an optional experiment/variation, a containment inventory, and reviewed source checkpoints when available. They are alternative paths, not an enforced sequence.
+
+Expected output has its own reveal. Neither revealing output nor reading code changes the self-reported `Not run`, `Read or reasoned through`, or `I ran it myself` status. Automated project validation does not change a learner's status.
+
+## Investigation collection
+
+| Investigation ID | Focus | Canonical file | Kernel checkpoint mapping |
+| --- | --- | --- | --- |
+| `fork-memory` | Chapter 2 Lab 001: fork return values and private state | `fork_variables.c` | Reviewed |
+| `process-identity` | IDs, types, casts and formatted observation | `process_identity.c` | Reviewed |
+| `shared-offset` | Descriptor entries and shared open file descriptions | `fork_file_offset.c` | Reviewed |
+| `process-inheritance` | Descriptor inheritance, explicit close and close-on-exec | `inherited_authority.c` | Reviewed |
+| `exit-wait` | Returned child PID versus encoded status | `exit_wait.c` | Reviewed |
+| `exec-replacement` | Arguments, program-image replacement and retained context | `exec_identity.c` | Reviewed |
+| `launcher-preparation` | Explicit arguments/environment and child-only cwd | `launcher_prepare.c` | No authored mapping |
+| `child-supervision` | Readiness, signal setup, targeted termination and reaping | `supervise_child.c` | No authored mapping |
+| `seccomp-boundary` | An actual denied syscall versus an allowed one | `seccomp_boundary.c` | No authored mapping |
+
+Nine original files have eleven canonical execution cases, eight documented variations, two launcher mutation checks and two simulated zero-baseline checks; the current report records 23 passing cases. The original six were deeply revised, with explicit error blocks and detailed comments. Short successful transfers have their own diagnostics instead of printing an unrelated `errno`. The descriptor helper uses checked `strtol`; flag updates preserve existing bits. The two `execl` demos document why the supplied `./program` path must remain usable. The launch-preparation example resolves its executable before changing the child directory.
+
+All displayed code and downloads come from the same packaged `.c` file. Numbered walkthrough bounds are computed at response time from stable `/* @step id */` markers in that file, rather than maintained as independent snippets. The API includes a SHA-256 used by the consistency checks.
+
+The full-book library also has short original code illustrations and comparison tables. These excerpts are explicitly separate from complete runtime-validated investigations; omitted surrounding error handling or setup is stated in their context.
+
+## Containment track and limits
+
+Learn → **Containment investigations** organizes optional stages from process identity/private memory, descriptor references, exec and launch preparation, through status/signals and supervision. Later reading covers credentials/capabilities, resource limits, namespaces, filesystem/network access and composition under a threat model. The seccomp stage has a real finite experiment.
+
+Each developed connection identifies the subject, resource, authority origin, operation, enforcing mechanism, remaining authority, and the experiment's evidential limits. Private variables, cooperating mutexes, access checks, resource ceilings, lifecycle supervision and syscall mediation are distinct mechanisms.
+
+| Modern mechanism | Requirements | Availability in this pass |
 | --- | --- | --- |
-| A new process, inherited access | Chapter 2, §2.7 | Descriptor inheritance through exec, close-on-exec, and closing in the child |
-| What does a process ID identify? | Chapter 6; revisit Chapter 2 | Print process and parent IDs |
-| Two processes, two variable values | Chapter 24, §24.2.2 | Child changes a private variable |
-| Two descriptors, one file position | Chapter 24, §24.2.1 | Child advances an inherited file offset |
-| An exit status the parent can collect | Chapters 25–26 | Wait for and decode normal termination |
-| A different program, the same PID | Chapter 27 | Self-exec preserves PID and reinitializes program state |
+| Seccomp BPF demo | Linux `CONFIG_SECCOMP=y`, `CONFIG_SECCOMP_FILTER=y`, suitable headers, native aarch64 or x86-64 code path, permission to set `no_new_privs` and install a filter | Executed successfully on the documented aarch64 VM; x86-64 execution not validated |
+| Namespaces | Type-specific kernel configuration, capabilities/user-namespace mappings, and local creation/join policy | Reading only; no namespace integration or host sysctl changes |
+| cgroup v2 | Unified hierarchy, enabled controllers and a writable delegated subtree | Reading only; no cgroup writes or delegation setup |
+| Landlock | Kernel feature enabled in the active LSM configuration, supported queried ABI, compatible headers/syscalls and permission to restrict self | Reading only; no installed ruleset or runtime validation |
 
-These are independent reading invitations. The Chapter 24–27 topics are optional later-reading detours, not prerequisites for finishing Chapter 2. The tool does not infer mastery or claim that a discussion was an executed experiment.
+The launcher observes the worker’s actual directory identity, included DEMO_ROLE and omitted KSE_OMITTED_SENTINEL, compares the parent directory, and reads only its owned outside demo file to show remaining authority. Omitting child chdir or copying the inherited environment fails regression execution.
 
-## Personal setup
+The seccomp walkthrough gives separate numbered aarch64/x86-64 instruction tables and denied/allowed traces. It introduces syscall numbers, byte offsets, bit tests, jump offsets and array-length calculation. A zero getppid (parent outside the PID namespace) or UID zero is valid; only -1 indicates failure from syscall.
 
-Without a profile, every reader gets generic defaults. To supply a private starting point:
+The seccomp demo checks the native ABI (including rejection of the x32 number space in its x86-64 branch), denies `getppid` with `EPERM`, and leaves other native syscalls allowed. It is deliberately **not a composed sandbox**. `no_new_privs` and this prctl filter install are per-thread. The program has one thread, uses no TSYNC, and changes no existing sibling thread. Both restrictions are inherited by children and retained across allowed exec; the launching shell is unaffected. Exit 77 or failed installation reports unavailable and fails mechanism validation; it never counts as success. No privileged host change or weakened protection is used.
+
+The supervisor explicitly sets only its child's SIGTERM/SIGALRM dispositions and mask. A five-second child alarm is a finite backstop; the readiness pipe determines normal ordering. This is not a hostile-descendant supervisor or a general shutdown policy for signals that can be caught or ignored.
+
+See the current [kernel seccomp documentation](https://docs.kernel.org/userspace-api/seccomp_filter.html), [namespaces manual](https://man7.org/linux/man-pages/man7/namespaces.7.html), [cgroup v2 documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html), and [Landlock documentation](https://docs.kernel.org/userspace-api/landlock.html). These modern extensions are distinguished from the book's historical baseline.
+
+## Complete chapter library
+
+All 64 core chapter records have a concise introduction, distinct optional concept sections without a fixed section-count requirement, concrete situations, API names, assumptions and counterexamples, relevant vocabulary, references and review metadata. Selected concepts add code excerpts or comparisons. Search includes titles, prompts, interfaces, glossary definitions and synonyms, with matching investigations shown separately as curated suggestions. Subject filtering remains available.
+
+Availability distinguishes reading, code walkthrough, runnable experiment and authored/reviewed source mapping. Chapter coverage does not mean every chapter has a kernel walkthrough. Appendices and published exercise solutions are not reproduced. The companion is independent of the author/publisher; it distributes no PDF or book examples.
+
+Diagram models include ownership, alternate outcomes, lifecycle states and loops. In particular, Chapter 5 shows two descriptor entries; Chapter 17 scopes ACL classes and masks; Chapter 20 separates ignore/block/pending/delivery; Chapter 24 names shared mappings as an exception; Chapter 30 loops back to the predicate; and Chapter 61 makes application acknowledgment conditional on an application protocol. Annotated nodes reveal additional explanation; simple nodes are static. Every edge has a text representation. Diagrams remain authored material, never compiler calls or runtime traces.
+
+## Source navigation and unavailable states
+
+The existing fourteen checkpoint specifications still resolve only against successful, unambiguous evidence in the pinned Linux 7.2.11 revision. No mappings were manufactured for the three new experiments. A call selector binds caller, callee, source file and TU; definition selectors require an unambiguous successful definition.
+
+Guided and full source windows page from their actual displayed boundaries without gaps. The selected evidence anchor remains independent of the browsed window. `Return to call site` recovers the selected call; trail notes attach to `Add selected location`, not an incidental page center; spelling/definition selections explicitly change the selected location. A checkpoint is marked opened only after its exact source excerpt was served with the registered hash checks.
+
+Lesson tabs and segment changes produce URLs for the visible activity. Unsupported views/segments show an explicit fallback. Returning to a checkpoint’s originating activity restores its view and segment independently of the saved lab. Within the open page, revisited reading activities restore window positions; new activities focus their heading and bring it into view. Source links restore the encoded source window/evidence anchor, bringing the selected line into view rather than promising an exact previous window pixel. Refresh restores the activity and encoded source window, not an exact pixel offset or every open disclosure.
+
+Source URLs carry dataset identity, symbol, source anchor, browsed window, evidence record, optional originating checkpoint and lesson return activity, query/path filters and view settings. Refresh and copied links restore these; native Back/Forward traverses source visits. Dataset mismatches and invalid links clear the stale view and explain the failure. A source-read failure keeps the evidence but offers an explicit retry after the tree is restored.
+
+The API distinguishes no mapping, missing index, wrong dataset kind, wrong revision, missing facts, facts only in unsuccessful TUs, ambiguity, and source-read failure. Missing, incompatible, corrupt or incomplete indexes leave reading and code available with an explicit reading-only notice.
+
+Explorer search starts with reviewed starting points and recent symbol selections instead of anonymous fields. It distinguishes pending, empty and failed queries and offers kind/definition filters. Curated concept suggestions are labeled separately from compiler matches. Graph controls distinguish unique loaded neighbors from evidence records; grouped edges expose each loaded call site/TU record, including partial/successful provenance, and selected evidence is highlighted. Full names and actions have keyboard alternatives. More unrequested evidence still requires `Load more evidence`.
+
+## Private setup, migration and recovery
+
+Copy the generic profile only if you want a local starting point:
 
 ```sh
 mkdir -p data
 cp examples/reader.json data/reader-profile.json
 ```
 
-Edit the local file, then start the service. `data/` and `reader-profile*.json` are ignored by Git. Alternatively set `KSE_PROFILE` to a profile file outside the repository:
+Supported fields are `reading_lesson`, `reading_reference`, `interests`, `study_environment`, `discussion_context`, and optional `active_lab` with a valid investigation/segment pair. For an explicitly chosen Lab 001 start:
 
-```sh
-KSE_PROFILE=/absolute/path/to/my-reader.json make serve
+```json
+"active_lab": {"lesson": "fork-memory", "segment": "fork"}
 ```
 
-Supported fields:
+Alternatively set `KSE_PROFILE` to an external JSON file. The profile seeds a fresh browser; explicit browser choices take precedence. A profile field arriving after an unrelated action does not erase that action. The raw continuity document is never served or embedded in the shared collection.
 
-- `reading_lesson`: an investigation ID from `explorer/lessons.json` or a chapter ID (`chapter-01` through `chapter-64`) from `explorer/chapters.json`.
-- `reading_reference`: a short description of your current reading position.
-- `interests`: a list of topics you care about.
-- `study_environment`: your normal unprivileged Linux environment.
-- `discussion_context`: an optional short reminder distinguishing what was discussed from what you personally tried.
+Reader state is now schema **2**, retaining the original `kse-reader-v1` storage key for migration. Valid schema-1 notes, book position, interests and self-reported states migrate without inferring a saved lab, completion or execution. The old last-lesson field remains reading history; a separately validated source-link record retains the last successful source exploration.
 
-Only these fields are returned by the local profile API. A continuity/handoff document is not served or copied into the shared curriculum. A server profile seeds a new browser; an existing browser's saved reading position takes precedence.
+Unreadable, oversized or unsupported-version records enter quarantine. Automatic writes remain blocked across navigation and editing; the original raw value is retained. Download it from **Your reading place and notes**. A valid import or an explicitly previewed fresh start is required to replace it. A failed backup or save leaves the original retained.
 
-Your reading position, thinking, experiment observations and visited checkpoints are stored in this browser's local storage. They are not uploaded or committed. “Your reading place” lets you adjust the position, interests and environment and export a private JSON copy. The browser needs access to the local server, so another user of that same server/browser can access its local profile; this is not a multiuser application or encrypted personal store.
+Parsing, file import, ordinary edits/saves and valid exports share one compact serialization and a 2 MiB UTF-8 byte limit. Topic count is at most 500; per-topic visited keys are at most 500; thinking/observation fields each allow 10,000 JavaScript UTF-16 code units. Existing field limits apply equally everywhere. Import validates supported shapes, field lengths, note states and safe record keys. Final merged records are validated before backup or replacement. Oversized edits are rejected before entering reader state; storage-quota failures retain the previous raw record and permit export of valid unsaved work. It previews book/lab/source positions, topic count, overlapping topics and self-reported runs. **Merge** retains other current topics but uses incoming values for matching topics and positions; **Replace** uses the incoming supported record. Before either, the prior raw value is stored under a timestamped browser-backup key. Backups can be downloaded or previewed for recovery from the settings drawer. Export an additional file copy when importing important notes.
 
-There is no model API or automated grading. The explanations are authored material. The app does not pretend to converse intelligently about a free-text answer.
+Notes are local plaintext, with no multiuser or cross-tab conflict-resolution service. `localhost` and `127.0.0.1` have separate storage, as do different browsers; export/import is the explicit transfer mechanism. No notes or profiles are uploaded. Personal profiles, PDFs, continuity files, generated indexes and source trees remain excluded from Git.
 
-## Source checkpoints
+## Authoring and correction workflow
 
-The collection currently has 14 source checkpoints. Each call checkpoint resolves to an existing successful, compiler-resolved direct call, constrained by caller, callee, source file and translation unit. Definition checkpoints require an unambiguous indexed definition. The resolver rejects missing, ambiguous, partially indexed or mismatched-revision evidence.
+- `explorer/chapters.json`: stable chapter IDs/numbers, references, concept sections, terms, availability, diagrams and selected containment inventories. Edition/page provenance is stated in review metadata.
+- `explorer/lessons.json`: focused investigations, optional track/modern-reading records, prompts, explanations, walkthrough annotations, experiment instructions, concrete containment inventories and checkpoint selectors.
+- `explorer/experiments/*.c`: canonical complete source. Add unique `/* @step id */` markers matching the walkthrough IDs; do not duplicate source snippets in JSON.
+- `explorer/learning.py`: derives source/ranges and resolves compiler mappings. Other revisions/architectures require separately reviewed selectors and validation.
 
-Opening a checkpoint shows a focused compiler graph beside the exact source location, with a short reading boundary: what to notice and what can wait. You can hide/show the checkpoint graph, select its arrow to revisit the call site, open a function in the full Explorer, or return to the same topic without losing your place. A definition-only checkpoint shows its definition node without inventing a call. Keyboard-accessible controls accompany the graph canvas. A checkpoint is recorded as opened only after the API successfully serves the hash-verified source excerpt for that location and dataset. Changing datasets requires revisiting source checkpoints to show them as opened in the new dataset.
+Keep initial titles/prompts neutral. Put worked models behind reveal controls. Give concepts a situation, explanation, assumptions, counterexample, APIs and primary references; provide a simpler static representation when interaction adds no explanation. Keep node IDs unique and every edge tied to a node; label branches and loops. Availability must reflect delivered paths, not planned work.
 
-The book's historical Linux baseline and our Linux 7.2.11 source are distinguished. Application interfaces, C-library wrappers, syscall entry points and kernel helper calls are also distinguished. The experiment's conceptual connection to a kernel checkpoint is an authored annotation, not a compiler-resolved cross-layer call edge or a runtime trace.
+For a correction, record the topic ID, disputed statement, supporting primary reference, affected runtime/source version and date. Reachable documentation links and passing UI tests do not certify semantic correctness. Review subtle API behavior against the linked contract before changing prose, and validate any claimed runtime or compiler mapping separately.
 
-## Concept diagrams
+## Statement-level authoring contract
 
-Each chapter and focused investigation has an authored conceptual diagram. Select a step to emphasize its incoming/outgoing relationships; a text version of all connections is also available. Branches show alternatives or shared-resource relationships where relevant. These simplified maps are teaching annotations, not compiler-derived call chains or runtime traces. They remain available without an index. The separate checkpoint graph draws only the actual selected compiler evidence.
+Each walkthrough segment supplies `situation`, `prerequisite`, `steps`, `change`, and optional deeper `explanation`/instruction `tables`, alongside its stable ID and canonical marker-derived bounds. Start with an actual variable, file, descriptor or process and describe before/operation/after/observation. Introduce return values before interpreting them, storage and addresses before output pointers, and ordinary branches before short-circuit expressions. Keep each numbered item to one connected reasoning step. Explain the statement’s purpose in this particular program and what changing it would affect.
 
-## Optional experiments
+Use **What happens**, **How the code expresses it**, and optional **Why Linux behaves this way** as connected entry points. The first view must stand alone; glossary links are support, not a prerequisite scavenger hunt. Explain C syntax separately from interface contracts, Linux behavior, and a pinned implementation. Local assumptions must name the thread model, object/lifetime, I/O mode and other conditions actually used. Defer copy-on-write until the private-variable behavior is understood.
 
-Download a source file, save it in a working directory, and compile/run it in a normal Linux shell. Fedora is suitable; automated execution was validated on an unprivileged Ubuntu VM. Use only the included demo data. The inherited-authority and shared-offset experiments create and immediately unlink their own temporary files. No root access is needed.
+Keep complete source and error handling. Display-only brace context ignores comments/quoted braces and retains enclosing/neighboring brace pairs with explicit omission markers; it is an authored display aid, not a C parser or compiler evidence. Test every downloadable source and each variation offered as runnable. Say exactly which literals, setup, checks and expected output must change, including signal mask/disposition preparation. Put full hashes under provenance. Do not repeat introductions as concept sections or add generic containment warnings solely to fill a template.
 
-The UI never executes code. It displays and downloads the original C sources. “Not run”, “Read or reasoned through”, and “I ran it myself” are separate, self-reported statuses. Opening expected output does not change that status. Automated validation of the project does not mark anything as run by a learner.
-
-To validate the finite experiments yourself on Linux:
-
-```sh
-python3 scripts/check_experiments.py --compiler clang-22
-```
-
-Actual execution results are in [experiment-validation.json](experiment-validation.json): six programs, eight successful cases, effective UID 501, on Linux 7.0.0-28-generic. This running kernel differs from the indexed Linux 7.2.11 source. No claim is made that the experiments were executed on 7.2.11 or on Fedora.
-
-## Author another reading collection
-
-`explorer/chapters.json` contains the chapter catalog; `explorer/lessons.json` contains the focused investigations. Both keep reading annotations separate from compiler facts. Each chapter defines a stable ID, number, subject, printed-page range, reading reference, original question, explanation, follow-up, related investigation IDs and conceptual nodes/edges. Focused investigations add glossary terms, an original experiment and checkpoint selectors. Keep node IDs unique and every edge tied to existing nodes. `explorer/learning.py` resolves selectors against the index and serves bundled original experiment files. The current collection is pinned to the verified 7.2.11 revision and arm64 syscall naming; other revisions/architectures need a reviewed mapping and validation.
-
-Keep personal study context in a local profile. Do not embed learner history, private paths, copyrighted book pages, credentials or generated graph evidence in a curriculum. Add a focused navigation check for new checkpoint types and validate the actual pinned source before claiming coverage.
+Before accepting content, manually ask whether a newcomer can explain the first statement, name each new term, follow both branches and explain why waiting/cleanup exists. Count/rendering checks cannot establish learning quality. Review scoped counterexamples and supported observations separately. See [the follow-up pass](FOLLOWUP_PASS.md) and [current runtime report](followup-experiment-validation.json).

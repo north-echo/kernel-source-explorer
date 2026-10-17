@@ -1,0 +1,835 @@
+{
+  "checked_at": "2026-10-17T03:25:17.529701+00:00",
+  "scope": "Link reachability only; not proof of content correctness or implementation support.",
+  "results": [
+    {
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "status": 200,
+      "final_url": "https://docs.kernel.org/admin-guide/cgroup-v2.html"
+    },
+    {
+      "url": "https://docs.kernel.org/userspace-api/landlock.html",
+      "status": 200,
+      "final_url": "https://docs.kernel.org/userspace-api/landlock.html"
+    },
+    {
+      "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+      "status": 200,
+      "final_url": "https://docs.kernel.org/userspace-api/seccomp_filter.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man1/ld.1.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man1/ld.1.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/PR_SET_NO_NEW_PRIVS.2const.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/PR_SET_NO_NEW_PRIVS.2const.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/_exit.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/_exit.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/accept.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/accept.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/chdir.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/chdir.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/clock_gettime.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/clock_gettime.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/clock_nanosleep.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/clock_nanosleep.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/connect.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/connect.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/dup.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/dup.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/execve.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/execve.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/fcntl.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/fcntl.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/fcntl_locking.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/fcntl_locking.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/flock.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/flock.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/fork.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/fork.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/fstat.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/fstat.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/fsync.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/fsync.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/ftruncate.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/ftruncate.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/getgroups.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/getgroups.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/getpid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/getpid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/getrlimit.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/getrlimit.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/getrusage.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/getrusage.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/getxattr.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/getxattr.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/inotify_add_watch.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/inotify_add_watch.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/intro.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/intro.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/ioctl_tty.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/ioctl_tty.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/ipc.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/ipc.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/kill.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/kill.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/link.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/link.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/listxattr.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/listxattr.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/madvise.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/madvise.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/mlock.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/mlock.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/mmap.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/mmap.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/mount.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/mount.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/mprotect.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/mprotect.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/msgctl.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/msgctl.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/msgget.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/msgget.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/msgop.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/msgop.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/msync.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/msync.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/munmap.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/munmap.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/nanosleep.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/nanosleep.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/open.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/open.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/openat.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/openat.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/pidfd_open.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/pidfd_open.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/pipe.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/pipe.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/pipe2.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/pipe2.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/poll.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/poll.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/pread.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/pread.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/prlimit.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/prlimit.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/read.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/read.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/recv.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/recv.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/recvmsg.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/recvmsg.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/rename.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/rename.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/seccomp.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/seccomp.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/semctl.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/semctl.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/semget.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/semget.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/semop.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/semop.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/send.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/send.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/setpgid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/setpgid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/setpriority.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/setpriority.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/setresuid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/setresuid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/setsid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/setsid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/shmctl.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/shmctl.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/shmget.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/shmget.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/shmop.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/shmop.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/shutdown.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/shutdown.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/sigaction.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/sigaction.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/sigprocmask.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/sigprocmask.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/sigwaitinfo.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/sigwaitinfo.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/socket.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/socket.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/stat.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/stat.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/symlink.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/symlink.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/timer_create.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/timer_create.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/times.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/times.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/unlink.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/unlink.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/waitid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/waitid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/waitpid.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/waitpid.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/write.2.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man2/write.2.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/acl_get_file.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/acl_get_file.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/acl_get_perm.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/acl_get_perm.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/atexit.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/atexit.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/daemon.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/daemon.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/dlerror.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/dlerror.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/dlopen.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/dlopen.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/dlsym.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/dlsym.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/errno.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/errno.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/exec.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/exec.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/exit.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/exit.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/fflush.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/fflush.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/free.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/free.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/ftok.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/ftok.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/getaddrinfo.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/getaddrinfo.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/getgrgid.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/getgrgid.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/getpwnam_r.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/getpwnam_r.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/getpwuid.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/getpwuid.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/getutent.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/getutent.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/intro.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/intro.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/malloc.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/malloc.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/mq_notify.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/mq_notify.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/mq_receive.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/mq_receive.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/mq_send.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/mq_send.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pathconf.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pathconf.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_atfork.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_atfork.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_cancel.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_cancel.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_cleanup_push.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_cleanup_push.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_cond_wait.3p.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_cond_wait.3p.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_create.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_create.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_join.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_join.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_key_create.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_key_create.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_mutexattr_getprotocol.3p.html",
+      "replaced_url": "https://man7.org/linux/man-pages/man3/pthread_mutexattr_setprotocol.3.html",
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_mutexattr_getprotocol.3p.html",
+      "check": "Directly opened the corrected POSIX manual mirror; publisher endpoint had returned 403.",
+      "status": 200
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/pthread_sigmask.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/pthread_sigmask.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/realloc.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/realloc.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/sd_notify.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/sd_notify.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/sem_init.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/sem_init.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/sem_post.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/sem_post.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/sem_wait.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/sem_wait.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/shm_open.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/shm_open.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man0/signal.h.0p.html",
+      "replaced_url": "https://man7.org/linux/man-pages/man3/sig_atomic_t.3type.html",
+      "final_url": "https://man7.org/linux/man-pages/man0/signal.h.0p.html",
+      "check": "Directly opened the corrected POSIX manual mirror; publisher endpoint had returned 403.",
+      "status": 200
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/stdio.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/stdio.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/strerror_r.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/strerror_r.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/sysconf.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/sysconf.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/tcgetattr.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/tcgetattr.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/tcsetattr.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/tcsetattr.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man3/termios.3.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man3/termios.3.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man5/acl.5.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man5/acl.5.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man5/proc.5.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man5/proc.5.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man5/proc_pid.5.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man5/proc_pid.5.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man5/utmp.5.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man5/utmp.5.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/capabilities.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/capabilities.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/credentials.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/credentials.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/daemon.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/daemon.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/environ.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/environ.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/epoll.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/epoll.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/feature_test_macros.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/feature_test_macros.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/fifo.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/fifo.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/inode.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/inode.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/inotify.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/inotify.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/ip.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/ip.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/sysvipc.7.html",
+      "replaced_url": "https://man7.org/linux/man-pages/man7/ipc.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/sysvipc.7.html",
+      "check": "Verified by direct primary-document open after original HEAD failure."
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/mq_overview.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/mq_overview.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/namespaces.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/namespaces.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/path_resolution.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/path_resolution.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/pipe.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/pipe.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/pthreads.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/pthreads.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/pty.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/pty.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/sched.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/sched.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/sem_overview.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/sem_overview.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/shm_overview.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/shm_overview.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/signal-safety.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/signal-safety.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/signal.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/signal.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/socket.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/socket.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/standards.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/standards.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/sysvipc.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/sysvipc.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/tcp.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/tcp.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/udp.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/udp.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/unix.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/unix.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/user_namespaces.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/user_namespaces.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/xattr.7.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man7/xattr.7.html"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man8/ld.so.8.html",
+      "replaced_url": "https://man7.org/linux/man-pages/mans/ld.so.8.html",
+      "status": 200,
+      "final_url": "https://man7.org/linux/man-pages/man8/ld.so.8.html",
+      "check": "Verified by direct primary-document open after original HEAD failure."
+    },
+    {
+      "url": "https://man7.org/tlpi/toc-detailed.html",
+      "status": 200,
+      "final_url": "https://man7.org/tlpi/toc-detailed.html"
+    }
+  ],
+  "corrected_references": {
+    "https://man7.org/linux/man-pages/man3/pthread_mutexattr_setprotocol.3.html": "https://man7.org/linux/man-pages/man3/pthread_mutexattr_getprotocol.3p.html",
+    "https://man7.org/linux/man-pages/man3/sig_atomic_t.3type.html": "https://man7.org/linux/man-pages/man0/signal.h.0p.html",
+    "https://man7.org/linux/man-pages/man7/ipc.7.html": "https://man7.org/linux/man-pages/man7/sysvipc.7.html",
+    "https://man7.org/linux/man-pages/mans/ld.so.8.html": "https://man7.org/linux/man-pages/man8/ld.so.8.html"
+  }
+}

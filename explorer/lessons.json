@@ -8,33 +8,169 @@
     "usage": "Reading references only. The book PDF and its examples are not distributed. All explanations and experiments here are original companion material; this project is unaffiliated with the author or publisher."
   },
   "glossary": {
-    "program": "Executable code and data that can be run. A process is an execution of a program.",
-    "process": "An executing program together with identity and state such as memory, credentials and open descriptors.",
+    "program": "Instructions and data stored for execution.",
+    "process": "A running context with an address space and kernel-managed resources.",
     "task": "Linux’s schedulable execution context. A multithreaded process has multiple tasks.",
     "file descriptor": "A small integer indexing an entry in a process’s descriptor table.",
     "open-file description": "The underlying open-file state, including the offset and file status flags, referred to by one or more descriptor entries.",
     "fork": "An interface that creates a child process. It returns in both parent and child on success, with different return values.",
     "exec": "The family of interfaces that replace the current process’s program image.",
-    "close-on-exec": "A descriptor flag, FD_CLOEXEC, requesting that the descriptor be closed during successful program replacement.",
+    "close-on-exec": "A descriptor flag closing an entry on successful exec.",
     "system call": "An interface through which a user program asks the kernel to perform an operation. A library wrapper is a separate layer.",
     "virtual address space": "The address-space view used by a process. Equal virtual addresses across processes need not imply shared ordinary variable state.",
-    "copy-on-write": "An implementation technique that can defer copying private memory pages until a write requires a separate copy.",
+    "copy-on-write": "Sharing backing storage until a write requires a private copy.",
     "exit status": "Encoded information about how a child terminated; decode it with the appropriate wait-status macros.",
-    "zombie": "A terminated task whose remaining exit information has not yet been collected or otherwise disposed of."
+    "zombie": "Retained process exit state awaiting appropriate collection.",
+    "API": "The source-level interface a program calls.",
+    "ABI": "The binary-level calling and object-format contract.",
+    "declaration": "A statement telling the compiler a name's type and interface.",
+    "errno": "A thread-local error indicator whose meaning depends on a call's failure contract.",
+    "EOF": "The end-of-file condition reported as zero by a regular-file read.",
+    "partial transfer": "A successful operation transferring fewer bytes than requested.",
+    "descriptor entry": "A process-local table entry holding flags and a file-description reference.",
+    "open file description": "Kernel open state including offset and file status flags.",
+    "address space": "The virtual addresses and mappings available to a process.",
+    "environment": "Named string inputs supplied to a program at execution.",
+    "ownership": "Responsibility for a resource's valid use and eventual release.",
+    "allocation lifetime": "The interval during which an allocated block may be accessed.",
+    "UID": "A numeric user identifier used in credentials and ownership.",
+    "account lookup": "A configured mapping between IDs, names and account attributes.",
+    "effective UID": "An identity used by many permission checks.",
+    "saved set-user-ID": "A retained identity involved in permitted credential transitions.",
+    "monotonic time": "A clock domain for elapsed intervals without discontinuous wall-clock jumps.",
+    "CPU time": "Execution time consumed rather than total waiting time.",
+    "indeterminate limit": "A query result that supplies no fixed bound without reporting an error.",
+    "soft limit": "The currently enforced value for a resource-limit interface.",
+    "procfs": "A virtual filesystem exposing selected kernel and process information.",
+    "PID reuse": "Assignment of an old numeric ID to a later process.",
+    "stdio buffer": "Library-managed storage holding data before or after kernel I/O.",
+    "durability": "Persistence required across specified failures, under a storage contract.",
+    "inode": "A file-system object identity within a particular filesystem.",
+    "mount point": "A place where one filesystem tree is attached to another.",
+    "metadata": "Attributes describing an object rather than its file contents.",
+    "directory search permission": "Permission to traverse a directory component.",
+    "extended attribute": "A named metadata value stored with a filesystem object.",
+    "attribute namespace": "A prefix/class with its own attribute rules and permissions.",
+    "ACL mask": "An upper bound for named-user and group-class ACL permissions.",
+    "access ACL": "The ACL used to decide access to an existing object.",
+    "hard link": "Another directory entry referring to the same underlying file object.",
+    "symbolic link": "A separate object storing a pathname for later resolution.",
+    "event coalescing": "Combining indistinguishable unread notifications.",
+    "overflow recovery": "Rebuilding a view after a bounded event queue loses information.",
+    "signal disposition": "The configured action taken for a signal's delivery.",
+    "pending signal": "A generated signal awaiting eligible delivery or acceptance.",
+    "async-signal-safe": "Permitted by a specified contract in an asynchronous handler context.",
+    "sig_atomic_t": "An integer type used for restricted signal-safe state access.",
+    "signal mask": "The set of signals blocked for a thread.",
+    "real-time signal": "A signal class with queuing/order semantics distinct from ordinary signals.",
+    "deadline": "An absolute target in a particular clock domain.",
+    "timer expiration": "The event that the chosen timer reaches its condition.",
+    "fork return value": "-1 on failure, zero in the child, positive child PID in the parent.",
+    "exit handler": "A function registered for normal user-space termination processing.",
+    "wait status": "An encoded report that must be classified before extracting details.",
+    "WNOHANG": "An option requesting return without blocking when no requested status is available.",
+    "program image": "The executable mappings and initialized user-space context of a running program.",
+    "launch protocol": "An agreed exchange distinguishing setup state and failures.",
+    "error pipe": "A channel a child uses to report launch errors to its parent.",
+    "thread": "A flow of execution sharing a process address space.",
+    "join": "An operation collecting completion of a joinable thread.",
+    "predicate": "A shared-state condition checked under the associated mutex.",
+    "condition notification": "A wakeup invitation to recheck state, not ownership of an item.",
+    "thread-specific storage": "Per-thread values associated with a key.",
+    "reentrant interface": "An interface usable without conflicting hidden mutable state under its stated contract.",
+    "cancellation point": "An operation where deferred cancellation can take effect.",
+    "cleanup handler": "A registered action run under specified thread cleanup conditions.",
+    "inherited lock state": "Copied synchronization state that may refer to absent threads after fork.",
+    "atfork handler": "A registered hook around fork with limited coordination uses.",
+    "process group": "A collection of processes addressed together for job control.",
+    "session": "A context grouping process groups and controlling-terminal relationships.",
+    "nice value": "A normal-scheduling priority input, not a completion-order promise.",
+    "priority inversion": "A higher-priority task waiting indirectly on lower-priority work.",
+    "resource accounting": "Measurement of specified consumption categories.",
+    "hard limit": "A ceiling governing permitted changes to a resource soft limit.",
+    "daemon": "A background service process with a deliberate lifecycle contract.",
+    "service supervision": "Management of startup, readiness, termination and restart.",
+    "ambient authority": "Access available from process context rather than an explicit resource argument.",
+    "threat model": "The actor, assets, allowed operations and assumed attacker control being considered.",
+    "capability set": "A Linux per-thread collection governing specified privileged operations.",
+    "user namespace": "A namespace scoping user/group IDs and capability relationships.",
+    "login accounting": "A convention for recording session-related events.",
+    "authorization": "A decision about whether a particular actor may perform an operation.",
+    "linking": "Combining references and object information into an executable or library.",
+    "runtime linker": "The loader component mapping dependencies and resolving dynamic symbols.",
+    "ABI compatibility": "Agreement on binary layout and calling conventions.",
+    "plugin lifetime": "The interval during which plugin code/data references remain valid.",
+    "framing": "The protocol that distinguishes messages within a stream.",
+    "backpressure": "A way downstream capacity limits affect upstream producers.",
+    "pipe end": "A descriptor reference to the read or write side of a pipe.",
+    "broken pipe": "A write-side failure when no readers remain under pipe rules.",
+    "IPC key": "A value used in System V IPC discovery/creation.",
+    "IPC identifier": "A kernel-issued identifier for an IPC object instance.",
+    "message type": "A System V queue field used by receive selection rules.",
+    "queue capacity": "A bounded amount of queued data/messages under a mechanism's rules.",
+    "semaphore operation set": "An array of changes/waits applied atomically by System V semop.",
+    "SEM_UNDO": "Per-process undo bookkeeping for specified semaphore adjustments.",
+    "segment attachment": "A process mapping a System V shared-memory segment.",
+    "relative offset": "A location represented from an agreed mapping base rather than a raw pointer.",
+    "MAP_PRIVATE": "A mapping mode whose writes are private copy-on-write changes.",
+    "MAP_SHARED": "A mapping mode sharing modifications according to backing-object semantics.",
+    "page protection": "Access permissions checked for a virtual-memory page.",
+    "memory locking": "A request to keep selected pages resident rather than a mutual-exclusion lock.",
+    "IPC name": "A discovery name for a POSIX IPC object.",
+    "unlink": "A namespace-removal operation distinct from closing a local reference.",
+    "message priority": "A POSIX message-queue ordering value.",
+    "one-shot notification": "A registration consumed according to the mechanism's notification rules.",
+    "count invariant": "An application condition relating semaphore count to actual capacity.",
+    "semaphore ownership": "The application-defined relationship between reserved count and a real resource.",
+    "initialization protocol": "Coordination that prevents readers from consuming partial setup.",
+    "publication": "A defined synchronization event making initialized state usable.",
+    "advisory lock": "A coordination rule cooperating applications consult.",
+    "record lock": "A lock over a specified byte range under an interface's ownership rules.",
+    "socket domain": "The addressing family used by a socket.",
+    "socket type": "The communication semantics such as byte stream or datagram.",
+    "SCM_RIGHTS": "Ancillary-message transfer of file-description references via UNIX sockets.",
+    "peer credentials": "Kernel-provided identity information under a particular local-socket interface.",
+    "endpoint": "A transport address including the relevant address family and service port.",
+    "transport protocol": "A communication layer defining delivery behavior above IP routing.",
+    "address candidate": "One result from resolving a host/service for a chosen socket contract.",
+    "listening socket": "A socket accepting new connections rather than carrying one client's stream.",
+    "bounded buffering": "An explicit upper bound on retained application data.",
+    "slow client": "A peer whose pace can consume a server's execution or buffer capacity.",
+    "half-close": "Shutting down one direction of a full-duplex connection.",
+    "application acknowledgment": "A protocol message confirming a specifically defined application event.",
+    "canonical mode": "Terminal input processing that typically assembles a line before delivery.",
+    "echo": "A terminal setting that displays input independently of application reads.",
+    "readiness": "A condition allowing an I/O operation to be attempted under an interface contract.",
+    "EAGAIN": "A nonblocking operation result indicating it cannot make the requested progress now.",
+    "pty master": "The controller-facing endpoint of a pseudoterminal pair.",
+    "controlling terminal": "A session/terminal relationship relevant to job control.",
+    "pid_t": "A system-provided integer type used to represent process IDs and selected process-interface results.",
+    "pointer": "A value referring to storage or a function under the C type and lifetime rules.",
+    "address-of (&)": "In an expression such as &status, produces a pointer to the named object so a function can access that storage.",
+    "cast": "An explicit C conversion such as (long) or (char *); it must be justified by the types and valid value range.",
+    "format string": "A string describing how printf consumes and displays its following arguments; placeholders must match argument types.",
+    "short-circuit evaluation": "&& skips its right operand when the left is false; || skips it when the left is true.",
+    "argv": "A null-terminated array of pointers to a program’s argument strings; argc counts the arguments.",
+    "working directory": "The process context used as the starting point for relative pathname resolution; it is not a confinement root.",
+    "no_new_privs": "A Linux one-way process attribute that prevents exec from granting new privilege and can permit unprivileged seccomp installation.",
+    "seccomp filter": "A Linux syscall policy evaluated on syscall metadata; it cannot dereference arbitrary pathname pointers and is not a complete sandbox.",
+    "syscall ABI": "The architecture-specific convention for syscall numbers, argument registers and return values.",
+    "BPF instruction": "An instruction in the constrained filter language used here to decide a seccomp action.",
+    "readiness handshake": "An application-defined message indicating that a component reached a specified setup state."
   },
   "lessons": [
     {
       "id": "process-inheritance",
-      "title": "A new process, inherited access",
+      "title": "Follow inherited descriptors",
       "chapter": "2",
       "reference": "Chapter 2 · §2.7 Processes",
       "reading": "Read a few paragraphs of the Processes section. Stop when the relationship between a parent and child gives you a question.",
-      "summary": "Follow one open file through fork and program replacement.",
+      "summary": "A launcher opens a file, forks, and the child executes a helper. What access might the helper still have?",
       "prompt": "A launcher opens a file, forks, and the child executes a helper. What access might the helper still have?",
       "explanation": [
-        "An open descriptor is an entry in a process’s descriptor table. After an ordinary fork, the child has its own table with inherited entries referring to the same open-file descriptions.",
-        "Closing the child’s descriptor removes that entry from the child’s table. The parent’s entry remains open. Replacing the child’s program with exec normally preserves open descriptors; FD_CLOEXEC requests closure on successful exec.",
-        "A fresh PID or program image does not by itself remove inherited authority. Descriptor handling is one part of a launcher’s boundary; credentials, namespaces and other inherited state deserve their own investigation later."
+        "The parent creates a tiny demo file and keeps an open descriptor: a small integer naming its access to that file. The child can keep that access, close its own entry, or mark the entry to close when it loads the helper. The helper attempts to read the known demo bytes; the parent separately checks its own entry.",
+        "After fork, the two processes have distinct descriptor-table entries referring to the same open-file description, the kernel-managed record behind the open file. Closing one entry removes that reference. FD_CLOEXEC instead requests closure during successful exec. The code walkthrough separates these operations and their failure cases.",
+        "After following the program, ask which access was actually removed. The helper retains its credentials and any other surviving access; losing this one descriptor does not establish a sandbox."
       ],
       "follow_up": "If the parent closes its copy after fork, which process still has a reference to the open file?",
       "boundary": "The application calls fork and execl through its C library. The indexed calls below are inside the kernel. The connection across those layers is a curated explanation, not a compiler-resolved edge from the experiment.",
@@ -43,14 +179,26 @@
         "file descriptor",
         "open-file description",
         "exec",
-        "close-on-exec"
+        "close-on-exec",
+        "argv",
+        "pointer",
+        "cast"
       ],
       "experiment": {
         "file": "inherited_authority.c",
         "intro": "An optional experiment using a temporary, immediately unlinked file containing only “demo only”. No privileges or sensitive files are involved.",
         "commands": "cc -std=c11 -Wall -Wextra inherited_authority.c -o inherited_authority\n./inherited_authority\n./inherited_authority --cloexec\n./inherited_authority --close-child",
         "expected": "default: helper inherited descriptor=yes data=demo only\n--cloexec: helper inherited descriptor=no\n--close-child: helper inherited descriptor=no\nall three: parent descriptor still open=yes",
-        "observe": "Compare what the helper can read with whether the parent’s descriptor remains open. The closed descriptor is one piece of state, not a general clean slate."
+        "observe": "Compare what the helper can read with whether the parent’s descriptor remains open. The closed descriptor is one piece of state, not a general clean slate.",
+        "assumptions": "One single-threaded parent and one helper; a tiny regular file containing demo text. No sensitive file is used. Run the supplied ./ command without moving or renaming the executable mid-run.",
+        "variation": "Run the unchanged complete program once normally, once with --cloexec, and once with --close-child. Both optional arguments change the child/helper path while leaving the parent descriptor observation available.",
+        "variability": "Descriptor numbers and PIDs vary. Short regular-file transfers cause explicit diagnostics; this is not a general-purpose buffered reader.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "The file is unlinked immediately after creation. Normal paths close descriptor entries; the parent collects its owned child. If unlink itself fails, inspect only the generated /tmp/kse-authority-* demo path."
+        ]
       },
       "checkpoints": [
         {
@@ -127,7 +275,178 @@
             "target": "n3"
           }
         ]
-      }
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Interfaces and types",
+          "explanation": [
+            "Feature-test macros request declarations before headers. ssize_t can carry -1 or a byte count; size_t represents object sizes. errno is interpreted only according to the operation that failed."
+          ],
+          "question": "Why are byte counts not stored in an unsigned type here?",
+          "situation": "A launcher will give a new program access to an owned demo file through a descriptor.",
+          "prerequisite": "A descriptor is a small integer naming an entry in this process’s open-resource table. It is not the bytes of the file or a pathname. A function argument is an input value. A pointer locates storage; argv locates the pointers to this invocation’s argument strings.",
+          "steps": [
+            "#define _POSIX_C_SOURCE requests POSIX declarations before any header is read.",
+            "fcntl.h declares descriptor flag interfaces; stdlib.h declares conversion and temporary-file creation; sys/wait.h declares child-status interfaces.",
+            "main receives argc, the number of argument strings, and argv, a way to find those strings."
+          ],
+          "change": "Removing the feature-test macro can hide declarations on some library configurations; it does not disable a kernel feature."
+        },
+        {
+          "id": "helper",
+          "title": "Read the descriptor argument carefully",
+          "explanation": [
+            "argc and strcmp select helper mode. strtol parses base-10 text, checks errno, and returns an end pointer. *end dereferences that pointer to ensure no trailing characters remain. The checked range makes the later int cast safe. A zero-filled array leaves room for a C-string terminator."
+          ],
+          "question": "Why would atoi hide a malformed descriptor argument?",
+          "situation": "After exec the helper receives a descriptor number as text. It must validate that text before using the number.",
+          "prerequisite": "A C string is characters followed by a zero byte. char * names a pointer to characters; a pointer can identify the beginning of a string. A function argument is an input to a call.",
+          "steps": [
+            "Check argc before accessing argv[1] or argv[2]. && stops before later tests if the count is wrong.",
+            "strtol reads decimal text. &end supplies an address where strtol stores the pointer to the first unconverted character.",
+            "Reset errno before conversion, then reject range errors, empty text, trailing characters, and values outside int range. *end reads the character at that pointer.",
+            "After those checks, (int)number safely converts the descriptor. char data[32] = {0} creates a zero-filled character array.",
+            "read receives the descriptor, the array’s starting address, and a maximum count. -1 is failure; EBADF means this entry is unavailable. A short successful read is a different diagnostic.",
+            "The nine expected bytes leave a zero terminator for %s. strcmp verifies their contents before the helper reports success."
+          ],
+          "change": "Skipping numeric validation can confuse invalid input with a valid descriptor. This bounded example expects one tiny regular-file read; it is not a general streaming read loop."
+        },
+        {
+          "id": "setup",
+          "title": "Create only demo data",
+          "explanation": [
+            "mkstemp creates a unique regular file; unlink removes its name immediately. Write errors and short counts are diagnosed separately. This finite example expects exactly nine bytes, then seeks to the beginning."
+          ],
+          "question": "Does removing the pathname remove an already-open descriptor?",
+          "situation": "The parent creates only its own file, writes demo bytes, and resets its position before inheritance.",
+          "prerequisite": "An array holds several elements. A writable name array lets mkstemp replace XXXXXX with a unique suffix. A byte count is a number of transferred bytes, not a success flag.",
+          "steps": [
+            "mkstemp creates a fresh file and returns its descriptor; check -1 before using it.",
+            "unlink removes the file’s name. The open descriptor still keeps the file object alive.",
+            "write must return nine for this tiny regular-file example. Handle -1 with perror and a shorter nonnegative count with an explicit message.",
+            "lseek sets the shared open-file position to zero so the helper can read from the beginning. Failure paths close the descriptor."
+          ],
+          "change": "Omitting lseek leaves the position after the written bytes: the helper could encounter EOF rather than the expected data."
+        },
+        {
+          "id": "flags",
+          "title": "Set one descriptor flag",
+          "explanation": [
+            "F_GETFD reads descriptor flags; flags | FD_CLOEXEC preserves other bits while adding close-on-exec. || short-circuits so an invalid flag value is not applied. This single-threaded example deliberately separates creation and flag setting; multithreaded launchers should consider atomic O_CLOEXEC creation."
+          ],
+          "question": "Which object owns this flag: the descriptor entry or the shared file description?",
+          "situation": "The optional --cloexec choice marks this descriptor to close during successful exec.",
+          "prerequisite": "A flag is a named bit in an integer. Bitwise | combines selected bits, unlike logical ||, which combines true/false tests.",
+          "steps": [
+            "Check the argument count before comparing the option string.",
+            "F_GETFD retrieves existing descriptor flags. Check its failure before attempting the update.",
+            "flags | FD_CLOEXEC preserves old bits and sets close-on-exec. F_SETFD applies those descriptor flags."
+          ],
+          "change": "Without FD_CLOEXEC the default branch retains this descriptor across exec. Close-on-exec does not close the parent’s entry or prohibit reopening an accessible file."
+        },
+        {
+          "id": "fork",
+          "title": "Choose the child preparation",
+          "explanation": [
+            "The parent sees a positive child PID. The zero-return branch can close only its own descriptor entry before exec. A failure path uses _exit so it does not run the parent program’s cleanup twice."
+          ],
+          "question": "What reference remains if only the child closes its descriptor?",
+          "situation": "Parent and child need different work: only the child prepares to become the helper.",
+          "prerequisite": "fork returns -1 on failure, zero in the child, and the child PID in the parent. Both successful paths continue after the same call.",
+          "steps": [
+            "Store fork’s result in pid_t child_pid so later branches can identify their paths.",
+            "Handle -1 by reporting and closing the existing descriptor.",
+            "Inside the zero branch, the --close-child option closes only this child’s entry before exec. A failed close ends this child with _exit(1)."
+          ],
+          "change": "Closing in the child does not remove the parent’s descriptor entry. The inherited entries initially refer to the same open-file description."
+        },
+        {
+          "id": "exec",
+          "title": "Convert and pass an argument",
+          "explanation": [
+            "snprintf writes decimal digits into a bounded array and reports the required length. execl receives a pathname, new argument strings and a terminating (char *)NULL. Run the supplied ./ command so argv[0] is a usable path."
+          ],
+          "question": "Why can the child pass the descriptor number as text without transferring the file contents?",
+          "situation": "The helper expects text arguments, so the child must turn the integer descriptor into text.",
+          "prerequisite": "snprintf writes formatted text into a bounded character array and returns the required character count, excluding its terminating zero. A cast explicitly converts a type after range checks.",
+          "steps": [
+            "descriptor reserves 32 characters. %d formats fd into that array; sizeof supplies its capacity.",
+            "Check a negative result first. Then cast the nonnegative length to size_t and reject a result at least as large as the buffer, which indicates truncation.",
+            "execl takes the executable pathname and individual string arguments, including the new argv[0]. The --helper marker selects the helper branch on its new invocation.",
+            "(char *)NULL supplies a null pointer of the required type to end this variable-argument list. It is not an empty string.",
+            "Only failure returns from execl; perror and _exit(1) handle that path."
+          ],
+          "change": "Omitting the null sentinel makes the variable-argument call invalid. Use the documented ./ path because execl does not search PATH here."
+        },
+        {
+          "id": "wait",
+          "title": "Observe without inferring complete isolation",
+          "explanation": [
+            "The parent waits, reports its own descriptor state and releases its reference. Helper behavior depends on descriptor survival through exec. A failed read with EBADF is evidence about that entry, not proof of denied access through every other path."
+          ],
+          "question": "Could the helper still read some other file using its unchanged credentials?",
+          "situation": "The parent waits until the helper is finished, then checks and releases its own descriptor.",
+          "prerequisite": "Encoded wait status must be classified before extracting a normal exit code. An address such as &status lets waitpid fill storage.",
+          "steps": [
+            "Retry waitpid only for EINTR; other errors report and close the parent’s descriptor.",
+            "fcntl with F_GETFD observes whether the parent entry remains usable. The conditional operator condition ? yes : no chooses the printed word.",
+            "close releases this parent entry.",
+            "The final || expression stops if WIFEXITED is false, so WEXITSTATUS is used only for normal termination."
+          ],
+          "change": "A helper that lacks this descriptor might still open other paths under its credentials. This experiment tests descriptor inheritance, not complete isolation."
+        }
+      ],
+      "containment": {
+        "kind": "Inherited descriptor authority",
+        "subject": "The replacement helper",
+        "resource": "Read/write authority through a demo-file descriptor",
+        "origin": "Descriptor-table inheritance at fork and survival through exec",
+        "operation": "Use the inherited descriptor",
+        "enforcement": "Explicit child close, or FD_CLOEXEC at successful exec",
+        "remaining": "The parent keeps its descriptor; the child retains credentials and any other surviving descriptors.",
+        "establishes": "Establishes which demo descriptor survives. It does not revoke already-duplicated references or deny equivalent access obtained another way."
+      },
+      "references": [
+        {
+          "title": "fork.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/fork.2.html"
+        },
+        {
+          "title": "execve.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/execve.2.html"
+        },
+        {
+          "title": "fcntl.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/fcntl.2.html"
+        },
+        {
+          "title": "read.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/read.2.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "fork",
+        "execve",
+        "fcntl",
+        "read"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
     },
     {
       "id": "process-identity",
@@ -135,10 +454,10 @@
       "chapter": "6",
       "reference": "Chapter 6 · Processes; revisit Chapter 2 §2.7",
       "reading": "Use Chapter 2 for the broad idea. When you reach Chapter 6, compare a program’s identity with the state the kernel tracks for it.",
-      "summary": "Connect getpid to the task Linux is currently running.",
+      "summary": "If two executions run the same program, what makes them different processes?",
       "prompt": "If two executions run the same program, what makes them different processes?",
       "explanation": [
-        "A program is executable code and data; a process is an execution with identity and state. Two executions can run the same program while having distinct process IDs.",
+        "This running program asks Linux for its own process ID and its current parent’s ID, stores those numbers, and prints them. A process is one running execution with its own identity and state; the program is the executable code and data that it runs. This example creates no child.",
         "In Linux, a task is a schedulable execution context. Threads add a distinction: getpid returns a thread-group ID, while gettid identifies the calling thread. You can leave thread details until the relevant reading.",
         "A PID is an identifier. Access control depends on additional state; possessing a new number is not an isolation mechanism."
       ],
@@ -148,14 +467,25 @@
         "program",
         "process",
         "task",
-        "system call"
+        "system call",
+        "cast",
+        "format string"
       ],
       "experiment": {
         "file": "process_identity.c",
         "intro": "Print the current process ID and its parent’s ID. Repeat the command if you are curious.",
         "commands": "cc -std=c11 -Wall -Wextra process_identity.c -o process_identity\n./process_identity\n./process_identity",
         "expected": "pid=<a process ID> parent=<its parent’s ID>\npid=<another process ID> parent=<its parent’s ID>",
-        "observe": "Values depend on the running system. Repeated invocations often share a parent. PID reuse is possible over time."
+        "observe": "Values depend on the running system. Repeated invocations often share a parent. PID reuse is possible over time.",
+        "assumptions": "A normal Linux process with a parent visible in its PID namespace. No new process or namespace is created by this example.",
+        "variation": "Run the unchanged program twice from the same shell. Observe actual IDs; do not require a particular numeric PID. This is a runtime comparison and needs no code changes.",
+        "variability": "PIDs vary and may be reused over time. The current parent can change through reparenting; getppid may validly be zero when that parent is outside this process’s PID namespace.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "This program creates no child, file or directory. It only observes IDs and checks its output result."
+        ]
       },
       "checkpoints": [
         {
@@ -210,34 +540,129 @@
             "target": "n2"
           }
         ]
-      }
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Find declarations",
+          "explanation": [
+            "stdio.h declares printf; unistd.h declares the process interfaces. Including a header makes the compiler aware of a contract; it does not call into the kernel."
+          ],
+          "question": "Which header would you consult for getppid?",
+          "situation": "One existing process will print two IDs; this program creates no child.",
+          "prerequisite": "A header supplies declarations so the compiler knows interface names and their types.",
+          "steps": [
+            "#include <stdio.h> makes output declarations available.",
+            "#include <unistd.h> makes getpid and getppid declarations available. Including it does not call either function."
+          ],
+          "change": "Removing unistd.h loses the declarations; it does not prevent the process from having an identity."
+        },
+        {
+          "id": "identity",
+          "title": "Types, calls, and casts",
+          "explanation": [
+            "getppid can validly return zero when the parent lies outside the caller’s PID namespace. Process IDs are identifiers within a namespace, not credentials."
+          ],
+          "question": "Why must the format placeholder match the argument type?",
+          "situation": "The process asks for its own ID and its current parent ID, then keeps the results.",
+          "prerequisite": "A call returns a value. A declaration names storage for that value; = supplies its initial value. An integer cast explicitly converts a number to another integer type.",
+          "steps": [
+            "long process_id declares integer storage named process_id.",
+            "getpid() requests this process’s ID. (long) converts its pid_t result to match the later %ld output format.",
+            "The second declaration does the same for getppid(), naming the current parent. These are two observations, not an atomic snapshot."
+          ],
+          "change": "Swapping the calls swaps what the names contain. A parent can exit and reparenting can change a later parent-ID observation."
+        },
+        {
+          "id": "finish",
+          "title": "Format the observation",
+          "explanation": [
+            "The first %ld consumes process_id and the second consumes parent_id. A negative printf return signals an output failure. Numeric IDs vary across executions and can be reused after a process lifetime ends."
+          ],
+          "question": "Would the same numeric PID tomorrow prove this is the same process?",
+          "situation": "The stored numbers become one readable line.",
+          "prerequisite": "A format string contains literal text and placeholders. Each placeholder must agree with the type of its corresponding argument.",
+          "steps": [
+            "printf takes the string first, then process_id and parent_id in that order. Each %ld consumes one long value.",
+            "A negative printf result means output failure. The if body reports it and returns 1.",
+            "return 0 reports success only after that check; this program has no temporary file or child to clean up."
+          ],
+          "change": "Changing %ld to an incompatible format is a C type mismatch, not merely a cosmetic change."
+        }
+      ],
+      "containment": {
+        "kind": "Identity and observation",
+        "subject": "The observing process",
+        "resource": "Process identifiers",
+        "origin": "Assigned by the kernel within a PID namespace",
+        "operation": "Observe its own and its parent ID",
+        "enforcement": "PID naming rules; this program installs no access restriction",
+        "remaining": "Credentials, descriptors, filesystem and network access remain unchanged.",
+        "establishes": "Establishes two observable IDs. It does not establish that the process is isolated or authorized."
+      },
+      "references": [
+        {
+          "title": "getpid.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/getpid.2.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "getpid"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
     },
     {
       "id": "fork-memory",
-      "title": "Two processes, two variable values",
-      "chapter": "24",
-      "reference": "Chapter 24 · §24.2 and §24.2.2",
+      "title": "Lab 001: Follow a fork call",
+      "chapter": "2",
+      "reference": "Chapter 2 companion Lab 001 · deeper reading: Chapter 24, §24.2.2",
       "reading": "When you reach fork, read its return-value behavior and memory semantics. This is a later-reading option, not a prerequisite for continuing Chapter 2.",
-      "summary": "Separate inherited contents from continuing to share ordinary variable changes.",
-      "prompt": "A child changes an ordinary variable after fork. What value would the parent print after waiting for that child?",
+      "summary": "Trace one fork call, its return value, and the two branches of a small program.",
+      "prompt": "An integer starts at 42. The child assigns 7 after fork. What will each process print, and which return value sends it down that branch?",
       "explanation": [
-        "Ordinary fork creates separate virtual address spaces with initially equivalent contents. A later assignment to an ordinary private variable in the child does not change that variable in the parent.",
-        "Linux can implement this efficiently using copy-on-write. Separate logical state does not require eagerly copying every physical page. Explicit shared mappings are a different case.",
-        "copy_mm distinguishes sharing an address space with CLONE_VM from duplicating memory-management state. The local branch explains a choice; it is not the whole copy-on-write implementation."
+        "The original process starts with an integer named value containing 42. After successful fork, the parent and child both continue after that call. The child takes the zero-result branch, assigns 7 to its own ordinary variable and prints it. The parent waits for that child to finish, then prints its own value, still 42.",
+        "Choose Read the C code to unpack the variable, function call and branches one statement at a time. The optional deeper explanation there distinguishes this private variable from explicit shared memory and explains why copy-on-write is not needed to follow the basic behavior."
       ],
       "follow_up": "Why can the virtual addresses match even though later values differ?",
       "boundary": "The C library’s fork wrapper is outside this index. These checkpoints investigate kernel memory setup; they do not trace an observed run of the experiment.",
       "terms": [
         "fork",
         "virtual address space",
-        "copy-on-write"
+        "copy-on-write",
+        "pid_t",
+        "address-of (&)",
+        "short-circuit evaluation"
       ],
       "experiment": {
         "file": "fork_variables.c",
         "intro": "The parent waits so the two output lines have a predictable order.",
         "commands": "cc -std=c11 -Wall -Wextra fork_variables.c -o fork_variables\n./fork_variables",
         "expected": "child value=7\nparent value=42",
-        "observe": "Compare the assignment in the child branch with the value printed in the parent branch."
+        "observe": "Compare the assignment in the child branch with the value printed in the parent branch.",
+        "assumptions": "Single-threaded ordinary fork; an ordinary local int, not a shared-memory mapping. A normal Linux shell and a C compiler are sufficient.",
+        "variation": "Replace only value = 7; in the child branch with value = 99;. Recompile the complete file. Compare child value=99 with the unchanged parent value=42.",
+        "variability": "PIDs and scheduling vary, but waitpid deliberately orders the displayed child line before the parent line. The fixed integer output follows from this program, not from arbitrary concurrent printf ordering.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "The parent collects its owned child. There are no temporary files or directories. The child flushes its message before _exit."
+        ]
       },
       "checkpoints": [
         {
@@ -268,59 +693,250 @@
         }
       ],
       "flow": {
-        "title": "Trace the resource or responsibility",
+        "title": "Private copies and explicit shared memory",
+        "scope": "Ordinary private mappings separate after fork; MAP_SHARED regions remain shared according to their mapping contract.",
         "nodes": [
           {
             "id": "n0",
-            "label": "Parent calls fork"
+            "label": "Parent calls fork",
+            "detail": "Failure creates no child. On success parent and child continue with distinct fork return values."
           },
           {
             "id": "n1",
-            "label": "Parent memory: writes stay local"
+            "label": "Parent private int",
+            "detail": "An ordinary local int belongs to the parent’s private state; copy-on-write can implement its independent writes."
           },
           {
             "id": "n2",
-            "label": "Child memory: writes stay local"
+            "label": "Child private int",
+            "detail": "The child’s ordinary private int can be changed without overwriting the parent’s int."
+          },
+          {
+            "id": "n3",
+            "label": "Parent explicit MAP_SHARED region",
+            "detail": "This is a different region from the ordinary private int. Its mapping refers to shared backing."
+          },
+          {
+            "id": "n4",
+            "label": "Child inherited MAP_SHARED region",
+            "detail": "An explicit shared mapping can remain a reference to the same backing after fork."
+          },
+          {
+            "id": "n5",
+            "label": "Common shared backing",
+            "detail": "Shared visibility still needs synchronization and a lifetime protocol. It does not remove other process authority."
           }
         ],
         "edges": [
           {
             "source": "n0",
-            "target": "n1"
+            "target": "n1",
+            "label": "parent private state"
           },
           {
             "source": "n0",
-            "target": "n2"
+            "target": "n2",
+            "label": "child private state"
+          },
+          {
+            "source": "n0",
+            "target": "n3",
+            "label": "if this separate region exists"
+          },
+          {
+            "source": "n0",
+            "target": "n4",
+            "label": "shared mapping inherited"
+          },
+          {
+            "source": "n3",
+            "target": "n5",
+            "label": "maps backing"
+          },
+          {
+            "source": "n4",
+            "target": "n5",
+            "label": "maps same backing"
           }
         ]
-      }
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Headers and the first variable",
+          "explanation": [
+            "Headers supply declarations, including pid_t and waitpid. main(void) says this function takes no arguments. int value = 42 declares storage and initializes it; it is not an instruction to the kernel to share that storage."
+          ],
+          "question": "Which names in this segment are types, functions, and variables?",
+          "situation": "One running program needs a place to keep the number 42 before it creates a child.",
+          "prerequisite": "A variable is a named place for a value. A type tells C what kind of value belongs there. A declaration introduces the name; an initializer supplies its first value.",
+          "steps": [
+            "#include asks the C preprocessor to read declarations from a header. A declaration tells the compiler how a named interface can be called.",
+            "int main(void) defines the starting function: int is its result type; void says this version takes no arguments. The braces enclose its statements.",
+            "int value = 42; introduces value as an integer and initializes it to 42. The semicolon ends the declaration.",
+            "stdio.h declares output interfaces; unistd.h declares fork and _exit; sys/wait.h declares waiting interfaces; errno.h supplies error information. Headers do not themselves create a process."
+          ],
+          "change": "Changing 42 changes the starting number. Removing a needed header removes declarations the compiler needs; it is not a way to avoid using the kernel."
+        },
+        {
+          "id": "fork",
+          "title": "The fork call and its three return cases",
+          "explanation": [
+            "POSIX specifies the different fork return values. A PID identifies a process; it does not prove that process has fewer permissions.",
+            "This example has one thread and an ordinary private integer. Linux commonly implements private-memory duplication with copy-on-write: initially shared physical pages can be copied when written. That implementation detail is unnecessary for following the two return paths.",
+            "Explicit shared mappings are a contrasting case. Their writes can be visible between processes; the private-variable example makes no claim about them."
+          ],
+          "question": "Which process can use child_pid as the ID of its child?",
+          "situation": "The original process reaches one call. The next statements must distinguish creation failure, the child path, and the parent path.",
+          "prerequisite": "A function call requests work using the name followed by parentheses. A return value is the value that the call gives back to the expression containing it. It can be stored and compared.",
+          "steps": [
+            "child_pid names a variable. It will let the following statements remember this call’s result.",
+            "pid_t is a system-provided type suitable for process IDs. It is a type name, not a call or a particular PID.",
+            "fork() calls the process-creation interface. The empty parentheses supply no arguments.",
+            "The call produces a return value. In this declaration, = initializes child_pid with that value; it is not the == comparison operator.",
+            "On success, parent and child both continue after this call. The parent receives the positive child PID; the child receives zero. Neither restarts main().",
+            "if (child_pid == -1) compares the value with the failure value. Its braces contain the failure path. perror reports a diagnostic from errno, the error number recorded for that failed interface call; return 1 ends this invocation unsuccessfully.",
+            "The next segment tests zero to select the child’s work. Only the parent reaches the later wait after the child’s _exit."
+          ],
+          "change": "Removing the failure branch could send the program into parent work when no child exists. Changing == to = in a condition would assign a value instead of comparing it."
+        },
+        {
+          "id": "child",
+          "title": "The child branch and formatted output",
+          "explanation": [
+            "The == operator compares, while = assigns. Only the process whose fork return is zero enters this branch. %d requires an int argument. fflush sends the user-space output buffer onward before _exit ends execution without stdio cleanup."
+          ],
+          "question": "Why is comparing child_pid to zero different from assigning zero to it?",
+          "situation": "The child has reached the zero branch. It changes its own value, prints it, and ends so it cannot run the parent’s work.",
+          "prerequisite": "An assignment replaces an existing variable’s value. A string is text in double quotes. printf may first place output in a library buffer in this process’s memory instead of immediately writing it to the destination.",
+          "steps": [
+            "if (child_pid == 0) selects the child. Its braces keep the following statements together.",
+            "value = 7; assigns to the already declared value; it does not introduce another variable.",
+            "printf receives a format string and value as arguments: arguments are the inputs between parentheses, separated by commas. %d formats an int; \\n requests a newline.",
+            "stdout names the C standard-output stream; it may lead to a terminal or a redirected file. fflush(stdout) sends its pending bytes toward that destination. This is needed here because _exit bypasses ordinary stdio cleanup.",
+            "EOF is a named stdio constant used as this flush interface’s failure result. Compare the returned value with EOF before proceeding. On failure _exit(1) reports unsuccessful child completion.",
+            "_exit(0) ends the child immediately with success status. The parent keeps running independently."
+          ],
+          "change": "Without _exit the child could fall into code intended for the parent. Without a successful flush, buffered output can be lost, especially when output is redirected."
+        },
+        {
+          "id": "wait",
+          "title": "The parent waits and decodes",
+          "explanation": [
+            "&status supplies the address of an int that waitpid can fill. Its returned PID is separate from that encoded status. EINTR means retry this wait. || short-circuits, so WEXITSTATUS is used only after WIFEXITED says a normal exit code exists."
+          ],
+          "question": "Which value answers who changed state, and which answers how it ended?",
+          "situation": "The parent needs to know that its child finished before it prints the final observation.",
+          "prerequisite": "int status reserves integer storage. &status means the address of that storage. A pointer is a value identifying storage; passing this address lets waitpid write into the parent’s integer. The integer’s contents and its address are different things.",
+          "steps": [
+            "waitpid(child_pid, &status, 0) names this child, supplies where to put completion information, and requests ordinary blocking waiting with option 0.",
+            "The return value says which child was collected, or -1 on failure. The encoded information written into status is a separate output.",
+            "while repeats its braced body while the comparison is true. If errno is EINTR, a signal interrupted waiting; continue retries. Other errors report and return without reading status.",
+            "WIFEXITED(status) asks whether normal exit occurred. Only that variant has a normal exit code to extract.",
+            "! reverses a true/false test. || means OR and stops when its left side is true. Therefore WEXITSTATUS is reached only after WIFEXITED was true.",
+            "A nonzero child exit code makes this experiment fail. Waiting orders the observation; it does not cause the child’s variable assignment."
+          ],
+          "change": "Without waiting, the output order could change and completion would not be collected. Removing the variant check would treat signal-termination information as a normal exit code."
+        },
+        {
+          "id": "finish",
+          "title": "Inspect the parent and finish",
+          "explanation": [
+            "The child has finished before this print. The ordinary int is in private process memory: the child assignment does not overwrite the parent variable. This statement does not cover explicitly shared mappings. return 0 reports success from the parent program."
+          ],
+          "question": "Would a MAP_SHARED integer obey the same independence rule?",
+          "situation": "The parent has collected successful child completion and now prints its own integer.",
+          "prerequisite": "Returning from main reports this invocation’s exit status. It does not return a value to the child. Normal return also performs ordinary stdio cleanup.",
+          "steps": [
+            "printf reads the parent’s value and substitutes it for %d. The earlier child assignment operated in the child’s private memory.",
+            "return 0 ends the parent successfully. The closing brace ends main; it belongs to the complete program, not a second execution path."
+          ],
+          "change": "Changing only this format string changes the report, not the stored integer. Changing value here changes the parent’s value after the child has already finished."
+        }
+      ],
+      "containment": {
+        "kind": "State isolation",
+        "subject": "The forked child",
+        "resource": "An ordinary integer in private process memory",
+        "origin": "Inherited initial memory contents at fork",
+        "operation": "Modify its own integer",
+        "enforcement": "Separate virtual address spaces, commonly implemented with copy-on-write",
+        "remaining": "The child still inherits credentials and open descriptors; private variables do not remove file or network authority.",
+        "establishes": "Establishes independence for this ordinary int. It does not test shared mappings, credential restrictions, or syscall filtering."
+      },
+      "references": [
+        {
+          "title": "fork.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/fork.2.html"
+        },
+        {
+          "title": "waitpid.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/waitpid.2.html"
+        },
+        {
+          "title": "mmap.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/mmap.2.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "fork",
+        "waitpid",
+        "mmap"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
     },
     {
       "id": "shared-offset",
-      "title": "Two descriptors, one file position",
+      "title": "Follow two file descriptors",
       "chapter": "24",
       "reference": "Chapter 24 · §24.2.1; related reading in Chapter 5",
       "reading": "Read the file-sharing discussion when it fits your reading. Compare descriptor-table entries with open-file descriptions.",
-      "summary": "Explore the shared object beneath an inherited descriptor.",
+      "summary": "The child reads the first two bytes of a file. After waiting, which byte will the parent read through its inherited descriptor?",
       "prompt": "The child reads the first two bytes of a file. After waiting, which byte will the parent read through its inherited descriptor?",
       "explanation": [
-        "After fork, the inherited descriptor entries refer to the same open-file description. That description holds the file offset, so a read by one process can advance the position observed by the other.",
-        "The parent waits for the child in this experiment to avoid racing reads. The result is a shared-offset observation, not a scheduling puzzle.",
-        "Duplicating the descriptor table preserves references to file objects. That differs from opening the pathname again to obtain a separate open-file description."
+        "The parent writes abcd into a tiny file and puts its reading position at the start. The child reads two bytes and ends. After waiting for that child, the parent reads one byte and observes c: its read begins where the child left the shared position.",
+        "Each process has its own descriptor entry, but these inherited entries refer to the same open-file description. That kernel-managed record holds the current offset, meaning the byte position for the next ordinary read. The child’s read advances that shared position.",
+        "Waiting makes the child’s read happen before the parent’s read. Two independent open calls would instead create separate open-file descriptions. This example assumes one thread per process, a blocking regular file and a tiny finite transfer."
       ],
       "follow_up": "What would you predict if the child opened the pathname independently instead?",
       "boundary": "These are compiler-resolved calls inside the kernel. The explanation linking descriptor references to the experiment is a teaching annotation, not a runtime trace.",
       "terms": [
         "file descriptor",
         "open-file description",
-        "fork"
+        "fork",
+        "address-of (&)",
+        "open file description"
       ],
       "experiment": {
         "file": "fork_file_offset.c",
         "intro": "Use a temporary, unlinked four-byte file. The child reads two bytes before the parent reads one.",
         "commands": "cc -std=c11 -Wall -Wextra fork_file_offset.c -o fork_file_offset\n./fork_file_offset",
         "expected": "parent next byte=c",
-        "observe": "A parent result of c follows the child’s read of a and b. Both processes close their own descriptors."
+        "observe": "A parent result of c follows the child’s read of a and b. Both processes close their own descriptors.",
+        "assumptions": "An unlinked regular file with four demo bytes, one parent and one child, and no other writers. Short transfers are reported explicitly rather than handled as a general streaming-copy implementation.",
+        "variation": "Change char first[2] to char first[1], the corresponding count != 2 check to count != 1, and the diagnostic text \"two regular-file bytes\" to \"one regular-file byte\". Keep sizeof(first) as the read size. Recompile; the parent should next read b.",
+        "variability": "The descriptor number varies and is not printed. Waiting removes scheduling variation from which byte the parent sees.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "The temporary file is unlinked while open. Both processes close their entries; the parent collects the child. Unexpected short transfers fail this bounded regular-file experiment."
+        ]
       },
       "checkpoints": [
         {
@@ -351,67 +967,245 @@
         }
       ],
       "flow": {
-        "title": "Trace the resource or responsibility",
+        "title": "Two entries, one open file description",
+        "scope": "Assume fd B is produced by dup(A), not an independent open.",
         "nodes": [
           {
             "id": "n0",
-            "label": "Parent descriptor"
+            "label": "Descriptor A: its own FD_CLOEXEC",
+            "detail": "Descriptor flags belong to this entry. Changing its close-on-exec flag does not set the other entry’s flag."
           },
           {
             "id": "n1",
-            "label": "Shared open file description"
+            "label": "Descriptor B: its own FD_CLOEXEC",
+            "detail": "dup creates a second entry referring to the existing description; it does not independently reopen the pathname."
           },
           {
             "id": "n2",
-            "label": "Child descriptor"
+            "label": "One open file description",
+            "detail": "The kernel open state is shared by these two references."
           },
           {
             "id": "n3",
-            "label": "File position"
+            "label": "Shared offset and status flags",
+            "detail": "A read through either entry can advance this offset. O_APPEND and similar status flags belong to the description."
+          },
+          {
+            "id": "n4",
+            "label": "Underlying file object",
+            "detail": "The file object and the per-open description are different objects."
           }
         ],
         "edges": [
           {
             "source": "n0",
-            "target": "n1"
-          },
-          {
-            "source": "n2",
-            "target": "n1"
+            "target": "n2",
+            "label": "references"
           },
           {
             "source": "n1",
-            "target": "n3"
+            "target": "n2",
+            "label": "references"
+          },
+          {
+            "source": "n2",
+            "target": "n3",
+            "label": "owns"
+          },
+          {
+            "source": "n2",
+            "target": "n4",
+            "label": "refers to"
           }
         ]
-      }
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Feature-test macro and declarations",
+          "explanation": [
+            "Define _POSIX_C_SOURCE before headers so the requested POSIX declarations are exposed. A feature-test macro selects declarations; it does not enable a kernel security feature."
+          ],
+          "question": "Why must this define precede the headers?",
+          "situation": "Two processes will read a single tiny file in a controlled order.",
+          "prerequisite": "A feature-test macro requests library declarations; it must precede the headers that interpret it.",
+          "steps": [
+            "#define _POSIX_C_SOURCE selects POSIX declarations.",
+            "The headers declare temporary-file creation, read/write/seek, and child waiting. These are interfaces with separate return-value contracts."
+          ],
+          "change": "Changing declarations does not change whether two descriptors share a file position."
+        },
+        {
+          "id": "setup",
+          "title": "Own a temporary file",
+          "explanation": [
+            "mkstemp changes the writable name array and returns a descriptor for a newly created file. unlink removes the name while the descriptor retains a reference. Error paths release the descriptor."
+          ],
+          "question": "Why can the program still use a file after unlink?",
+          "situation": "The parent needs an owned file that disappears when its last open reference closes.",
+          "prerequisite": "A descriptor names an open entry; removing a pathname does not erase an object that still has open references.",
+          "steps": [
+            "char name[] creates a writable template array.",
+            "mkstemp replaces its suffix and returns an open descriptor. Check -1 before using it.",
+            "unlink removes only the demo name; close on error releases the open entry."
+          ],
+          "change": "Leaving the name linked requires explicit pathname cleanup later. Do not use a preexisting private file for this demonstration."
+        },
+        {
+          "id": "prepare",
+          "title": "Counts, errors, and position",
+          "explanation": [
+            "write returns ssize_t: -1 is an error; a nonnegative result is a count. This tiny regular-file demonstration treats a short transfer as an explicit diagnostic, not as an errno error. lseek resets the file position before fork."
+          ],
+          "question": "Why would perror be misleading for a short successful write?",
+          "situation": "Before creating a child, the parent puts abcd in the file and returns its position to the start.",
+          "prerequisite": "ssize_t holds either a nonnegative transfer count or -1. The return value must be read before interpreting errno.",
+          "steps": [
+            "write supplies four bytes from the string to fd.",
+            "A -1 result reports an error using perror. A nonnegative result other than four reports a short transfer separately.",
+            "lseek(fd, 0, SEEK_SET) requests byte position zero. Check its result before forking."
+          ],
+          "change": "Omitting the seek leaves the initial position at the end. A general stream-copy program must handle partial transfers rather than adopting this tiny regular-file assumption."
+        },
+        {
+          "id": "fork",
+          "title": "Read in the child",
+          "explanation": [
+            "fork copies descriptor-table entries that refer to the same open file description. sizeof(first) is two because first is a two-byte array here. The child verifies the actual read count and then releases its descriptor."
+          ],
+          "question": "Does closing the child descriptor close the parent entry?",
+          "situation": "Only the child consumes the first bytes; the parent will observe later.",
+          "prerequisite": "An array’s sizeof is its total byte size here. read writes into caller-supplied storage and returns a byte count.",
+          "steps": [
+            "fork’s result separates failure, child and parent paths.",
+            "char first[2] reserves two bytes; read(fd, first, sizeof(first)) asks for at most those two bytes.",
+            "Check -1 separately from a count other than two. Do not treat these two raw bytes as a zero-terminated string.",
+            "The child closes its descriptor and ends with _exit. Its read has advanced the shared open-file position."
+          ],
+          "change": "A separate open call would create another open-file description with its own position. Closing one inherited entry does not close the other entry."
+        },
+        {
+          "id": "wait",
+          "title": "Establish an observation order",
+          "explanation": [
+            "The parent retries an interrupted wait and checks that the child completed normally. This orders the observation; without it, a race could change which process reads first."
+          ],
+          "question": "Which part of this output depends on waiting?",
+          "situation": "The parent must observe after the child’s read, rather than racing it.",
+          "prerequisite": "waitpid both returns a result and writes encoded information through the address &status.",
+          "steps": [
+            "The parent retries waitpid after EINTR because the child may still be running.",
+            "After a successful wait, WIFEXITED checks normal termination before WEXITSTATUS checks the child’s success code.",
+            "On failure the parent closes its descriptor rather than making the final read look like a valid observation."
+          ],
+          "change": "Removing waiting allows either process to read first, so the experiment would no longer establish this observation order."
+        },
+        {
+          "id": "observe",
+          "title": "Read through the remaining reference",
+          "explanation": [
+            "&next is an address where one byte can be stored. The parent descriptor still points to the shared open file description and its current offset. close releases the final demo reference."
+          ],
+          "question": "How would two independent open calls differ from inherited references?",
+          "situation": "The parent reads one byte at the position left by the child, then releases the last entry.",
+          "prerequisite": "char next reserves one byte. &next is its address; read needs an address at which to store received bytes.",
+          "steps": [
+            "read(fd, &next, 1) requests one byte into next.",
+            "Only a returned count of one makes next a valid observation. -1 and an unexpected count have separate diagnostics.",
+            "%c formats a single character; close releases the remaining demo descriptor."
+          ],
+          "change": "Using pread with an explicit offset would avoid changing this open-file description’s current position."
+        }
+      ],
+      "containment": {
+        "kind": "Inherited authority",
+        "subject": "The child and parent",
+        "resource": "A descriptor referring to the same open file description",
+        "origin": "Copied descriptor entries at fork",
+        "operation": "Read data and advance the shared offset",
+        "enforcement": "Descriptor reference semantics; unlink removes only a pathname",
+        "remaining": "Both processes retain read/write access through surviving descriptors.",
+        "establishes": "Establishes shared offset state for inherited references. Unlink is not revocation, and the file mode alone is not retested on each read."
+      },
+      "references": [
+        {
+          "title": "open.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/open.2.html"
+        },
+        {
+          "title": "dup.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/dup.2.html"
+        },
+        {
+          "title": "read.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/read.2.html"
+        },
+        {
+          "title": "write.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/write.2.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "open",
+        "dup",
+        "read",
+        "write"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
     },
     {
       "id": "exit-wait",
-      "title": "An exit status the parent can collect",
+      "title": "Read a child’s termination report",
       "chapter": "25–26",
       "reference": "Chapter 25 · §25.1; Chapter 26 · §26.1",
       "reading": "Read about termination and waiting when you reach those chapters. Keep termination and collecting a child’s status as two separate events.",
-      "summary": "Follow cleanup and the parent’s wait operation.",
+      "summary": "A child exits with status 42. What must the parent do to obtain that result?",
       "prompt": "A child exits with status 42. What must the parent do to obtain that result?",
       "explanation": [
-        "The parent can call waitpid to wait for a child and obtain status information. That status is encoded; WIFEXITED checks for normal termination and WEXITSTATUS extracts the exit code.",
-        "Termination releases resources, while some information remains available for a parent to collect. The zombie state concerns that retained information, not a process continuing to execute normally.",
-        "The example uses _exit in the child. The C library exit function additionally handles library-level cleanup such as stdio flushing; that distinction matters after fork."
+        "The child ends normally with code 42. The parent needs to learn how that child finished, so it waits for that specific child and collects its completion information. The program prints 42 only after checking that this information describes normal exit.",
+        "waitpid has two outputs: its return value identifies the collected child; it writes encoded completion information into storage supplied by the parent. WIFEXITED identifies the normal-exit variant before WEXITSTATUS extracts its code. The walkthrough introduces storage addresses before using &status.",
+        "A child stops executing before its parent collects this information. Under this program’s ordinary child-status handling, a zombie is the retained record awaiting collection, not a child still running. The code path uses _exit; library buffering and the different cleanup done by exit are optional deeper reading."
       ],
       "follow_up": "What changes if the child terminates because of a signal instead of calling _exit?",
       "boundary": "waitpid and _exit are application interfaces. The indexed Linux wait and exit implementations are separate layers; architecture and C-library wrappers determine the entry route.",
       "terms": [
         "exit status",
         "zombie",
-        "system call"
+        "system call",
+        "pid_t",
+        "address-of (&)",
+        "short-circuit evaluation"
       ],
       "experiment": {
         "file": "exit_wait.c",
         "intro": "The child calls _exit(42); the parent handles interrupted waits and decodes a normal exit.",
         "commands": "cc -std=c11 -Wall -Wextra exit_wait.c -o exit_wait\n./exit_wait",
         "expected": "waited for child=yes exit status=42",
-        "observe": "Notice the normal-exit test before extracting the status."
+        "observe": "Notice the normal-exit test before extracting the status.",
+        "assumptions": "One owned child, no competing waiter, normal exit with code 42. The parent has not selected a special SIGCHLD disposition.",
+        "variation": "Replace _exit(42) with _exit(7). Recompile the complete program; the reported exit status becomes 7. The parent’s own return 0 still means its observation succeeded.",
+        "variability": "The actual child PID varies; the displayed comparison stays yes for this single-child program. Exit status is deliberately fixed.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "The parent collects the child’s status. This program creates no temporary filesystem objects. The parent’s success code differs from the child’s demonstrated code."
+        ]
       },
       "checkpoints": [
         {
@@ -475,18 +1269,127 @@
             "target": "n3"
           }
         ]
-      }
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Find the interfaces",
+          "explanation": [
+            "errno.h supplies error names; sys/wait.h supplies both the wait interface and macros for interpreting status. A macro looks like a function call here but is expanded by the preprocessor."
+          ],
+          "question": "Which declaration would be missing without sys/wait.h?",
+          "situation": "A parent will collect completion information from one owned child.",
+          "prerequisite": "A macro is source-level substitution provided by a header. The WIFEXITED and WEXITSTATUS macros interpret a status value; they do not wait for anything.",
+          "steps": [
+            "unistd.h declares fork and _exit.",
+            "sys/wait.h declares waitpid and the status macros. errno.h supplies EINTR for an interrupted wait.",
+            "main’s braces contain the whole creation, collection, and report."
+          ],
+          "change": "Removing a status macro does not remove the need to classify the completion information correctly."
+        },
+        {
+          "id": "fork",
+          "title": "Create a finite child",
+          "explanation": [
+            "The child path ends with _exit(42). The parent continues; its own eventual return value is a different result. -1 is handled before any attempt to wait for a nonexistent child."
+          ],
+          "question": "Which process returns 42 to whom?",
+          "situation": "The child has one task: end normally with code 42. The parent needs to collect that result.",
+          "prerequisite": "fork’s return selects a branch. _exit ends the calling process; it does not stop the other process.",
+          "steps": [
+            "Store the fork result and handle -1 before waiting for a child.",
+            "if (child_pid == 0) selects the child; _exit(42) supplies its completion code.",
+            "The parent continues after this branch with a positive child PID."
+          ],
+          "change": "Changing the child code changes the collected exit code, not the parent’s PID or the value returned directly by waitpid."
+        },
+        {
+          "id": "wait",
+          "title": "Two outputs from one call",
+          "explanation": [
+            "waitpid returns a PID into waited and writes encoded status through &status. A do/while executes at least once. && checks errno only after a failed wait. No status is inspected after a failed wait."
+          ],
+          "question": "Why is status not the returned PID?",
+          "situation": "The parent cannot report a completion until it has received one.",
+          "prerequisite": "An address identifies storage. &status lets waitpid write completion information into status; waited stores the call’s separate return value.",
+          "steps": [
+            "int status reserves storage; pid_t waited reserves a PID result.",
+            "do executes its body once before while tests whether to repeat.",
+            "waitpid(child_pid, &status, 0) blocks for this child. On success waited holds its PID.",
+            "&& checks the right-hand condition only when the left is true: inspect errno for EINTR only after -1. Retry that interruption.",
+            "A remaining -1 is an error path; do not decode status on that path."
+          ],
+          "change": "Using WNOHANG would add a third result, zero for no available completion; it would require a separate branch, not this blocking-wait interpretation."
+        },
+        {
+          "id": "decode",
+          "title": "Classify before extracting",
+          "explanation": [
+            "WIFEXITED selects the normal-exit variant. WEXITSTATUS then extracts that exit code. A child killed by a signal needs WIFSIGNALED and WTERMSIG instead; the normal-exit macro is not a universal decoder."
+          ],
+          "question": "What would you change to describe signal termination?",
+          "situation": "The collected information must first say which kind of completion occurred.",
+          "prerequisite": "A variant is one of several meanings carried by encoded data. A decoder for one variant is not valid for all the others.",
+          "steps": [
+            "WIFEXITED(status) checks normal exit.",
+            "Only inside that branch does WEXITSTATUS extract 42. %d prints that integer.",
+            "The comparison of waited with child_pid yields true/false for the yes/no report; this is distinct from status.",
+            "If normal exit was not observed, report failure instead of extracting a normal exit code."
+          ],
+          "change": "Signal termination requires WIFSIGNALED and WTERMSIG, as in the supervision investigation. Termination and collection happen at different times."
+        }
+      ],
+      "containment": {
+        "kind": "Lifecycle supervision",
+        "subject": "The parent’s child",
+        "resource": "Exit information retained by the kernel",
+        "origin": "Parent-child relationship and wait permission",
+        "operation": "Collect termination status",
+        "enforcement": "waitpid and encoded status rules",
+        "remaining": "Waiting does not restrict filesystem access, memory use, or syscalls while the child runs.",
+        "establishes": "Establishes collection of normal-exit status. A successful wait does not mean the child behaved safely before exit."
+      },
+      "references": [
+        {
+          "title": "waitpid.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/waitpid.2.html"
+        },
+        {
+          "title": "_exit.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/_exit.2.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "waitpid",
+        "_exit"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
     },
     {
       "id": "exec-replacement",
-      "title": "A different program, the same PID",
+      "title": "Follow a program replacement",
       "chapter": "27",
       "reference": "Chapter 27 · §27.1 and §27.4",
       "reading": "Read the execve discussion and its descriptor behavior when you reach Chapter 27. Compare program replacement with process creation.",
-      "summary": "Observe what is replaced and what can survive exec.",
+      "summary": "A process successfully executes a new program image. Which would you expect to remain: its PID, an ordinary variable’s changed value, or an unmarked open descriptor?",
       "prompt": "A process successfully executes a new program image. Which would you expect to remain: its PID, an ordinary variable’s changed value, or an unmarked open descriptor?",
       "explanation": [
-        "A successful exec replaces the program image within the existing process. The PID remains, while the new image starts with its own initialized program state.",
+        "The running process first changes value to 42 and prints its ID. It then loads the executable again, with an argument telling the new code to print and finish. This replacement loads new code and initialized data, called a new program image. Its value starts at 7, while the process keeps its ID.",
         "Open descriptors normally survive unless marked close-on-exec or otherwise closed. Exec does not by itself remove every kind of inherited access.",
         "The experiment executes itself with a different argument. Its second run of main shows the same PID and the initial variable value. Code following a successful execl call is not resumed in the old image."
       ],
@@ -495,14 +1398,26 @@
       "terms": [
         "program",
         "exec",
-        "close-on-exec"
+        "close-on-exec",
+        "argv",
+        "pointer",
+        "cast"
       ],
       "experiment": {
         "file": "exec_identity.c",
         "intro": "Run the program by its local path. It replaces itself once, using a marker argument.",
         "commands": "cc -std=c11 -Wall -Wextra exec_identity.c -o exec_identity\n./exec_identity",
         "expected": "before exec pid=<same ID> value=42\nafter exec pid=<same ID> value=7",
-        "observe": "Compare the two PIDs and the initialization of the ordinary variable."
+        "observe": "Compare the two PIDs and the initialization of the ordinary variable.",
+        "assumptions": "Run as ./exec_identity from the directory containing the executable. This program does not change directory; argv[0] must remain a usable pathname.",
+        "variation": "Replace the string literal \"after\" with \"again\" in BOTH strcmp and execl. Leave the longer printed format string unchanged. Recompile; the two lines should still have the same PID and values 42 then 7.",
+        "variability": "The PID varies between separate runs, but the before and after IDs match within one successful exec. Values 42 and 7 are controlled by the two image lifetimes.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "Successful exec replaces this process once. This program creates no child or temporary file; there is nothing to reap or unlink."
+        ]
       },
       "checkpoints": [
         {
@@ -579,7 +1494,1037 @@
             "target": "n3"
           }
         ]
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Program-image initializer",
+          "explanation": [
+            "The file-scope static int is initialized when this program image starts. Headers declare string comparison, output and exec functions."
+          ],
+          "question": "Is initializing this value the same event as creating a PID?",
+          "situation": "One process will run two successive program images and compare the same named variable.",
+          "prerequisite": "A program image contains the currently loaded code and data. A file-scope static variable has storage throughout that image’s lifetime. A function argument is an input. At startup, main receives an argument count and access to pointers locating the argument strings; the next segment unpacks that representation.",
+          "steps": [
+            "static int value = 7 gives this image an integer initially containing 7.",
+            "The includes supply declarations for output, string comparison and exec.",
+            "main receives arguments that tell a newly loaded image which branch to take."
+          ],
+          "change": "A new image initializes its own value even though the process retains its PID. This is distinct from another call to main in the old image."
+        },
+        {
+          "id": "arguments",
+          "title": "Recognize a new invocation",
+          "explanation": [
+            "argc counts strings; argv is a pointer to an array of pointers to characters. Check the count before indexing argv[1]. strcmp returns zero for equal strings, so this branch tests both count and content."
+          ],
+          "question": "How does && protect the argv[1] access?",
+          "situation": "The replacement invocation must recognize its marker and avoid replacing itself forever.",
+          "prerequisite": "argc counts input strings. argv identifies an array of pointers; argv[1] selects the second pointer, then strcmp compares the characters of its string.",
+          "steps": [
+            "argc == 2 first checks that the marker exists.",
+            "&& evaluates strcmp only after that count test succeeds.",
+            "strcmp returns zero for equal text; == 0 selects the replacement branch.",
+            "That branch prints the new image’s value and returns, so it cannot enter the preparation/exec path again."
+          ],
+          "change": "Changing the marker requires changing both this comparison and the string passed to execl. Changing only one can cause repeated replacement."
+        },
+        {
+          "id": "prepare",
+          "title": "Prepare output before replacement",
+          "explanation": [
+            "The old image changes value to 42 and prints. fflush is checked because exec will discard user-space buffers without flushing them. A successful flush is not a disk-durability guarantee."
+          ],
+          "question": "What output could be lost if fflush were omitted?",
+          "situation": "The first image changes its variable and needs its message delivered before it is replaced.",
+          "prerequisite": "printf can keep bytes in a user-space buffer. Exec discards the old image, including such a buffer; it does not perform ordinary stdio cleanup.",
+          "steps": [
+            "value = 42 changes this existing integer.",
+            "printf describes the old image and PID; %ld matches the explicit long cast of getpid.",
+            "fflush(stdout) sends buffered bytes onward before exec. A returned EOF is failure and stops this path."
+          ],
+          "change": "Removing fflush can lose the before message when redirected. Successful fflush is not proof of durable disk storage."
+        },
+        {
+          "id": "exec",
+          "title": "Arguments and the null sentinel",
+          "explanation": [
+            "execl takes a pathname followed by separate argument pointers. The new argv[0] is supplied explicitly. (char *)NULL ends the variable argument list with a pointer of the expected type. The documented ./ command supplies a usable path."
+          ],
+          "question": "Why is a final null pointer different from an empty string?",
+          "situation": "The current process asks to load the same executable with a marker argument.",
+          "prerequisite": "An argument is an input to a call. execl accepts individual string pointers and uses a final null pointer to mark the end of that list.",
+          "steps": [
+            "The first argv[0] is the executable pathname; the second supplies the new program’s argument zero.",
+            "The string after becomes the new argv[1].",
+            "(char *)NULL casts the null value to a character-pointer type suitable for this variable-argument call.",
+            "A successful execl replaces the image and continues in its entry path with the same process ID."
+          ],
+          "change": "An empty string is a real argument, not the null pointer that ends the list. The documented ./exec_identity command supplies a usable pathname."
+        },
+        {
+          "id": "failure",
+          "title": "The returning path",
+          "explanation": [
+            "Success replaces the image and retains the PID; the after branch observes a freshly initialized value. Only failure returns from execl, so perror belongs on this path."
+          ],
+          "question": "Which instruction is impossible to reach after successful exec?",
+          "situation": "If exec returns, the existing image remains available to report its error.",
+          "prerequisite": "perror uses errno from a failed interface call. It belongs after a demonstrated failure, not after successful replacement.",
+          "steps": [
+            "Successful exec never reaches this segment.",
+            "A returning execl has failed, so perror describes that failure.",
+            "return 1 makes the old invocation report failure to its own parent."
+          ],
+          "change": "Returning zero here would falsely claim success despite a failed replacement."
+        }
+      ],
+      "containment": {
+        "kind": "Program replacement and inherited authority",
+        "subject": "The process executing a new image",
+        "resource": "Existing credentials, descriptors, arguments and environment",
+        "origin": "Retained process context and explicit exec arguments",
+        "operation": "Replace code and data",
+        "enforcement": "exec image replacement and per-resource transition rules",
+        "remaining": "The same PID and surviving descriptors remain; exec does not automatically remove authority.",
+        "establishes": "Establishes image replacement, initializer reset and PID retention. It does not inventory every inherited resource or install a sandbox."
+      },
+      "references": [
+        {
+          "title": "execve.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/execve.2.html"
+        },
+        {
+          "title": "exec.3 manual",
+          "url": "https://man7.org/linux/man-pages/man3/exec.3.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": true
+      },
+      "apis": [
+        "execve",
+        "exec"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ]
+    },
+    {
+      "id": "launcher-preparation",
+      "title": "Prepare a launcher",
+      "chapter": "28",
+      "reference": "Arguments, environment and working directory",
+      "reading": "An optional investigation; it does not advance your book bookmark.",
+      "summary": "A launcher supplies a new argument and a small environment, then changes only the child working directory. Which context will the worker see, and what still permits access outside that directory?",
+      "prompt": "A launcher supplies a new argument and a small environment, then changes only the child working directory. Which context will the worker see, and what still permits access outside that directory?",
+      "explanation": [
+        "The parent creates an owned work directory and a demo file beside it. Its child changes into work and loads a worker with chosen inputs. The worker measures its actual directory, checks a supplied variable and a deliberately omitted sentinel, and reads the owned file outside work. Disagreement fails the program. The parent separately measures that its directory stayed unchanged.",
+        "chdir selects the starting point for relative paths. The successful outside-file read is a concrete counterexample to treating that starting point as a filesystem boundary. The child’s explicit execve arrays choose its argument and environment strings, but leave other authority such as credentials and descriptors unchanged."
+      ],
+      "follow_up": "Why should cleanup occur after the worker exits?",
+      "boundary": "This investigation currently has no reviewed kernel-source checkpoint. Its runtime result and authored explanation remain separate from the compiler index.",
+      "terms": [
+        "argv",
+        "working directory",
+        "pointer"
+      ],
+      "checkpoints": [],
+      "experiment": {
+        "file": "launcher_prepare.c",
+        "intro": "Type or download the complete source, then compile and run as a normal unprivileged Linux user.",
+        "commands": "cc -std=c11 -Wall -Wextra -Werror launcher_prepare.c -o launcher_prepare\n./launcher_prepare",
+        "expected": "prepared argument=hello env=worker omitted sentinel=absent\nworker cwd matches intended=yes outside demo readable=yes\nparent cwd unchanged=yes\n",
+        "observe": "This is expected output, not a record that you personally ran the program.",
+        "assumptions": "One thread, one owned child, stable owned /tmp paths, and a usable ./launcher_prepare executable path. No root or host-policy change. Device/inode identity comparisons assume no concurrent replacement of the demo directory.",
+        "variation": "Change \"hello\" to \"goodbye\" in the arguments array, the worker strcmp validation, and the success output sentence. Recompile. Only the argument report changes; the directory, sentinel and owned outside-file checks must still pass.",
+        "variability": "Temporary path names vary. Actual worker directory identity, included DEMO_ROLE, omitted sentinel, outside demo data and unchanged parent cwd are checked before successful completion.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "Normal completion removes outside, work, then the /tmp/kse-launch-* tree. Abrupt termination can leave that owned tree. Inspect only your generated demo tree before removing it; the experiment never needs a private file."
+        ]
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Declarations and feature selection",
+          "explanation": [
+            "_XOPEN_SOURCE requests the declarations used by this POSIX-oriented example. char **argv represents pointers to argument strings."
+          ],
+          "question": "Which declarations require stdlib.h?",
+          "situation": "A parent will deliberately choose the replacement worker’s arguments, environment and working directory.",
+          "prerequisite": "A pathname is text used to locate an object. A working directory is the starting point for relative pathname lookup. Neither is the file object itself. A function argument is an input supplied to a call. A pointer is a value locating storage. Each argument string occupies character storage; argv lets main find the pointers to those strings.",
+          "steps": [
+            "_XOPEN_SOURCE requests declarations before headers.",
+            "sys/stat.h supplies directory creation and object-identity inspection. stdlib.h supplies environment and allocation interfaces.",
+            "int argc holds the argument count. char **argv identifies pointers to argument strings; the worker checks the count before selecting them. These launch inputs are data, not evidence of permission."
+          ],
+          "change": "This example does not change credentials or filesystem permissions outside its owned paths."
+        },
+        {
+          "id": "worker",
+          "title": "Interpret explicit launch inputs",
+          "explanation": [
+            "The owned paths are not concurrently renamed in this single-threaded experiment. A production hostile-path launcher needs stronger lifetime/race handling; these observations do not validate that design."
+          ],
+          "question": "What does getenv return when a variable is absent?",
+          "situation": "The new worker measures its inputs and directory rather than trusting what its launcher intended.",
+          "prerequisite": "A pointer may be NULL, meaning no object was supplied. Test that before passing it to strcmp. A struct groups named fields; observed.st_ino selects one field.",
+          "steps": [
+            "Check argc before indexing all four supplied inputs. Verify DEMO_ROLE exists and equals worker; verify the parent-only sentinel is absent.",
+            "getcwd fills actual with the observed directory pathname. stat retrieves device and inode numbers for actual and the intended path.",
+            "Compare both device and inode: together they identify this directory object during our stable, owned experiment. Disagreement returns failure.",
+            "fopen opens only the owned outside demo path. fread requests four bytes into a zero-filled array; fclose is attempted before checking the stored results.",
+            "Require both the count and content to match demo, and require successful close, before printing success."
+          ],
+          "change": "Omitting chdir must now fail the identity comparison. Passing the whole inherited environment must fail the sentinel test. Reading the outside file establishes that cwd is not a filesystem-access boundary."
+        },
+        {
+          "id": "setup",
+          "title": "Resolve paths before changing directory",
+          "explanation": [
+            "realpath produces an allocated absolute executable path; free later releases it. mkdtemp creates a private temporary working directory. getcwd stores the parent directory for comparison."
+          ],
+          "question": "Why resolve argv[0] before chdir?",
+          "situation": "The parent owns a small temporary tree: a work directory and a demo file beside it.",
+          "prerequisite": "A function can allocate storage and return its pointer. realpath(..., NULL) does so here; free must later release it. An octal literal such as 0700 describes permission bits.",
+          "steps": [
+            "Resolve the executable before the child changes directory. The documented ./ invocation gives realpath a usable path.",
+            "mkdtemp creates the private parent directory; build short suffix paths into PATH_MAX arrays from this bounded template.",
+            "mkdir creates work; fopen, fputs and fclose write the owned outside file, retaining both write and close results.",
+            "Record the parent’s original cwd. setenv creates only the harmless parent-only sentinel for a later omission test.",
+            "On failed preparation, attempt removal of the demo paths and free the allocated executable pathname."
+          ],
+          "change": "The fixed short template makes these suffixes fit; arbitrary input paths would need explicit truncation checks. A cwd change cannot replace credential or pathname access checks."
+        },
+        {
+          "id": "fork",
+          "title": "Change only the child context",
+          "explanation": [
+            "fork creates a child; chdir then changes that child only. Errors end the child without running the parent cleanup path."
+          ],
+          "question": "Why does the parent retain its working directory?",
+          "situation": "The child alone must prepare the worker’s directory; the parent stays in its original directory.",
+          "prerequisite": "The fork result distinguishes the child’s zero path from the parent’s positive result and a -1 failure. _exit ends only the child.",
+          "steps": [
+            "Store the result in child_pid.",
+            "In the zero branch, chdir(working) selects the child’s cwd. A -1 result reports and ends the child.",
+            "Only a prepared child proceeds into the exec segment. The parent skips that entire branch and later waits."
+          ],
+          "change": "Changing the parent’s cwd instead would not establish the worker’s intended launch sequence. Removing child chdir is detected by the worker’s actual directory check."
+        },
+        {
+          "id": "exec",
+          "title": "Construct pointer arrays",
+          "explanation": [
+            "arguments and environment are null-terminated arrays of string pointers. execve accepts both explicitly, avoiding automatic copying of the whole environment."
+          ],
+          "question": "Is the NULL array terminator an argument the worker can read?",
+          "situation": "The prepared child must pass chosen inputs instead of implicitly copying every inherited environment string.",
+          "prerequisite": "A string pointer locates text. An array of string pointers lets execve receive several strings. A final NULL pointer ends the array; it is not a string included in argc.",
+          "steps": [
+            "arguments[] lists executable, marker, hello, intended directory and outside path.",
+            "environment[] lists only DEMO_ROLE and PATH; the parent-only sentinel is deliberately absent.",
+            "execve takes the executable path, argument-pointer array and environment-pointer array as three inputs.",
+            "On success the new image reads these inputs in the worker branch. On failure perror and _exit(1) keep it out of parent cleanup."
+          ],
+          "change": "Passing the inherited environment would restore the sentinel and fail validation. Choosing an environment reduces accidental inputs; it does not remove descriptor or filesystem authority."
+        },
+        {
+          "id": "cleanup",
+          "title": "Reap and release",
+          "explanation": [
+            "The parent waits for its owned child, compares its own directory, removes the empty demo directory and frees the allocated path."
+          ],
+          "question": "Why should cleanup occur after the worker exits?",
+          "situation": "The parent collects the worker result before removing paths the worker might still need.",
+          "prerequisite": "wait status is encoded information written through &status. Short-circuit && ensures a normal exit code is extracted only from a normal exit.",
+          "steps": [
+            "Handle fork failure without waiting for a nonexistent child.",
+            "Retry waitpid after EINTR. Only on successful collection use WIFEXITED and WEXITSTATUS to set child_ok.",
+            "Measure the parent’s cwd independently and compare it to original.",
+            "Attempt unlink and both directory removals independently so one failure does not skip the others. free releases the allocated executable path.",
+            "Report failure if the worker, parent-cwd check or any cleanup failed."
+          ],
+          "change": "Removing paths before waiting could break the worker observation. Abrupt process termination can leave this owned demo tree; normal execution removes it."
+        }
+      ],
+      "containment": {
+        "kind": "Launch preparation",
+        "subject": "The launched worker",
+        "resource": "Arguments, environment and relative-path starting point",
+        "origin": "Explicit execve arrays and child-only chdir",
+        "operation": "Start with selected inputs",
+        "enforcement": "execve argument/environment transfer and process-local working-directory state",
+        "remaining": "Credentials, absolute-path access, descriptors and network reachability are not restricted.",
+        "establishes": "Checks actual worker directory identity, included/omitted environment inputs, unchanged parent cwd and successful reading of an owned file outside cwd. This demonstrates launch preparation and a remaining access, not filesystem confinement."
+      },
+      "references": [
+        {
+          "title": "execve.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/execve.2.html"
+        },
+        {
+          "title": "chdir.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/chdir.2.html"
+        },
+        {
+          "title": "environ.7 manual",
+          "url": "https://man7.org/linux/man-pages/man7/environ.7.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": false
+      },
+      "apis": [
+        "execve",
+        "chdir",
+        "environ"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ],
+      "flow": {
+        "title": "Launch preparation changes selected context",
+        "scope": "This authored map describes only the finite demo. Runtime observations are separate; it is not a complete containment policy.",
+        "nodes": [
+          {
+            "id": "n0",
+            "label": "Parent working directory"
+          },
+          {
+            "id": "n1",
+            "label": "Fork child"
+          },
+          {
+            "id": "n2",
+            "label": "Child chdir to demo directory"
+          },
+          {
+            "id": "n3",
+            "label": "execve with explicit argv/envp"
+          },
+          {
+            "id": "n4",
+            "label": "Worker program context"
+          }
+        ],
+        "edges": [
+          {
+            "source": "n0",
+            "target": "n1",
+            "label": "parent cwd retained"
+          },
+          {
+            "source": "n1",
+            "target": "n2",
+            "label": "child only"
+          },
+          {
+            "source": "n2",
+            "target": "n3",
+            "label": ""
+          },
+          {
+            "source": "n3",
+            "target": "n4",
+            "label": "on success"
+          }
+        ]
       }
+    },
+    {
+      "id": "child-supervision",
+      "title": "Supervise one child",
+      "chapter": "26",
+      "reference": "Signals and child lifecycle",
+      "reading": "An optional investigation; it does not advance your book bookmark.",
+      "summary": "The child tells its parent it is ready, then waits. How can the parent stop and collect precisely that child without confusing signal delivery with resource confinement?",
+      "prompt": "The child tells its parent it is ready, then waits. How can the parent stop and collect precisely that child without confusing signal delivery with resource confinement?",
+      "explanation": [
+        "The child prepares its signal handling and sends one R byte through a pipe, a channel that carries bytes. The parent waits for that readiness byte before sending SIGTERM only to its owned child. It then waits for completion and verifies that SIGTERM ended that child.",
+        "The child deliberately restores default, unblocked SIGTERM and SIGALRM handling so inherited launcher settings do not invalidate the demonstration. Its five-second alarm bounds waiting if the parent fails. Readiness, the termination request and collection of status are three distinct events.",
+        "This is lifecycle control, not an access-control policy. A real supervisor also needs a defined response to a worker that catches the signal, and a policy for descendants and bounded waits."
+      ],
+      "follow_up": "What more would a production supervisor need for a child that catches SIGTERM?",
+      "boundary": "This investigation currently has no reviewed kernel-source checkpoint. Its runtime result and authored explanation remain separate from the compiler index.",
+      "terms": [
+        "readiness handshake",
+        "signal mask",
+        "wait status"
+      ],
+      "checkpoints": [],
+      "experiment": {
+        "file": "supervise_child.c",
+        "intro": "Type or download the complete source, then compile and run as a normal unprivileged Linux user.",
+        "commands": "cc -std=c11 -Wall -Wextra -Werror supervise_child.c -o supervise_child\n./supervise_child",
+        "expected": "child ready=yes terminated=SIGTERM reaped=yes\n",
+        "observe": "This is expected output, not a record that you personally ran the program.",
+        "assumptions": "Linux and a C compiler. No root or host policy change is needed. The child deliberately sets only its own signal dispositions/mask; a five-second alarm bounds its wait if the parent fails.",
+        "variation": "Replace EVERY occurrence of SIGTERM with SIGUSR1 in the complete file: sigaddset, sigaction, kill, WTERMSIG comparison, comments and output label. Keep the SIGALRM fallback unchanged. Recompile. This changes disposition and mask preparation as well as the sent and expected signal; signal only this program’s owned child.",
+        "variability": "Child PIDs and scheduling vary. The readiness byte orders setup before the request; the default unblocked termination disposition makes SIGTERM the required collected signal.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "The parent closes its pipe ends and collects the owned child. The child’s five-second alarm bounds its wait if the parent fails. No demo directory is created."
+        ]
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Signal and wait interfaces",
+          "explanation": [
+            "The headers declare signal names, pipe and waitpid. The program changes no system-wide settings."
+          ],
+          "question": "Which process ID will be used as a signal target?",
+          "situation": "A parent will wait for a readiness byte, signal only its owned child, and collect termination information.",
+          "prerequisite": "A signal is a notification with a configured action, called its disposition. A signal mask can delay delivery. Neither receiving a signal nor requesting one collects wait status.",
+          "steps": [
+            "signal.h declares signal actions and masks.",
+            "unistd.h supplies pipe, fork and alarm; sys/wait.h supplies collection and status macros.",
+            "_POSIX_C_SOURCE requests the needed declarations before those headers."
+          ],
+          "change": "No host signal policy is changed. Disposition and mask setup below apply to this program’s child."
+        },
+        {
+          "id": "channel",
+          "title": "Create a readiness channel",
+          "explanation": [
+            "pipe supplies two descriptor entries. Each branch closes the end it does not need. The one-byte protocol has an exact meaning, not general request framing."
+          ],
+          "question": "Why close the unused write end in the parent?",
+          "situation": "The parent needs evidence of completed child setup before sending the termination signal.",
+          "prerequisite": "A pipe supplies two descriptors: index 0 reads; index 1 writes. EOF occurs only when no write-end references remain and buffered bytes have been drained.",
+          "steps": [
+            "int ready[2] reserves two entries for pipe to fill.",
+            "pipe(ready) supplies them; check -1 before using them.",
+            "fork copies these descriptor references. On fork failure close both parent entries.",
+            "The child and parent will each close their unused end, leaving a deliberate one-byte protocol."
+          ],
+          "change": "An arbitrary sleep would not prove readiness. A retained write end can keep a reader waiting for EOF after the real writer exits."
+        },
+        {
+          "id": "child",
+          "title": "Announce readiness",
+          "explanation": [
+            "The child explicitly restores default SIGTERM/SIGALRM dispositions and unblocks them so an inherited shell setting cannot silently make this example wait forever. A five-second alarm is a finite fallback if its parent fails. The checked readiness write, not an arbitrary sleep, tells the parent when setup is complete."
+          ],
+          "question": "Can the signal arrive between the write and pause?",
+          "situation": "Before announcing readiness, the child establishes how the intended termination signal will behave.",
+          "prerequisite": "A struct stores named fields. = {0} initializes its members to zero. &action supplies its address to an interface that reads the structure.",
+          "steps": [
+            "action.sa_handler = SIG_DFL chooses default handling. sigemptyset starts empty sets; sigaddset adds SIGTERM and SIGALRM to unblocked.",
+            "sigaction restores their default dispositions. sigprocmask removes those signals from this child’s blocked set. Each -1 result fails setup.",
+            "alarm(5) schedules a finite fallback termination; it is not the readiness signal.",
+            "Close the read end. write sends the R byte from &byte, retrying only EINTR; a successful one-byte count announces completed setup.",
+            "Close the write end and pause in a loop. A default terminating signal may end the child even before it reaches pause."
+          ],
+          "change": "Omitting disposition or mask preparation can inherit an ignored or blocked signal. The SIGUSR1 variation must change both preparation and the sent/status-checked signal."
+        },
+        {
+          "id": "supervise",
+          "title": "Target the owned child",
+          "explanation": [
+            "The parent receives the ready byte, closes the pipe, and calls kill with the child PID. Here SIGTERM may arrive before pause and still terminate the child. Error cleanup also targets only this child."
+          ],
+          "question": "Why is kill(child_pid, SIGTERM) different from signaling a process group?",
+          "situation": "The parent needs to verify readiness, then request termination from its own child.",
+          "prerequisite": "read returns a count or -1. A byte’s value is meaningful only after the count proves it was received.",
+          "steps": [
+            "Close the parent’s unused write end so child closure can produce EOF.",
+            "read into &byte and retry EINTR. Check both count == 1 and byte == R before considering readiness valid.",
+            "Close the read end. Even after a failed handshake, target the owned child for cleanup.",
+            "kill(child_pid, SIGTERM) requests delivery to one PID. ESRCH means that target no longer exists; other failures are reported."
+          ],
+          "change": "A negative target could identify a process group and is inappropriate for this demo. Readiness is a specific protocol assertion, not proof of arbitrary worker health."
+        },
+        {
+          "id": "reap",
+          "title": "Classify and collect",
+          "explanation": [
+            "WIFSIGNALED selects the signal-termination variant and WTERMSIG identifies SIGTERM. waitpid collects the retained status."
+          ],
+          "question": "What more would a production supervisor need for a child that catches SIGTERM?",
+          "situation": "Requesting a signal is insufficient: the parent still needs evidence of the child’s termination and must collect its status.",
+          "prerequisite": "WIFSIGNALED recognizes the signal-termination variant. WTERMSIG extracts its signal number only after that test succeeds.",
+          "steps": [
+            "waitpid blocks for this owned child and retries EINTR.",
+            "The || chain stops on failed readiness or a false signal-termination test, protecting the WTERMSIG extraction.",
+            "Require SIGTERM before printing the normalized success message. No temporary directory was created by this program."
+          ],
+          "change": "A real worker may catch SIGTERM and continue. This experiment deliberately chooses the default disposition; it is not a general supervisor escalation policy."
+        }
+      ],
+      "containment": {
+        "kind": "Lifecycle supervision",
+        "subject": "The one owned child",
+        "resource": "Its continued execution and exit status",
+        "origin": "Parent-child relationship; same-user signal permission",
+        "operation": "Terminate and reap the ready child",
+        "enforcement": "SIGTERM default disposition plus waitpid",
+        "remaining": "No filesystem, network, memory or syscall policy has been installed.",
+        "establishes": "Establishes a readiness handshake, signal termination and reaping. It does not bound hostile descendants or ignored-signal shutdown time."
+      },
+      "references": [
+        {
+          "title": "kill.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/kill.2.html"
+        },
+        {
+          "title": "waitpid.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/waitpid.2.html"
+        },
+        {
+          "title": "pipe.7 manual",
+          "url": "https://man7.org/linux/man-pages/man7/pipe.7.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": false
+      },
+      "apis": [
+        "kill",
+        "waitpid",
+        "pipe"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ],
+      "flow": {
+        "title": "Readiness precedes a targeted termination",
+        "scope": "This authored map describes only the finite demo. Runtime observations are separate; it is not a complete containment policy.",
+        "nodes": [
+          {
+            "id": "n0",
+            "label": "Child sends readiness byte"
+          },
+          {
+            "id": "n1",
+            "label": "Parent reads readiness"
+          },
+          {
+            "id": "n2",
+            "label": "Parent signals its own child PID"
+          },
+          {
+            "id": "n3",
+            "label": "Child default SIGTERM termination"
+          },
+          {
+            "id": "n4",
+            "label": "Parent waitpid collects status"
+          }
+        ],
+        "edges": [
+          {
+            "source": "n0",
+            "target": "n1",
+            "label": "one-byte protocol"
+          },
+          {
+            "source": "n1",
+            "target": "n2",
+            "label": ""
+          },
+          {
+            "source": "n2",
+            "target": "n3",
+            "label": "default disposition"
+          },
+          {
+            "source": "n3",
+            "target": "n4",
+            "label": "reap"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seccomp-boundary",
+      "title": "Observe one seccomp boundary",
+      "chapter": "Modern extension",
+      "reference": "Linux syscall filtering beyond TLPI",
+      "reading": "An optional investigation; it does not advance your book bookmark.",
+      "summary": "A process can make two identity-related syscalls. If a filter rejects one, what observation would establish that restriction, and which other authority remains?",
+      "prompt": "A process can make two identity-related syscalls. If a filter rejects one, what observation would establish that restriction, and which other authority remains?",
+      "explanation": [
+        "The program first requests its parent ID and checks that the request succeeded. It installs a small decision program for numbered kernel requests, then repeats the same request. That request must now fail with EPERM. A separate request for its own ID must still succeed before the program reports success.",
+        "Linux calls this decision mechanism seccomp filtering. The optional code walkthrough introduces syscall numbers and the decision program before tracing every instruction. Installation failure, including exit 77, establishes no successful filter execution. A valid zero parent ID is not a failed baseline.",
+        "This deny-one policy leaves almost every other native syscall available. It changes neither pathname access rules nor resource limits and is not a complete sandbox. This single-threaded example installs on its calling thread; inheritance and multithreaded scope are explained separately."
+      ],
+      "follow_up": "What would a deny-one policy fail to say about the rest of the syscall surface?",
+      "boundary": "This investigation currently has no reviewed kernel-source checkpoint. Its runtime result and authored explanation remain separate from the compiler index.",
+      "terms": [
+        "no_new_privs",
+        "seccomp filter",
+        "syscall ABI",
+        "BPF instruction"
+      ],
+      "checkpoints": [],
+      "experiment": {
+        "file": "seccomp_boundary.c",
+        "intro": "Type or download the complete source, then compile and run as a normal unprivileged Linux user.",
+        "commands": "cc -std=c11 -Wall -Wextra -Werror seccomp_boundary.c -o seccomp_boundary\n./seccomp_boundary",
+        "expected": "getppid before=allowed after=EPERM getpid=allowed\n",
+        "observe": "This is expected output, not a record that you personally ran the program.",
+        "assumptions": "Linux and a C compiler. No root or host policy change is needed. Requires CONFIG_SECCOMP=y and CONFIG_SECCOMP_FILTER=y; native aarch64 or x86-64 Linux and headers with seccomp support. An outer policy may deny installation. Exit 77 means unavailable, never a passing mechanism test.",
+        "variation": "Replace EVERY SYS_getppid with SYS_getuid: baseline call, filter comparison and after call. Update getppid in diagnostic/output labels to getuid. Keep before == -1, because UID zero is valid. Keep native architecture/x32 checks, installation checks and the allowed getpid control unchanged. Recompile the complete file. Replace the baseline comment about a parent outside the PID namespace with \"UID zero is valid; it must not be treated as a failed syscall.\"",
+        "variability": "PIDs, paths and scheduling can vary; the output normalizes these details. Successful installation is required to claim a seccomp observation.",
+        "troubleshooting": [
+          "If cc is missing, install your distribution’s ordinary C compiler or use an existing Linux development environment. The browser does not compile code.",
+          "Run pwd and ls to confirm that the .c file and executable are in the directory where you are working. The command begins with ./ to execute the local program.",
+          "When typing manually, compare the first compiler error with the displayed numbered line. Check semicolons, braces, quotes, header names and the difference between = and ==.",
+          "This program creates no child or temporary resource. Its thread-local restriction ends when it exits. Exit 77 means installation was unavailable, not that seccomp worked; do not change host policy to force success."
+        ]
+      },
+      "walkthrough": [
+        {
+          "id": "headers",
+          "title": "Linux interfaces and ABI",
+          "explanation": [
+            "Linux headers define seccomp, classic BPF and audit architecture constants. Only native aarch64 and x86-64 are accepted; syscall numbers cannot be reused blindly across ABIs."
+          ],
+          "question": "Why must the filter check architecture before comparing numbers?",
+          "situation": "A single-threaded Linux program will deny one native syscall while leaving another available.",
+          "prerequisite": "A syscall number is the ABI-specific integer identifying a kernel operation. An ABI is the agreed machine-level interface, including how those numbers are interpreted.",
+          "steps": [
+            "_GNU_SOURCE requests syscall and other declarations.",
+            "Linux headers define filter instructions and audit architecture tags.",
+            "The preprocessor chooses native aarch64 or x86-64 constants; compilation rejects other targets. x32 needs a separate number-bit check even on x86-64."
+          ],
+          "change": "Removing architecture checks can interpret the same number as a different operation. This example is not validated for other architectures."
+        },
+        {
+          "id": "baseline",
+          "title": "Observe the actual syscall",
+          "explanation": [
+            "syscall(SYS_getppid) bypasses any wrapper caching. The baseline must succeed before an after-filter failure can demonstrate a change."
+          ],
+          "question": "Would an unsupported filter count as a successful restriction test?",
+          "situation": "The process first checks that the chosen operation can be requested before adding its filter.",
+          "prerequisite": "syscall is a library interface making the numbered kernel request. Its -1 result signals failure and sets errno. Zero is a value, not automatically an error.",
+          "steps": [
+            "long before stores syscall(SYS_getppid).",
+            "if (before == -1) handles actual request failure before claiming a before/after comparison.",
+            "A zero parent ID is valid when the parent is outside this caller’s PID namespace; it must pass this check."
+          ],
+          "change": "Using <= 0 incorrectly rejects valid zero. The getuid variation also needs zero to remain valid because UID zero is a legitimate identity value."
+        },
+        {
+          "id": "filter",
+          "title": "Read the small decision program",
+          "explanation": [
+            "Load the audit architecture, reject an unexpected ABI, then load the syscall number. On x86-64, reject the alternate x32 number space. The selected number returns EPERM; all remaining native numbers are allowed.",
+            "aarch64 denied trace: 0 → 1 → 3 → 4 → 5. Allowed getpid trace: 0 → 1 → 3 → 4 → 6. The nr comparison takes its false jump only for the allowed control.",
+            "x86-64 denied trace: 0 → 1 → 3 → 4 → 6 → 7. Allowed getpid trace: 0 → 1 → 3 → 4 → 6 → 8. Both native requests take the false x32-bit branch at instruction 4. These are authored traces of this array, not compiler call edges or runtime traces."
+          ],
+          "question": "Which instructions leave file-opening authority available?",
+          "situation": "For each request, a small decision program will choose a kernel action. It does not execute these decisions while building the C array.",
+          "prerequisite": "An array contains elements of one type. struct sock_filter describes one instruction. Classic BPF has a working register holding the most recently loaded value; comparisons inspect that register.",
+          "steps": [
+            "BPF_STMT and BPF_JUMP are C macros that initialize instruction records; | combines opcode bits to describe load, comparison or return.",
+            "offsetof(struct seccomp_data, arch) gives the byte offset of the arch field. BPF_ABS loads from that offset in the kernel-supplied request record; it does not follow an arbitrary user pointer.",
+            "The architecture comparison chooses whether to skip the kill instruction. The next load replaces the working value with the syscall number.",
+            "On x86-64, JSET asks whether the number has bit 0x40000000 set. A set bit identifies the x32 number space and leads to kill.",
+            "0x40000000 is a hexadecimal integer literal selecting one binary bit. A bit is one 0-or-1 position in an integer. JSET tests whether any selected bit is 1; it does not ask whether the entire syscall number equals the mask.",
+            "The chosen number leads to ERRNO | EPERM; every other native number leads to ALLOW. The numbered tables below trace those paths.",
+            "sizeof(instructions) is the array’s byte size. Divide by sizeof(instructions[0]), one element’s byte size, to obtain the instruction count. The small reviewed count fits unsigned short.",
+            ".len and .filter name fields of program. The array name supplies a pointer to its first instruction; &program later supplies the address of the whole descriptor."
+          ],
+          "change": "A jump offset counts instructions skipped AFTER the current instruction: target = current index + 1 + offset. Altering it can deny the wrong operation or create an invalid program.",
+          "tables": [
+            {
+              "title": "Native aarch64: seven instructions",
+              "columns": [
+                "Index",
+                "Operation",
+                "Next instruction or action"
+              ],
+              "rows": [
+                [
+                  "0",
+                  "Load arch",
+                  "Next: 1"
+                ],
+                [
+                  "1",
+                  "arch == DEMO_ARCH?",
+                  "true: 3 (jt=1); false: 2 (jf=0)"
+                ],
+                [
+                  "2",
+                  "Return KILL_PROCESS",
+                  "Stop: unexpected architecture"
+                ],
+                [
+                  "3",
+                  "Load nr",
+                  "Next: 4"
+                ],
+                [
+                  "4",
+                  "nr == SYS_getppid?",
+                  "true: 5 (jt=0); false: 6 (jf=1)"
+                ],
+                [
+                  "5",
+                  "Return ERRNO | EPERM",
+                  "Stop: request denied, errno EPERM"
+                ],
+                [
+                  "6",
+                  "Return ALLOW",
+                  "Stop: request proceeds"
+                ]
+              ]
+            },
+            {
+              "title": "Native x86-64: nine instructions",
+              "columns": [
+                "Index",
+                "Operation",
+                "Next instruction or action"
+              ],
+              "rows": [
+                [
+                  "0",
+                  "Load arch",
+                  "Next: 1"
+                ],
+                [
+                  "1",
+                  "arch == DEMO_ARCH?",
+                  "true: 3 (jt=1); false: 2 (jf=0)"
+                ],
+                [
+                  "2",
+                  "Return KILL_PROCESS",
+                  "Stop: unexpected architecture"
+                ],
+                [
+                  "3",
+                  "Load nr",
+                  "Next: 4"
+                ],
+                [
+                  "4",
+                  "nr & 0x40000000 is nonzero?",
+                  "true: 5 (jt=0); false: 6 (jf=1)"
+                ],
+                [
+                  "5",
+                  "Return KILL_PROCESS",
+                  "Stop: x32 number rejected"
+                ],
+                [
+                  "6",
+                  "nr == SYS_getppid?",
+                  "true: 7 (jt=0); false: 8 (jf=1)"
+                ],
+                [
+                  "7",
+                  "Return ERRNO | EPERM",
+                  "Stop: request denied, errno EPERM"
+                ],
+                [
+                  "8",
+                  "Return ALLOW",
+                  "Stop: request proceeds"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "install",
+          "title": "Make a one-way local restriction",
+          "explanation": [
+            "The filter applies to the installing thread. Because this process has one thread, that is its entire running code. A multithreaded launcher needs an explicit thread-synchronization design.",
+            "no_new_privs does not remove existing permissions, and filters survive allowed fork/exec transitions. Read the linked contracts before generalizing beyond this finite example."
+          ],
+          "question": "Why can the shell continue unaffected after this program exits?",
+          "situation": "The prepared policy must actually be installed before a denied result can demonstrate this mechanism.",
+          "prerequisite": "A thread is an execution flow within a process. This example has one. no_new_privs is an irreversible per-thread setting: later exec cannot gain privilege through set-user-ID/set-group-ID file bits or file capabilities. It does not remove existing authority or prevent every credential change using authority already held.",
+          "steps": [
+            "prctl(PR_SET_NO_NEW_PRIVS, 1, ...) enables unprivileged filter installation under the documented contract. It is not itself a syscall allowlist.",
+            "prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &program) asks the kernel to validate and attach this program to the calling thread.",
+            "Either -1 result prints a diagnostic and exits 77. An unsupported or denied installation is not successful mechanism execution."
+          ],
+          "change": "no_new_privs and attached filters are inherited by children and retained across permitted exec. Existing sibling threads are not synchronized by this prctl; this example does not use seccomp TSYNC. The launching shell is unaffected."
+        },
+        {
+          "id": "observe",
+          "title": "Test denied and allowed operations",
+          "explanation": [
+            "The after call must fail with EPERM, and a second actual syscall must still succeed. Both observations are checked before printing success."
+          ],
+          "question": "What would a deny-one policy fail to say about the rest of the syscall surface?",
+          "situation": "After installation, the program must observe both a denied request and an allowed control before reporting success.",
+          "prerequisite": "errno is meaningful for this test only after a failed request. && reads left to right and skips later checks after a false condition.",
+          "steps": [
+            "Reset errno, then issue the same numbered getppid request.",
+            "after == -1 && errno == EPERM checks the denial’s result and reason together.",
+            "A separate SYS_getpid request must return a positive ID; this positive control shows that the policy did not simply stop every request.",
+            "Only after both checks does puts print success."
+          ],
+          "change": "The allowed control and deny-one design leave almost all other syscall operations available. No pathname policy, resource limit or complete sandbox has been established."
+        }
+      ],
+      "containment": {
+        "kind": "Kernel attack-surface control",
+        "subject": "This dedicated demo process",
+        "resource": "Permission to execute one native syscall",
+        "origin": "Ordinary process authority before filter installation",
+        "operation": "Execute getppid, compared with getpid",
+        "enforcement": "Linux seccomp BPF and no_new_privs",
+        "remaining": "Almost every other syscall, existing descriptors and filesystem/network authority remain available.",
+        "establishes": "Establishes actual rejection of one syscall on the documented runtime. It does not inspect pathnames, limit CPU, or provide a complete sandbox."
+      },
+      "references": [
+        {
+          "title": "seccomp.2 manual",
+          "url": "https://man7.org/linux/man-pages/man2/seccomp.2.html"
+        },
+        {
+          "title": "PR_SET_NO_NEW_PRIVS.2const manual",
+          "url": "https://man7.org/linux/man-pages/man2/PR_SET_NO_NEW_PRIVS.2const.html"
+        },
+        {
+          "title": "Linux kernel seccomp filter documentation",
+          "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html"
+        },
+        {
+          "title": "getpid/getppid and the valid zero case",
+          "url": "https://man7.org/linux/man-pages/man2/getpid.2.html"
+        },
+        {
+          "title": "no_new_privs scope and inheritance",
+          "url": "https://man7.org/linux/man-pages/man2/PR_SET_NO_NEW_PRIVS.2const.html"
+        }
+      ],
+      "review": {
+        "date": "2026-10-17",
+        "scope": "Authored example and API contract review; runtime execution is recorded separately. Follow-up: statement-level teaching, local assumptions and experiment-specific guidance.",
+        "baseline": "Linux/POSIX process behavior; modern extension explicitly marked where applicable."
+      },
+      "availability": {
+        "reading": true,
+        "walkthrough": true,
+        "experiment": true,
+        "checkpoint": false
+      },
+      "apis": [
+        "seccomp",
+        "PR_SET_NO_NEW_PRIVS"
+      ],
+      "synonyms": [
+        "launcher",
+        "inherited authority",
+        "containment"
+      ],
+      "flow": {
+        "title": "One syscall decision after filter installation",
+        "scope": "This authored map describes only the finite demo. Runtime observations are separate; it is not a complete containment policy.",
+        "nodes": [
+          {
+            "id": "n0",
+            "label": "Native ABI check"
+          },
+          {
+            "id": "n1",
+            "label": "Unexpected ABI: terminate"
+          },
+          {
+            "id": "n2",
+            "label": "Native syscall number"
+          },
+          {
+            "id": "n3",
+            "label": "getppid: EPERM without execution"
+          },
+          {
+            "id": "n4",
+            "label": "Other native syscall: allow"
+          }
+        ],
+        "edges": [
+          {
+            "source": "n0",
+            "target": "n1",
+            "label": "mismatch"
+          },
+          {
+            "source": "n0",
+            "target": "n2",
+            "label": "match"
+          },
+          {
+            "source": "n2",
+            "target": "n3",
+            "label": "selected number"
+          },
+          {
+            "source": "n2",
+            "target": "n4",
+            "label": "other number"
+          }
+        ]
+      }
+    }
+  ],
+  "track": [
+    {
+      "title": "Identity and private state",
+      "topics": [
+        "process-identity",
+        "fork-memory"
+      ],
+      "status": "implemented"
+    },
+    {
+      "title": "Descriptor references and inherited authority",
+      "topics": [
+        "shared-offset",
+        "process-inheritance"
+      ],
+      "status": "implemented"
+    },
+    {
+      "title": "Program replacement and launch preparation",
+      "topics": [
+        "exec-replacement",
+        "launcher-preparation"
+      ],
+      "status": "implemented"
+    },
+    {
+      "title": "Status, signals and supervision",
+      "topics": [
+        "exit-wait",
+        "child-supervision"
+      ],
+      "status": "implemented"
+    },
+    {
+      "title": "Credentials and capabilities",
+      "chapters": [
+        "chapter-09",
+        "chapter-38",
+        "chapter-39"
+      ],
+      "status": "reading only; no dedicated runnable investigation"
+    },
+    {
+      "title": "Resource limits and accounting",
+      "chapters": [
+        "chapter-35",
+        "chapter-36"
+      ],
+      "status": "reading only; no delegated cgroup integration"
+    },
+    {
+      "title": "Namespaces: which view is separated?",
+      "chapters": [
+        "chapter-06",
+        "chapter-39"
+      ],
+      "status": "modern reading only; no namespace experiment"
+    },
+    {
+      "title": "Syscall restrictions and their limits",
+      "topics": [
+        "seccomp-boundary"
+      ],
+      "status": "implemented; runtime support required"
+    },
+    {
+      "title": "Filesystem restrictions: Landlock",
+      "chapters": [
+        "chapter-15",
+        "chapter-18",
+        "chapter-38"
+      ],
+      "status": "modern reading only; no Landlock integration"
+    },
+    {
+      "title": "Network and descriptor-mediated access",
+      "chapters": [
+        "chapter-57",
+        "chapter-59",
+        "chapter-60"
+      ],
+      "status": "reading only; no network policy integration"
+    },
+    {
+      "title": "Combine boundaries under a threat model",
+      "chapters": [
+        "chapter-38",
+        "chapter-43"
+      ],
+      "status": "reading/design only; no composed sandbox claim"
+    }
+  ],
+  "modern": [
+    {
+      "title": "Namespaces",
+      "url": "https://man7.org/linux/man-pages/man7/namespaces.7.html",
+      "requirements": "Linux configuration for the namespace type; creation and joining have type-specific capability, user-namespace mapping and distribution-policy requirements. No sysctl is changed by this app.",
+      "scope": "Separate selected views such as PID or mounts. Namespace membership alone does not remove all capabilities or inherited descriptor access.",
+      "availability": "Reading only; not implemented or runtime-validated here."
+    },
+    {
+      "title": "Seccomp BPF",
+      "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+      "requirements": "Linux CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER, native aarch64 or x86-64 for this example, suitable kernel headers, and permission to install no_new_privs plus a filter. An outer sandbox may refuse it.",
+      "scope": "Filter syscall numbers and scalar arguments. The demonstration denies one syscall and leaves the rest allowed.",
+      "availability": "Runnable dedicated investigation; installation failure is explicitly unavailable, not passed."
+    },
+    {
+      "title": "cgroup v2",
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "requirements": "Unified cgroup hierarchy, enabled controllers and a delegated subtree with writable controller files. A normal user may not have that delegation.",
+      "scope": "Group accounting and selected resource controls. A resource ceiling is not filesystem or network authorization.",
+      "availability": "Reading only; no cgroup writes or integration."
+    },
+    {
+      "title": "Landlock",
+      "url": "https://docs.kernel.org/userspace-api/landlock.html",
+      "requirements": "Linux CONFIG_SECURITY_LANDLOCK enabled in the active LSM configuration, a supported queried ABI, compatible userspace headers/syscalls and permission to restrict self with no_new_privs. Rights vary with ABI.",
+      "scope": "Opt-in access restrictions for supported operations; already-open descriptors and unhandled access rights require separate reasoning.",
+      "availability": "Reading only; no Landlock ruleset installed or runtime validation claimed."
     }
   ]
 }

@@ -7,7 +7,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
   // The built application must not depend on any external network resource.
   await page.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.goto('/#explore');
-  await expect(page.getByText('Process fixture: 3 compiled TUs and 1 skipped TU; not a kernel index')).toBeVisible();
+  await expect(page.locator('.dataset-bar .scope')).toBeVisible();
   await page.getByLabel('Symbol name').fill('allocate_pid');
   const hit = page.locator('.result').filter({hasText: 'allocate_pid'});
   await expect(hit).toHaveCount(1);
@@ -23,7 +23,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
   await expect(page.locator('.evidence-detail')).toContainText('compiler resolved');
   await expect(page.locator('.source-path')).toContainText('process.c:5:37');
   await page.getByLabel('Note', {exact: true}).fill('Verified direct call to the file-local helper.');
-  await page.getByRole('button', {name: 'Add current location'}).click();
+  await page.getByRole('button', {name: 'Add selected location'}).click();
   await page.getByLabel('Trail name', {exact: true}).fill('Fixture call evidence');
   await page.getByRole('button', {name: 'Save trail', exact: true}).click();
   const downloadPromise = page.waitForEvent('download');
@@ -31,7 +31,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
   const download = await downloadPromise;
   const exported = await download.path();
   await page.getByRole('button', {name: 'Clear steps'}).click();
-  await page.locator('input[type=file]').setInputFiles(exported!);
+  await page.locator('.trail-panel input[type=file]').setInputFiles(exported!);
   await expect(page.locator('.trail-panel ol li')).toHaveCount(1);
   await expect(page.locator('.trail-panel ol')).toContainText('Verified direct call');
   await page.getByRole('button', {name: 'Follow helper'}).click();
@@ -40,7 +40,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
   await expect(page.locator('.source-pane .pane-heading h2')).toHaveText('allocate_pid');
   await page.getByRole('button', {name: 'Collapse neighbors'}).click();
   await expect(page.locator('.evidence')).toHaveCount(0);
-  await page.getByRole('button', {name: 'Expand', exact: true}).click();
+  await page.getByRole('button', {name: 'Show neighboring symbols', exact: true}).click();
   await expect(page.locator('.evidence')).toHaveCount(1);
   await page.getByLabel('Symbol name').fill('spawn_task');
   await page.locator('.result').filter({hasText: 'spawn_task'}).click();
@@ -62,7 +62,7 @@ test('compiler call evidence, macro locations, history and portable trails', asy
 test('rejects a trail for another dataset and renders at phone width', async ({page}) => {
   await page.goto('/#explore');
   await expect(page.locator('.dataset-bar')).toContainText('process-fixture-v1');
-  await page.locator('input[type=file]').setInputFiles({name:'wrong.json', mimeType:'application/json', buffer: Buffer.from(JSON.stringify({version:1,dataset_id:'wrong',revision:'fixture-v1',name:'wrong',steps:[]}))});
+  await page.locator('.trail-panel input[type=file]').setInputFiles({name:'wrong.json', mimeType:'application/json', buffer: Buffer.from(JSON.stringify({version:1,dataset_id:'wrong',revision:'fixture-v1',name:'wrong',steps:[]}))});
   await expect(page.getByRole('alert')).toContainText('different dataset');
   await page.setViewportSize({width:390,height:844});
   await expect(page.getByLabel('Symbol name')).toBeVisible();

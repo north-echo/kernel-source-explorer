@@ -20,10 +20,10 @@ test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   console.log('Kernel open/search/call-site flow ms:', Math.round(performance.now() - started));
   await call.getByRole('button', {name:'Follow copy_process'}).click();
   const dup = page.locator('.evidence').filter({hasText:'copy_process → dup_task_struct'});
-  for(let i=0;i<10 && await dup.count()===0;i++) await page.getByRole('button',{name:'More relationships'}).click();
+  for(let i=0;i<10 && await dup.count()===0;i++) await page.getByRole('button',{name:'Load more evidence'}).click();
   await dup.locator('button').first().click();
   await expect(page.locator('.source-line.current')).toContainText('p = dup_task_struct(current, node);');
-  await page.locator('input[type=file]').setInputFiles(fileURLToPath(new URL('../../docs/process-creation-trail.json', import.meta.url)));
+  await page.locator('.trail-panel input[type=file]').setInputFiles(fileURLToPath(new URL('../../docs/process-creation-trail.json', import.meta.url)));
   await expect(page.locator('.trail-panel ol li')).toHaveCount(4);
   await page.locator('.trail-panel ol li').last().locator('button').click();
   await expect(page.locator('.source-line.current')).toContainText('pid = alloc_pid(');
@@ -60,9 +60,94 @@ test('reading checkpoint opens focused real source and returns to its question',
   await page.setViewportSize({width:1512,height:982});
   await page.getByRole('button',{name:'Show full explorer'}).click();
   await expect(page.locator('.relationships-pane')).toBeVisible();
-  await page.getByRole('link',{name:'Return to A new process, inherited access'}).click();
+  await page.getByRole('link',{name:'Return to Follow inherited descriptors'}).click();
   await expect(page.locator('.checkpoint').filter({hasText:'The close-on-exec checkpoint'})).toContainText('Opened in this dataset');
   await page.getByRole('button',{name:'Think it through',exact:true}).click();
   await expect(page.getByLabel('My thinking (optional)')).toHaveValue('');
   expect(errors).toEqual([]);
+});
+
+test('guided and full paging are contiguous, preserve evidence, survive reload and browser history',async({page})=>{
+  await page.route('**/api/reader-profile',r=>r.fulfill({json:{reading_lesson:'chapter-02',reading_reference:'Chapter 2 · §2.7 Processes',interests:[]}}));
+  await page.goto('/#learn/fork-memory?view=code&segment=fork');await page.getByRole('button',{name:'Save this lab segment'}).click();
+  await page.goto('/#learn/process-inheritance');await page.getByRole('button',{name:'Look at the source',exact:true}).click();
+  await page.locator('.checkpoint').filter({hasText:'Where creation handles the file table'}).getByRole('button',{name:'Open checkpoint'}).click();
+  await expect(page.locator('.source-path')).toContainText('kernel/fork.c:2280:');
+  const range=async()=>{const lines=await page.locator('.source-line').evaluateAll(nodes=>nodes.map(n=>Number(n.getAttribute('data-line'))));return {start:lines[0],end:lines.at(-1)!};};
+  await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2280');
+  let r=await range();expect(r).toEqual({start:2276,end:2292});
+  const original=page.url();
+  for(let i=0;i<3;i++){
+    const end=r.end;await page.getByRole('button',{name:'Later lines',exact:true}).click();
+    await expect(page.locator('.source-line').first()).toHaveAttribute('data-line',String(end+1));r=await range();
+    await expect(page.locator('.source-line.current')).toHaveCount(0);
+    await expect(page.locator('.evidence-detail')).toContainText('2280');
+  }
+  const third=page.url(), thirdRange=r;
+  await page.reload();await expect(page.locator('.guided-context')).toContainText('Where creation handles the file table');
+  await expect(page.locator('.source-line').first()).toHaveAttribute('data-line',String(thirdRange.start));
+  await page.getByRole('button',{name:'Earlier lines',exact:true}).click();
+  await expect(page.locator('.source-line').last()).toHaveAttribute('data-line',String(thirdRange.start-1));
+  const earlier=page.url();
+  await page.goBack();await expect(page.locator('.source-line').first()).toHaveAttribute('data-line',String(thirdRange.start));expect(page.url()).toBe(third);
+  await page.goForward();expect(page.url()).toBe(earlier);
+  await page.getByRole('button',{name:'Return to call site',exact:true}).click();
+  await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2280');
+  await page.getByRole('button',{name:'Show full explorer',exact:true}).click();
+  await expect(page.locator('.source-line')).toHaveCount(43);r=await range();
+  const end=r.end;await page.getByRole('button',{name:'Later lines',exact:true}).click();
+  await expect(page.locator('.source-line').first()).toHaveAttribute('data-line',String(end+1));
+  await page.getByRole('button',{name:'Return to call site',exact:true}).click();await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2280');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('kse-reader-v1')!).activeLab)).toEqual({lesson:'fork-memory',segment:'fork'});
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('kse-reader-v1')!).readingLesson)).toBe('chapter-02');
+  await page.goto(original);await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2280');
+  await page.setViewportSize({width:390,height:844});await expect(page.locator('.checkpoint-graph')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+  await page.screenshot({path:fileURLToPath(new URL('../../docs/review-phone-source.png',import.meta.url)),fullPage:true});
+});
+
+test('ordinary evidence links reopen exactly and mismatched datasets fail clearly',async({page})=>{
+  await page.goto('/#explore');await page.getByLabel('Symbol name').fill('kernel_clone');
+  await page.locator('.result').filter({has:page.locator('strong',{hasText:/^kernel_clone$/})}).click();
+  await page.getByLabel('Direction',{exact:true}).selectOption('outgoing');await page.getByLabel('Relationship',{exact:true}).selectOption('direct_call');
+  await page.locator('.evidence').filter({hasText:'kernel_clone → copy_process'}).locator('button').first().click();
+  await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2752');
+  const link=page.url();expect(link).toContain('evidence=');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('kse-reader-v1')!).lastExploration.hash)).toContain('evidence=');
+  await page.reload();await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2752');
+  await expect(page.locator('.evidence-detail')).toContainText('compiler resolved');
+  await expect(page.getByLabel('Symbol name')).toHaveValue('kernel_clone');
+  await expect(page.getByLabel('Direction',{exact:true})).toHaveValue('outgoing');
+  await expect(page.getByLabel('Relationship',{exact:true})).toHaveValue('direct_call');
+  const url=new URL(link);const p=new URLSearchParams(url.hash.slice(9));p.set('dataset','wrong-dataset');url.hash='explore?'+p;
+  await page.goto(url.toString());await expect(page.getByRole('alert')).toContainText('different dataset');
+  await expect(page.locator('.source-line.current')).toHaveCount(0);
+});
+
+test('a source-read failure retains evidence and has an explicit retry path',async({page})=>{
+  await page.route('**/api/source?*',r=>r.fulfill({status:403,json:{detail:'Source is missing or contains a symlink; restore the indexed tree'}}));
+  await page.goto('/#learn/process-inheritance');await page.getByRole('button',{name:'Look at the source',exact:true}).click();
+  await page.locator('.checkpoint').first().getByRole('button',{name:'Open checkpoint'}).click();
+  await expect(page.locator('.source-pane [role=alert]')).toContainText('restore the indexed tree');
+  await expect(page.locator('.source-line')).toHaveCount(0);await expect(page.locator('.evidence-detail')).toContainText('clang_ast');
+  await page.unroute('**/api/source?*');await page.getByRole('button',{name:'Retry selected source'}).click();
+  await expect(page.locator('.source-line.current')).toHaveAttribute('data-line','2280');
+});
+
+test('checkpoint refresh and return restore the exact originating code activity on a phone',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/#learn/fork-memory?view=code&segment=fork');
+  await page.getByRole('button',{name:'Save this lab segment'}).click();
+  await page.getByRole('button',{name:'Next segment',exact:true}).click();
+  const origin=page.url();
+  await page.getByText('Optional reviewed source checkpoints',{exact:true}).click();
+  await page.locator('.code-walkthrough').getByRole('button',{name:'Creation delegates memory setup',exact:true}).click();
+  await expect(page).toHaveURL(/returnTo=/);
+  await expect(page.locator('.source-line.current')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('.guided-context')).toBeVisible();
+  await page.getByRole('link',{name:/Return to Lab 001/}).click();
+  await expect(page).toHaveURL(origin);
+  await expect(page.getByLabel('Walkthrough segment')).toHaveValue('child');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('kse-reader-v1')!).activeLab)).toEqual({lesson:'fork-memory',segment:'fork'});
 });

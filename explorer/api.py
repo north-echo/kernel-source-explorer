@@ -7,7 +7,7 @@ from pathlib import Path, PurePosixPath
 import sqlite3
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -34,6 +34,10 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
         response.headers['Cache-Control'] = 'no-store'
         return response
 
+    @app.exception_handler(sqlite3.Error)
+    async def unreadable_index(request: Request, exc):
+        return JSONResponse({'detail': 'The source index cannot be read. Restore or rebuild it; reading and code remain available.'}, status_code=503)
+
     @contextmanager
     def connection(request: Request):
         if not index_path.is_file():
@@ -43,7 +47,12 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
             db.execute('BEGIN')
             if db.execute('PRAGMA user_version').fetchone()[0] != 1:
                 raise HTTPException(409, 'Unsupported index schema; rebuild the dataset')
-            metadata = dict((row['key'], json.loads(row['value'])) for row in db.execute('SELECT * FROM metadata'))
+            try:
+                metadata = dict((row['key'], json.loads(row['value'])) for row in db.execute('SELECT * FROM metadata'))
+            except (ValueError, TypeError):
+                raise HTTPException(503, 'Index metadata is invalid; restore or rebuild the dataset') from None
+            if any(not isinstance(metadata.get(key), str) or not metadata[key] for key in ['dataset_id', 'kind', 'revision', 'root']):
+                raise HTTPException(503, 'Index metadata is incomplete; restore or rebuild the dataset')
             expected = request.headers.get('x-kse-dataset')
             if expected and expected != metadata['dataset_id']:
                 raise HTTPException(409, 'Dataset changed; reload before continuing navigation')
@@ -66,8 +75,19 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
     def learning(request: Request):
         if not index_path.is_file():
             return learning_content()
-        with connection(request) as (db, metadata):
-            return learning_content(db, metadata)
+        try:
+            with connection(request) as (db, metadata):
+                return learning_content(db, metadata)
+        except (sqlite3.Error, OSError, ValueError, KeyError, HTTPException) as exc:
+            # A stale navigation header still requires an explicit reload.
+            if isinstance(exc, HTTPException) and exc.detail == 'Dataset changed; reload before continuing navigation':
+                raise
+            result = learning_content()
+            result['index_error'] = exc.detail if isinstance(exc, HTTPException) else 'The source index could not be read. Restore or rebuild it to use source checkpoints.'
+            for lesson in result['lessons']:
+                for checkpoint in lesson['checkpoints']:
+                    checkpoint.update(available=False, reason_code='index_unusable', reason=result['index_error'])
+            return result
 
     @app.get('/api/reader-profile')
     def profile():
@@ -82,17 +102,18 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
 
     @app.get('/api/symbols')
     def search(request: Request, q: str = Query('', max_length=200), path: str = Query('', max_length=500),
+               symbol_kind: str = Query('', max_length=80), definitions_only: bool = False,
                limit: int = Query(40, ge=1, le=100), offset: int = Query(0, ge=0, le=100000)):
         # instr treats wildcard characters literally; all values are parameters.
         with connection(request) as (db, _):
             return rows(db, '''SELECT s.*, l.file,l.line,l.column,l.is_definition,t.status
                 FROM symbols s JOIN locations l ON l.id=(
                   SELECT l2.id FROM locations l2 JOIN translation_units t2 ON t2.id=l2.tu_id
-                  WHERE l2.symbol_id=s.id AND instr(l2.file,?)>0
+                  WHERE l2.symbol_id=s.id AND instr(l2.file,?)>0 AND (?=0 OR l2.is_definition=1)
                   ORDER BY l2.is_definition DESC, (t2.status='successful') DESC, l2.id LIMIT 1)
                 JOIN translation_units t ON t.id=l.tu_id
-                WHERE instr(lower(s.name),lower(?))>0 ORDER BY (s.name=?) DESC,s.name,s.id LIMIT ? OFFSET ?''',
-                        (path, q, q, limit, offset))
+                WHERE instr(lower(s.name),lower(?))>0 AND (?='' OR s.kind=?) ORDER BY (s.name=?) DESC,s.name,s.id LIMIT ? OFFSET ?''',
+                        (path, int(definitions_only), q, symbol_kind, symbol_kind, q, limit, offset))
 
     @app.get('/api/symbol')
     def symbol(request: Request, id: str = Query(max_length=4000)):
@@ -103,6 +124,16 @@ def create_app(index_path: Path | None = None, web_root: Path | None = None):
             return dict(symbol=dict(found), locations=rows(db, '''SELECT l.*,t.path AS tu,t.status FROM locations l
                 JOIN translation_units t ON t.id=l.tu_id WHERE symbol_id=?
                 ORDER BY is_definition DESC,(t.status='successful') DESC,l.id LIMIT 200''', (id,)))
+
+    @app.get('/api/relationship')
+    def relationship(request: Request, id: int = Query(ge=1)):
+        with connection(request) as (db, _):
+            result = rows(db, '''SELECT r.*,s.name AS source_name,t.name AS target_name,u.path AS tu,u.status
+                FROM relationships r JOIN symbols s ON s.id=r.source_id LEFT JOIN symbols t ON t.id=r.target_id
+                JOIN translation_units u ON u.id=r.tu_id WHERE r.id=?''', (id,))
+            if not result:
+                raise HTTPException(404, 'This relationship is not in the dataset')
+            return result[0]
 
     @app.get('/api/neighborhood')
     def neighborhood(request: Request, id: str = Query(max_length=4000),
