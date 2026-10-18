@@ -137,11 +137,12 @@ test("unreadable notes survive browsing and have explicit recovery with a retain
   await page.route("**/api/reader-profile", (r) =>
     r.fulfill({ json: generic }),
   );
-  await page.goto("/");
-  await page.evaluate(() =>
-    localStorage.setItem("kse-reader-v1", "{my unreadable original"),
-  );
-  await page.reload();
+  // Seed before React reads storage. A live write can race an in-flight save
+  // from the already mounted app and test the fixture setup instead of recovery.
+  await page.addInitScript(() => {
+    if (localStorage.getItem("kse-reader-v1") === null)
+      localStorage.setItem("kse-reader-v1", "{my unreadable original");
+  });
   await page.goto("/#learn/fork-memory");
   await page
     .getByLabel("My thinking (optional)")
@@ -181,9 +182,13 @@ test("v1 notes migrate and export/import preview round trips book, lab and self-
   await page.route("**/api/reader-profile", (r) =>
     r.fulfill({ json: generic }),
   );
-  await page.goto("/");
-  await page.evaluate(
-    (v) => localStorage.setItem("kse-reader-v1", JSON.stringify(v)),
+  // Preserve the migrated/saved record on subsequent reloads. Only the first
+  // document gets the v1 fixture, before the application initializes.
+  await page.addInitScript(
+    (v) => {
+      if (localStorage.getItem("kse-reader-v1") === null)
+        localStorage.setItem("kse-reader-v1", JSON.stringify(v));
+    },
     oldRecord(),
   );
   await page.goto("/#learn/fork-memory?view=code&segment=fork");
@@ -203,7 +208,9 @@ test("v1 notes migrate and export/import preview round trips book, lab and self-
     lesson: "fork-memory",
     segment: "fork",
   });
-  expect(exported.notes["fork-memory"].experiment).toBe("traced");
+  expect(exported.notes["fork-memory"]).toEqual(
+    oldRecord().notes["fork-memory"],
+  );
   await page.getByLabel("Import a notes file").setInputFiles(path);
   await expect(page.locator(".import-preview")).toContainText("Chapter 2");
   await expect(page.locator(".import-preview")).toContainText(
