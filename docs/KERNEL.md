@@ -51,6 +51,40 @@ Change the scope label appropriately on x86. The script checks the commit and si
 
 The retained metadata includes full configuration contents and hash, upstream identity and signature result, compiler/indexer versions, indexer binary hash, compilation-database hash, scope, timing, and all translation-unit outcomes. Memory is the maximum per-child `wait4` peak RSS, not total memory for the CLI plus child; per-TU memory and time are also recorded. The full indexing elapsed time includes JSON ingestion and database construction.
 
+## Optional: isolation translation units
+
+The default preparation above is the `process-lifecycle` profile and is unchanged. Two further profiles add the units a containment reading needs: the open path, the LSM framework, Landlock, SELinux and seccomp.
+
+| Profile | Translation units |
+| --- | --- |
+| `process-lifecycle` (default) | The seven above |
+| `isolation` | `fs/open.c`, `fs/namei.c`, `security/security.c`, `kernel/seccomp.c`, `security/landlock/{fs,cred,ruleset,syscalls,task}.c`, `security/selinux/hooks.c`, plus the native seccomp entry unit: `arch/arm64/kernel/ptrace.c` on arm64, `arch/x86/entry/syscall_64.c` on x86 |
+| `all` | Both, process-lifecycle first |
+
+On x86, generic-entry `__secure_computing()` is called from an `__always_inline` function in `include/linux/entry-common.h`, so its expansion lives in `do_syscall_64()` in `arch/x86/entry/syscall_64.c`; `kernel/entry/syscall-common.c` no longer contains that call in 7.2.11. arm64 calls `secure_computing()` from its own `syscall_trace_enter()` in `arch/arm64/kernel/ptrace.c`.
+
+`defconfig` does not build all of these, so when any non-default unit is requested the script enables `SECURITY`, `SECURITY_NETWORK`, `SECURITY_PATH`, `AUDIT`, `SECURITY_SELINUX`, `SECURITY_LANDLOCK`, `SECCOMP` and `SECCOMP_FILTER` with `scripts/config`, runs `olddefconfig`, and stops if any of them did not end up `=y`. The fragment is recorded in `metadata.json` (`profile`, `configuration_fragment`) together with the full resulting configuration; the default profile writes neither key, so its metadata is unchanged. The compilation-database generator also scans `security/` and the architecture directory when those units are requested.
+
+Use a separate checkout and output directory, because the configuration differs from the default dataset's:
+
+```sh
+python3 scripts/prepare_kernel.py \
+  --source "$HOME/kse/linux-7.2.11-all" --output "$HOME/kse/prepared-all" --llvm-suffix=-22 --profile all
+
+TUS=$(python3 -c 'import json, sys; print(" ".join("--tu " + sys.argv[2] + "/" + t for t in json.load(open(sys.argv[1]))["requested_translation_units"]))' \
+  "$HOME/kse/prepared-all/metadata.json" "$HOME/kse/linux-7.2.11-all")
+python3 -m explorer.cli index \
+  --root "$HOME/kse/linux-7.2.11-all" \
+  --compdb "$HOME/kse/prepared-all/compile_commands.json" \
+  --metadata "$HOME/kse/prepared-all/metadata.json" \
+  --indexer build/indexer/kse-index \
+  --output "$HOME/kse/learning-all.sqlite" \
+  --scope 'Linux 7.2.11 <arch> defconfig + isolation fragment: process-lifecycle and isolation translation units; partial kernel coverage' \
+  $TUS
+```
+
+`--tu` remains available for an explicit list instead of a profile; requesting another architecture's seccomp entry unit is rejected. The existing learning checkpoints are unaffected: they resolve against the process-lifecycle units, which `all` also contains.
+
 ## Move the browsing dataset to another host
 
 Export the index and only its recorded source files, with content-hash verification:
