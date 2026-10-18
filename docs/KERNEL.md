@@ -51,9 +51,11 @@ Change the scope label appropriately on x86. The script checks the commit and si
 
 The retained metadata includes full configuration contents and hash, upstream identity and signature result, compiler/indexer versions, indexer binary hash, compilation-database hash, scope, timing, and all translation-unit outcomes. Memory is the maximum per-child `wait4` peak RSS, not total memory for the CLI plus child; per-TU memory and time are also recorded. The full indexing elapsed time includes JSON ingestion and database construction.
 
-## Optional: isolation translation units
+<a id="optional-isolation-translation-units"></a>
 
-The default preparation above is the `process-lifecycle` profile and is unchanged. Two further profiles add the units a containment reading needs: the open path, the LSM framework, Landlock, SELinux and seccomp.
+## Optional: experimental isolation preparation
+
+The default preparation above is the `process-lifecycle` profile and is unchanged. Two experimental preparation profiles add the open path, LSM framework, Landlock, SELinux and seccomp units. They do not change the active learning dataset or provide new reviewed checkpoints. Object builds and compilation-database selection were reported on x86_64 with Clang 18. A new separate arm64/LLVM 22 run built and indexed all 18 units without diagnostics and resolved all 14 existing checkpoints; [verification details and limits](PR3_VERIFICATION.md) distinguish this from runtime experiments and the active learning dataset.
 
 | Profile | Translation units |
 | --- | --- |
@@ -71,19 +73,63 @@ Use a separate checkout and output directory, because the configuration differs 
 python3 scripts/prepare_kernel.py \
   --source "$HOME/kse/linux-7.2.11-all" --output "$HOME/kse/prepared-all" --llvm-suffix=-22 --profile all
 
-TUS=$(python3 -c 'import json, sys; print(" ".join("--tu " + sys.argv[2] + "/" + t for t in json.load(open(sys.argv[1]))["requested_translation_units"]))' \
-  "$HOME/kse/prepared-all/metadata.json" "$HOME/kse/linux-7.2.11-all")
-python3 -m explorer.cli index \
-  --root "$HOME/kse/linux-7.2.11-all" \
-  --compdb "$HOME/kse/prepared-all/compile_commands.json" \
-  --metadata "$HOME/kse/prepared-all/metadata.json" \
-  --indexer build/indexer/kse-index \
-  --output "$HOME/kse/learning-all.sqlite" \
-  --scope 'Linux 7.2.11 <arch> defconfig + isolation fragment: process-lifecycle and isolation translation units; partial kernel coverage' \
-  $TUS
+# Pass each --tu as an argument; no shell word-splitting is required.
+python3 - "$HOME/kse" <<'PY'
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+workspace = Path(sys.argv[1])
+source = workspace / "linux-7.2.11-all"
+prepared = workspace / "prepared-all"
+metadata_path = prepared / "metadata.json"
+metadata = json.loads(metadata_path.read_text())
+command = [
+    sys.executable, "-m", "explorer.cli", "index",
+    "--root", str(source),
+    "--compdb", str(prepared / "compile_commands.json"),
+    "--metadata", str(metadata_path),
+    "--indexer", "build/indexer/kse-index",
+    "--output", str(workspace / "learning-all.sqlite"),
+    "--scope", (
+        f"Linux 7.2.11 {metadata['architecture']} defconfig + isolation fragment: "
+        "process-lifecycle and isolation translation units; partial kernel coverage"
+    ),
+]
+for tu in metadata["requested_translation_units"]:
+    command.extend(["--tu", str(source / tu)])
+subprocess.run(command, check=True)
+PY
 ```
 
-`--tu` remains available for an explicit list instead of a profile; requesting another architecture's seccomp entry unit is rejected. The existing learning checkpoints are unaffected: they resolve against the process-lifecycle units, which `all` also contains.
+`--tu` remains available for an explicit list instead of a profile; requesting another architecture's seccomp entry unit is rejected. Existing checkpoints and the active dataset are unchanged by adding these preparation profiles. The `all` profile includes their process-lifecycle units, but that alone does not validate those checkpoints under the changed configuration.
+
+Before adopting an expanded index, run the actual LLVM 22 LibTooling indexer over every requested unit, review all TU outcomes and diagnostics, and verify the existing guided checkpoints against the resulting dataset. Repeat these checks for a changed architecture, configuration, compiler or source revision. Keep the resulting database separate until those checks pass; a successful object build or mocked preparation test is not indexing validation. The example above does not select the new database for the running app.
+
+## Fedora preparation
+
+The separate Fedora 44 aarch64 verification uses VMware Fusion, two CPU cores and 6 GiB RAM. Its running kernel is **7.2.9-201.fc44.aarch64**; the source being prepared remains pinned **7.2.11**. SELinux is enforcing. [The verification report](PR3_VERIFICATION.md) records completed stages and remaining limits; installing development packages does not validate an index.
+
+Install development packages through Fedora's package manager, then perform builds and experiments as a normal user:
+
+```sh
+sudo dnf install -y gcc gcc-c++ clang clang-devel llvm-devel lld cmake make \
+  flex bison openssl-devel elfutils-libelf-devel bc git gnupg2 python3-pip
+
+# In a separate Linux-native checkout of this repository:
+python3 scripts/prepare_kernel.py \
+  --source "$HOME/kse/linux-7.2.11-all" --output "$HOME/kse/prepared-all" \
+  --llvm-suffix=-22 --profile all --jobs 2
+cmake -S indexer -B build/indexer -DCMAKE_BUILD_TYPE=Release
+cmake --build build/indexer -j1
+```
+
+The observed Fedora packages provide LLVM/Clang **22.1.8**, including the `-22` tool names used by the preparation script; CMake finds the installed LLVM and Clang configuration without Ubuntu's prefix. No tool aliases or unsupported-flag substitutions were needed. The complete expanded index passed separately on this Fedora toolchain; see its exact metrics and scope in the verification report. Use the metadata-driven indexing block above to request all selected units, with a separate output database. The initial 2 GiB VM allocation was heavily swapping; increase available memory before the expanded indexing run. These are observed requirements for this run, not a guarantee of a minimum allocation on every system.
+
+The observed Fedora Btrfs-backed SQLite build spent long periods waiting for filesystem reservations during ingestion. For this verification, only the index output directory was moved to an owned `/tmp` directory (tmpfs); source, configuration, compiler commands, native binary and SQL behavior were unchanged. The index then completed in 137.36 seconds and was copied sequentially back to disk with byte-hash and SQLite-integrity checks. This is a measured workaround for this VM, not evidence of a general Btrfs defect or a production durability test. See [captured diagnostics](pr3-fedora-indexing-diagnosis.json). The upstream [Btrfs reservation helper](https://kernel.googlesource.com/pub/scm/linux/kernel/git/gclement/linux/+/9413cd7792dc03608ec9b1f1f5c74fc54e714ed3/fs/btrfs/space-info.c) documents the wait/flush role of `handle_reserve_ticket`; that separate source reference is not a reviewed Explorer checkpoint or an exact Fedora-kernel mapping.
+
+If reproducing this workaround, first check available tmpfs space and RAM, create a fresh directory with `mktemp -d /tmp/kse-index.XXXXXX`, and use its `index.sqlite` path for the indexing command's `--output` argument. Keep the preparation/source paths on the Linux-native disk. Retain and verify a completed disk copy before relying on the result; tmpfs storage does not survive a reboot. Do not change mount options, disable copy-on-write or weaken host policy to reproduce the check.
 
 ## Move the browsing dataset to another host
 

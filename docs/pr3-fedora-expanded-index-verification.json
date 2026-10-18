@@ -1,0 +1,311 @@
+{
+  "dataset_id": "90e196653df2a9e52f389b76c8624115495c211d9cf40a82893799d581dccb2a",
+  "revision": "a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea",
+  "architecture": "arm64",
+  "indexer_version": "0.1.0",
+  "clang_versions": [
+    "22.1.8"
+  ],
+  "indexer_sha256": "a88387b391621cc64c171c7ee513f360ef003f47a6847b1802267e3b9b65df32",
+  "configuration_hash": "91a8df35d48114e8821dbf7180e15be210d3f40a646e588b2d490361d9d0cdbb",
+  "compilation_database_hash": "34c89e8afd4fc2b86653ccb0bd18e0758bc184c9950d57ec983ae879d766e029",
+  "profile": "all",
+  "configuration_fragment": [
+    "CONFIG_SECURITY=y",
+    "CONFIG_SECURITY_NETWORK=y",
+    "CONFIG_SECURITY_PATH=y",
+    "CONFIG_AUDIT=y",
+    "CONFIG_SECURITY_SELINUX=y",
+    "CONFIG_SECURITY_LANDLOCK=y",
+    "CONFIG_SECCOMP=y",
+    "CONFIG_SECCOMP_FILTER=y"
+  ],
+  "elapsed_seconds": 137.3589735000005,
+  "peak_rss_bytes": 2665750528,
+  "provenance": {
+    "origin": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+    "tag": "v7.2.11",
+    "tag_object": "8316c24ec1b77dba19ba072ca4fe251b36dc65d3",
+    "verification": "git verify-tag: valid signature with pinned upstream primary fingerprint",
+    "signer_fingerprint": "647F28654894E3BD457199BE38DBBDC86092693E",
+    "verification_output": "[GNUPG:] NEWSIG\n[GNUPG:] KEY_CONSIDERED 647F28654894E3BD457199BE38DBBDC86092693E 0\n[GNUPG:] SIG_ID o4rDBwEwZFpMSi8fvygYJ9PYztI 2026-10-15 1792058622\n[GNUPG:] GOODSIG 38DBBDC86092693E Greg Kroah-Hartman <gregkh@kernel.org>\n[GNUPG:] VALIDSIG 647F28654894E3BD457199BE38DBBDC86092693E 2026-10-15 1792058622 0 4 0 1 10 00 647F28654894E3BD457199BE38DBBDC86092693E\n[GNUPG:] TRUST_UNDEFINED 0 pgp\n"
+  },
+  "staging_filesystem": "tmpfs",
+  "byte_verified_disk_copy": true,
+  "symbols": 197310,
+  "relationships": 1133368,
+  "database_bytes": 1013719040,
+  "source_files_verified": 1035,
+  "diagnostics": [],
+  "sqlite_quick_check": "ok",
+  "translation_units": [
+    {
+      "path": "kernel/fork.c",
+      "status": "successful",
+      "elapsed_seconds": 2.6027000550002413,
+      "peak_rss_bytes": 2362286080,
+      "reason": null
+    },
+    {
+      "path": "kernel/pid.c",
+      "status": "successful",
+      "elapsed_seconds": 2.0496125609988667,
+      "peak_rss_bytes": 2388750336,
+      "reason": null
+    },
+    {
+      "path": "kernel/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 1.8942251720000058,
+      "peak_rss_bytes": 1494319104,
+      "reason": null
+    },
+    {
+      "path": "kernel/exit.c",
+      "status": "successful",
+      "elapsed_seconds": 2.160589531000369,
+      "peak_rss_bytes": 2405654528,
+      "reason": null
+    },
+    {
+      "path": "kernel/sys.c",
+      "status": "successful",
+      "elapsed_seconds": 1.6554322129995853,
+      "peak_rss_bytes": 2332626944,
+      "reason": null
+    },
+    {
+      "path": "fs/exec.c",
+      "status": "successful",
+      "elapsed_seconds": 1.992328071000884,
+      "peak_rss_bytes": 2344189952,
+      "reason": null
+    },
+    {
+      "path": "fs/file.c",
+      "status": "successful",
+      "elapsed_seconds": 2.1993745479994686,
+      "peak_rss_bytes": 2388025344,
+      "reason": null
+    },
+    {
+      "path": "fs/open.c",
+      "status": "successful",
+      "elapsed_seconds": 1.6101406440011488,
+      "peak_rss_bytes": 1468538880,
+      "reason": null
+    },
+    {
+      "path": "fs/namei.c",
+      "status": "successful",
+      "elapsed_seconds": 1.975625975001094,
+      "peak_rss_bytes": 2390175744,
+      "reason": null
+    },
+    {
+      "path": "security/security.c",
+      "status": "successful",
+      "elapsed_seconds": 2.700844764000067,
+      "peak_rss_bytes": 2402746368,
+      "reason": null
+    },
+    {
+      "path": "kernel/seccomp.c",
+      "status": "successful",
+      "elapsed_seconds": 2.1483789189987874,
+      "peak_rss_bytes": 2390241280,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/fs.c",
+      "status": "successful",
+      "elapsed_seconds": 2.2960806349983613,
+      "peak_rss_bytes": 2447749120,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 1.3917170490003627,
+      "peak_rss_bytes": 1336729600,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/ruleset.c",
+      "status": "successful",
+      "elapsed_seconds": 2.1410364849998587,
+      "peak_rss_bytes": 2451267584,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/syscalls.c",
+      "status": "successful",
+      "elapsed_seconds": 2.097201614998994,
+      "peak_rss_bytes": 2421137408,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/task.c",
+      "status": "successful",
+      "elapsed_seconds": 2.2962465190012153,
+      "peak_rss_bytes": 2449899520,
+      "reason": null
+    },
+    {
+      "path": "security/selinux/hooks.c",
+      "status": "successful",
+      "elapsed_seconds": 3.1018978749998496,
+      "peak_rss_bytes": 2665750528,
+      "reason": null
+    },
+    {
+      "path": "arch/arm64/kernel/ptrace.c",
+      "status": "successful",
+      "elapsed_seconds": 1.40528859799997,
+      "peak_rss_bytes": 1389932544,
+      "reason": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "lesson": "process-inheritance",
+      "id": "copy-files",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2280,
+        "column": 11
+      },
+      "line": "\tretval = copy_files(clone_flags, p, args->no_files);"
+    },
+    {
+      "lesson": "process-inheritance",
+      "id": "duplicate-table",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      },
+      "line": "\tnewf = dup_fd(oldf, NULL);"
+    },
+    {
+      "lesson": "process-inheritance",
+      "id": "close-exec",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      },
+      "line": "\tdo_close_on_exec(me->files);"
+    },
+    {
+      "lesson": "process-identity",
+      "id": "getpid-handler",
+      "location": {
+        "file": "kernel/sys.c",
+        "line": 1001,
+        "column": 9
+      },
+      "line": "\treturn task_tgid_vnr(current);"
+    },
+    {
+      "lesson": "process-identity",
+      "id": "task-record",
+      "location": {
+        "file": "include/linux/sched.h",
+        "line": 826,
+        "column": 8
+      },
+      "line": "struct task_struct {"
+    },
+    {
+      "lesson": "fork-memory",
+      "id": "memory-setup",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2292,
+        "column": 11
+      },
+      "line": "\tretval = copy_mm(clone_flags, p);"
+    },
+    {
+      "lesson": "fork-memory",
+      "id": "memory-choice",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1594,
+        "column": 8
+      },
+      "line": "\t\tmm = dup_mm(tsk, current->mm);"
+    },
+    {
+      "lesson": "shared-offset",
+      "id": "table-copy",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      },
+      "line": "\tnewf = dup_fd(oldf, NULL);"
+    },
+    {
+      "lesson": "shared-offset",
+      "id": "file-references",
+      "location": {
+        "file": "fs/file.c",
+        "line": 458,
+        "column": 4
+      },
+      "line": "\t\t\tget_file(f);"
+    },
+    {
+      "lesson": "exit-wait",
+      "id": "release-memory",
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 975,
+        "column": 2
+      },
+      "line": "\texit_mm();"
+    },
+    {
+      "lesson": "exit-wait",
+      "id": "wait-operation",
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 1893,
+        "column": 8
+      },
+      "line": "\tret = do_wait(&wo);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-request",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1899,
+        "column": 9
+      },
+      "line": "\treturn bprm_execve(bprm);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-format",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1801,
+        "column": 11
+      },
+      "line": "\tretval = exec_binprm(bprm);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-descriptors",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      },
+      "line": "\tdo_close_on_exec(me->files);"
+    }
+  ]
+}

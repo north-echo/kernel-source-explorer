@@ -1,0 +1,283 @@
+{
+  "executed_at": "2026-10-18T14:34:18.415315+00:00",
+  "pid_namespace_probe": {
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "unshare: write failed /proc/self/uid_map: Operation not permitted\n",
+    "observed_zero": false
+  },
+  "distribution": {
+    "ID": "ubuntu",
+    "VERSION_ID": "26.04"
+  },
+  "kernel_configuration": {
+    "CONFIG_SECCOMP": "y",
+    "CONFIG_SECCOMP_FILTER": "y"
+  },
+  "system": "Linux",
+  "running_kernel": "7.0.0-28-generic",
+  "architecture": "aarch64",
+  "effective_uid": 501,
+  "compiler": "Ubuntu clang version 22.1.2 (1ubuntu1)",
+  "mechanism_policy": "Exit 77 or installation failure is a failed validation, never a successful seccomp test.",
+  "note": "Execution on this host is distinct from compiler evidence for the indexed kernel version.",
+  "results": [
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "tested_source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "helper inherited descriptor=yes data=demo only\nparent descriptor still open=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "tested_source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "case": "canonical",
+      "arguments": [
+        "--cloexec"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "tested_source_sha256": "abfa2c1c2ba3375b7ae4a17cf1b730dc45ee0a46a674dd4e6b9f81380d3211c9",
+      "experiment": "inherited_authority",
+      "case": "canonical",
+      "arguments": [
+        "--close-child"
+      ],
+      "stdout": "helper inherited descriptor=no\nparent descriptor still open=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e940dfb3cfab91c774728ee4b949e87c6ab511e19c7b0e489cb5127fa47ffe29",
+      "tested_source_sha256": "e940dfb3cfab91c774728ee4b949e87c6ab511e19c7b0e489cb5127fa47ffe29",
+      "experiment": "process_identity",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "pid=5293 parent=5274\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e940dfb3cfab91c774728ee4b949e87c6ab511e19c7b0e489cb5127fa47ffe29",
+      "tested_source_sha256": "e940dfb3cfab91c774728ee4b949e87c6ab511e19c7b0e489cb5127fa47ffe29",
+      "experiment": "process_identity",
+      "case": "variation-second-observation",
+      "arguments": [],
+      "stdout": "pid=5297 parent=5274\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e4a50c878734777042fd6df78965b3fb387dd21d564f96967391c25ff1e7d0e3",
+      "tested_source_sha256": "e4a50c878734777042fd6df78965b3fb387dd21d564f96967391c25ff1e7d0e3",
+      "experiment": "fork_variables",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "child value=7\nparent value=42\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e4a50c878734777042fd6df78965b3fb387dd21d564f96967391c25ff1e7d0e3",
+      "tested_source_sha256": "fc8910dae699538514e24301632d93f49e2f3866e865cc0df242eb48fa311291",
+      "experiment": "fork_variables",
+      "case": "variation-child-99",
+      "arguments": [],
+      "stdout": "child value=99\nparent value=42\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "3ea090bf9cc6a5c1642ead8ad115c4ba802a49171e104253a4b25cc2181300ca",
+      "tested_source_sha256": "3ea090bf9cc6a5c1642ead8ad115c4ba802a49171e104253a4b25cc2181300ca",
+      "experiment": "fork_file_offset",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "parent next byte=c\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "3ea090bf9cc6a5c1642ead8ad115c4ba802a49171e104253a4b25cc2181300ca",
+      "tested_source_sha256": "d2b932e28e8f54374695e954c4c741de519ac87bb4f4b4a06e2b413e08117e8d",
+      "experiment": "fork_file_offset",
+      "case": "variation-one-byte",
+      "arguments": [],
+      "stdout": "parent next byte=b\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e69c223b1d3aa89bb5c4d85a04b1d3e8b53041464d20d851a4339898ea48ec3c",
+      "tested_source_sha256": "e69c223b1d3aa89bb5c4d85a04b1d3e8b53041464d20d851a4339898ea48ec3c",
+      "experiment": "exit_wait",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "waited for child=yes exit status=42\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e69c223b1d3aa89bb5c4d85a04b1d3e8b53041464d20d851a4339898ea48ec3c",
+      "tested_source_sha256": "2cf48e433a2881bf398cfc2de2d4f5b26ae3d4e8b164a735101744dfc9617000",
+      "experiment": "exit_wait",
+      "case": "variation-exit-7",
+      "arguments": [],
+      "stdout": "waited for child=yes exit status=7\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "fc03f27a6c8ea7598b9d71439fecb461b5e121862f630710f714419aaaedc6ae",
+      "tested_source_sha256": "fc03f27a6c8ea7598b9d71439fecb461b5e121862f630710f714419aaaedc6ae",
+      "experiment": "exec_identity",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "before exec pid=5331 value=42\nafter exec pid=5331 value=7\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "fc03f27a6c8ea7598b9d71439fecb461b5e121862f630710f714419aaaedc6ae",
+      "tested_source_sha256": "fbb0ec35bda810072b11d0655d52aa4a691c4c1624fd82c8c6cbea1d931b0cdf",
+      "experiment": "exec_identity",
+      "case": "variation-marker",
+      "arguments": [],
+      "stdout": "before exec pid=5335 value=42\nafter exec pid=5335 value=7\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "90f696f4ee94c313783b93e5425af0f781080b68199ae143ac022232e8647839",
+      "tested_source_sha256": "90f696f4ee94c313783b93e5425af0f781080b68199ae143ac022232e8647839",
+      "experiment": "launcher_prepare",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "prepared argument=hello env=worker omitted sentinel=absent\nworker cwd matches intended=yes outside demo readable=yes\nparent cwd unchanged=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "90f696f4ee94c313783b93e5425af0f781080b68199ae143ac022232e8647839",
+      "tested_source_sha256": "7e1a30ca0186e5969788c6dd3262615d0b73e13edd1fcd6f0611f839f8057ef6",
+      "experiment": "launcher_prepare",
+      "case": "variation-argument",
+      "arguments": [],
+      "stdout": "prepared argument=goodbye env=worker omitted sentinel=absent\nworker cwd matches intended=yes outside demo readable=yes\nparent cwd unchanged=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "90f696f4ee94c313783b93e5425af0f781080b68199ae143ac022232e8647839",
+      "tested_source_sha256": "1749a42e071f5e749d2cc807e9f8a3a3d29efa6e86987176f91a890d31ee84e1",
+      "experiment": "launcher_prepare",
+      "case": "mutation-no-chdir",
+      "arguments": [],
+      "stdout": "parent cwd unchanged=yes\n",
+      "stderr": "worker cwd disagrees with intended directory\n",
+      "exit_code": 1,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "90f696f4ee94c313783b93e5425af0f781080b68199ae143ac022232e8647839",
+      "tested_source_sha256": "a149c0520c8d8b5ea1d5b95b081492d452be6a14924de8cd8003f256a2644d7d",
+      "experiment": "launcher_prepare",
+      "case": "mutation-inherited-environment",
+      "arguments": [],
+      "stdout": "parent cwd unchanged=yes\n",
+      "stderr": "worker launch inputs disagree\n",
+      "exit_code": 1,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e1bc251a9c4bf963754d0aa641e78b0f058e0081012ef19c09ab7af638c8ead6",
+      "tested_source_sha256": "e1bc251a9c4bf963754d0aa641e78b0f058e0081012ef19c09ab7af638c8ead6",
+      "experiment": "supervise_child",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "child ready=yes terminated=SIGTERM reaped=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "e1bc251a9c4bf963754d0aa641e78b0f058e0081012ef19c09ab7af638c8ead6",
+      "tested_source_sha256": "c2baa3091feb01ae5b4f5a268a2a343d91401db97ec7323b6377de4802148d80",
+      "experiment": "supervise_child",
+      "case": "variation-usr1-inherited-ignored-blocked",
+      "arguments": [],
+      "stdout": "child ready=yes terminated=SIGUSR1 reaped=yes\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "05f7379ad1a22d3460076cd7a3941e9ee4aa0bfa99d2189e9b1c764127842d67",
+      "tested_source_sha256": "05f7379ad1a22d3460076cd7a3941e9ee4aa0bfa99d2189e9b1c764127842d67",
+      "experiment": "seccomp_boundary",
+      "case": "canonical",
+      "arguments": [],
+      "stdout": "getppid before=allowed after=EPERM getpid=allowed\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "05f7379ad1a22d3460076cd7a3941e9ee4aa0bfa99d2189e9b1c764127842d67",
+      "tested_source_sha256": "288c18ea084795216b342ff1dfb077e21b9f7c7d64b69fb36e39b5d4566a27d9",
+      "experiment": "seccomp_boundary",
+      "case": "variation-getuid",
+      "arguments": [],
+      "stdout": "getuid before=allowed after=EPERM getpid=allowed\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "05f7379ad1a22d3460076cd7a3941e9ee4aa0bfa99d2189e9b1c764127842d67",
+      "tested_source_sha256": "0290d16a164edd65b7d2d81311e8865a432820e82fb0e03eafd30e2c4cf2f305",
+      "experiment": "seccomp_boundary",
+      "case": "simulated-zero-getppid",
+      "arguments": [],
+      "stdout": "getppid before=allowed after=EPERM getpid=allowed\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "source_sha256": "05f7379ad1a22d3460076cd7a3941e9ee4aa0bfa99d2189e9b1c764127842d67",
+      "tested_source_sha256": "09615fdfccf4027f6f3ab5221fe0d44bb66fe9ebf9655f05c6ac74035fdd2410",
+      "experiment": "seccomp_boundary",
+      "case": "simulated-zero-getuid",
+      "arguments": [],
+      "stdout": "getuid before=allowed after=EPERM getpid=allowed\n",
+      "stderr": "",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ]
+}

@@ -1,0 +1,491 @@
+{
+  "first_attempt": {
+    "status": "failed",
+    "workspace": "/home/cdl/kse-fedora-kernel-laoxtupk",
+    "error": "index-all timed out"
+  },
+  "resource_snapshot_after_timeout": {
+    "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.3Gi       2.4Gi       9.0Mi       1.3Gi       3.4Gi\nSwap:          5.8Gi       431Mi       5.3Gi\n",
+    "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/nvme0n1p3   18G  9.5G  7.7G  56% /home\ntmpfs           2.9G   20K  2.9G   1% /tmp\n",
+    "vmstat": "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu\n 1  0 441916 2490972  2116 1314044   2   62   245  2758  393    2  1  1 91  7  0  0\n 0  0 441916 2490948  2116 1314216   0    0     0     0  231  230  1  0 99  0  0  0\n 0  0 441916 2490948  2116 1314216   0    0     0     0  214  234  1  1 98  0  0  0\n",
+    "processes": "    PID    PPID STAT %CPU   RSS WCHAN                     COMMAND\n   7486    3511 S+    1.9 22224 anon_pipe_read            python3",
+    "files": {
+      "bundle.tar.gz": 237378,
+      "prepare-all.log": 15901,
+      "indexer-configure.log": 1132,
+      "indexer-build.log": 133,
+      "index-all.log": 0,
+      "index-all.sqlite.otbijs8q.tmp": 760823808,
+      "index-all.sqlite.otbijs8q.tmp-journal": 63048
+    },
+    "index_log": ""
+  },
+  "disk_retry_disposition": "Terminated only its identified verification process group before the separate tmpfs run.",
+  "disk_retry_sample_count": 22,
+  "blocked_samples": [
+    {
+      "elapsed_seconds": 47.291325264999614,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/cred.c",
+        "elapsed_seconds": 24.527280187998258,
+        "returncode": 0,
+        "stdout_bytes": 54521719,
+        "peak_rss_bytes": 1492750336
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "211800 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "btrfs_delayed_update_inode",
+          "io": "rchar: 593267186\nwchar: 524965252\nsyscr: 99425\nsyscw: 128258\nread_bytes: 26238976\nwrite_bytes: 259215360\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       524Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 124542976,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 57.32136682900091,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/cred.c",
+        "elapsed_seconds": 24.527280187998258,
+        "returncode": 0,
+        "stdout_bytes": 54521719,
+        "peak_rss_bytes": 1492750336
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "211800 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 616610290\nwchar: 544671108\nsyscr: 105124\nsyscw: 133069\nread_bytes: 26238976\nwrite_bytes: 278581248\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       524Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 128331776,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 67.35865536100027,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/cred.c",
+        "elapsed_seconds": 24.527280187998258,
+        "returncode": 0,
+        "stdout_bytes": 54521719,
+        "peak_rss_bytes": 1492750336
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "211800 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 616610290\nwchar: 544671108\nsyscr: 105124\nsyscw: 133069\nread_bytes: 26238976\nwrite_bytes: 278581248\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       524Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 128331776,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 77.37240690600083,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/cred.c",
+        "elapsed_seconds": 24.527280187998258,
+        "returncode": 0,
+        "stdout_bytes": 54521719,
+        "peak_rss_bytes": 1492750336
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "211800 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 616610290\nwchar: 544671108\nsyscr: 105124\nsyscw: 133069\nread_bytes: 26238976\nwrite_bytes: 278581248\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       524Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 128331776,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 97.39569081199988,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/exit.c",
+        "elapsed_seconds": 84.85810234699966,
+        "returncode": 0,
+        "stdout_bytes": 62610957,
+        "peak_rss_bytes": 2406715392
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "240400 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "folio_wait_bit_common",
+          "io": "rchar: 963634418\nwchar: 848393108\nsyscr: 174739\nsyscw: 207224\nread_bytes: 32808960\nwrite_bytes: 512712704\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.2Gi       3.2Gi\nSwap:          5.8Gi       538Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 195985408,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 107.42579991899947,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/exit.c",
+        "elapsed_seconds": 84.85810234699966,
+        "returncode": 0,
+        "stdout_bytes": 62610957,
+        "peak_rss_bytes": 2406715392
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "240400 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "folio_wait_bit_common",
+          "io": "rchar: 963634418\nwchar: 848393108\nsyscr: 174739\nsyscw: 207224\nread_bytes: 32808960\nwrite_bytes: 512712704\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.3Gi        33Mi       1.2Gi       3.3Gi\nSwap:          5.8Gi       538Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 195985408,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 127.47588492000068,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/sys.c",
+        "elapsed_seconds": 113.80258520499956,
+        "returncode": 0,
+        "stdout_bytes": 56070000,
+        "peak_rss_bytes": 2332286976
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "220928 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1272482685\nwchar: 1109649722\nsyscr: 236623\nsyscw: 271012\nread_bytes: 35758080\nwrite_bytes: 713928704\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.2Gi\nSwap:          5.8Gi       538Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 245407744,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 137.4932357710004,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/kernel/sys.c",
+        "elapsed_seconds": 113.80258520499956,
+        "returncode": 0,
+        "stdout_bytes": 56070000,
+        "peak_rss_bytes": 2332286976
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "220928 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1272482685\nwchar: 1109649722\nsyscr: 236623\nsyscw: 271012\nread_bytes: 35758080\nwrite_bytes: 713928704\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       538Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 245407744,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 180.21727564399953,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1547096362\nwchar: 1337867118\nsyscr: 289954\nsyscw: 326734\nread_bytes: 36442112\nwrite_bytes: 882536448\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 282542080,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 190.2301390850007,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1547096362\nwchar: 1337867118\nsyscr: 289954\nsyscw: 326734\nread_bytes: 36442112\nwrite_bytes: 882536448\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 282542080,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 200.24225341800047,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1547096362\nwchar: 1337867118\nsyscr: 289954\nsyscw: 326734\nread_bytes: 36442112\nwrite_bytes: 882536448\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 282542080,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 210.2616030620011,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "folio_wait_bit_common",
+          "io": "rchar: 1550324010\nwchar: 1340480366\nsyscr: 290742\nsyscw: 327372\nread_bytes: 36458496\nwrite_bytes: 885137408\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 283267072,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 220.2776487989995,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "folio_wait_bit_common",
+          "io": "rchar: 1550324010\nwchar: 1340480366\nsyscr: 290742\nsyscw: 327372\nread_bytes: 36458496\nwrite_bytes: 885137408\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 283267072,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 230.29268341600073,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "folio_wait_bit_common",
+          "io": "rchar: 1550324010\nwchar: 1340480366\nsyscr: 290742\nsyscw: 327372\nread_bytes: 36458496\nwrite_bytes: 885137408\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 283267072,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 240.30506664899985,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1560781098\nwchar: 1349765998\nsyscr: 293295\nsyscw: 329639\nread_bytes: 36462592\nwrite_bytes: 894398464\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 284954624,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    },
+    {
+      "elapsed_seconds": 250.31323117000102,
+      "index_progress": {
+        "phase": "parse_and_ingest",
+        "translation_unit": "/home/cdl/kse-fedora-kernel-laoxtupk/linux-7.2.11/fs/exec.c",
+        "elapsed_seconds": 143.76323843799946,
+        "returncode": 0,
+        "stdout_bytes": 56761753,
+        "peak_rss_bytes": 2345480192
+      },
+      "processes": [
+        {
+          "Name": "python3",
+          "State": "D (disk sleep)",
+          "VmPeak": "632884 kB",
+          "VmRSS": "227156 kB",
+          "VmSwap": "0 kB",
+          "Threads": "1",
+          "pid": 7708,
+          "wchan": "handle_reserve_ticket",
+          "io": "rchar: 1603567914\nwchar: 1385151342\nsyscr: 303741\nsyscw: 338278\nread_bytes: 36511744\nwrite_bytes: 929243136\ncancelled_write_bytes: 0\n"
+        }
+      ],
+      "free": "               total        used        free      shared  buff/cache   available\nMem:           5.8Gi       2.5Gi       2.2Gi        33Mi       1.3Gi       3.3Gi\nSwap:          5.8Gi       543Mi       5.2Gi\n",
+      "temporary_database_bytes": {
+        "index-retry.sqlite.qiyi_0xk.tmp": 294494208,
+        "index-retry.sqlite.qiyi_0xk.tmp-journal": 63048
+      }
+    }
+  ]
+}

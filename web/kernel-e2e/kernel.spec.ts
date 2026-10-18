@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
+import {readFileSync} from 'node:fs';
 
 test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   const errors: string[] = [];
@@ -8,7 +9,10 @@ test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   const started = performance.now();
   await page.goto('/#explore');
   await expect(page.locator('.dataset-bar')).toContainText('7.2.11');
-  await expect(page.locator('.dataset-bar')).toContainText('7/7');
+  const dataset = await (await page.request.get('/api/dataset')).json();
+  expect(dataset.coverage.length).toBeGreaterThanOrEqual(7);
+  expect(dataset.coverage.every((unit: {status: string}) => unit.status === 'successful')).toBeTruthy();
+  await expect(page.locator('.dataset-bar')).toContainText(`${dataset.coverage.length}/${dataset.coverage.length}`);
   await page.getByLabel('Symbol name').fill('kernel_clone');
   await page.locator('.result').filter({has:page.locator('strong', {hasText:/^kernel_clone$/})}).click();
   await page.getByLabel('Direction', {exact:true}).selectOption('outgoing');
@@ -23,7 +27,38 @@ test('real pinned kernel call evidence and reviewed trail', async ({page}) => {
   for(let i=0;i<10 && await dup.count()===0;i++) await page.getByRole('button',{name:'Load more evidence'}).click();
   await dup.locator('button').first().click();
   await expect(page.locator('.source-line.current')).toContainText('p = dup_task_struct(current, node);');
-  await page.locator('.trail-panel input[type=file]').setInputFiles(fileURLToPath(new URL('../../docs/process-creation-trail.json', import.meta.url)));
+  const trailPath = fileURLToPath(new URL('../../docs/process-creation-trail.json', import.meta.url));
+  const trail = JSON.parse(readFileSync(trailPath, 'utf8'));
+  if (trail.dataset_id !== dataset.metadata.dataset_id) {
+    // A real expanded index must reject the old dataset's trail. Build a new
+    // test-only copy only after verifying every selector against compiler evidence.
+    await page.locator('.trail-panel input[type=file]').setInputFiles(trailPath);
+    await expect(page.getByRole('alert')).toContainText('different dataset');
+    await page.getByRole('button', {name: 'Dismiss', exact: true}).click();
+    expect(dataset.metadata.revision).toBe(trail.revision);
+    const callees = ['copy_process', 'dup_task_struct', 'copy_creds', 'alloc_pid'];
+    for (const [i, step] of trail.steps.entries()) {
+      let offset: number | null = 0;
+      let found = false;
+      while (offset !== null && offset < 10000 && !found) {
+        const response = await page.request.get('/api/neighborhood', {params: {
+          id: step.symbol, direction: 'outgoing', kind: 'direct_call', limit: 100, offset,
+        }});
+        expect(response.ok()).toBeTruthy();
+        const result = await response.json();
+        found = result.edges.some((edge: {source_name: string; target_name: string; file: string; line: number; column: number; resolution: string; status: string}) =>
+          edge.source_name === step.name && edge.target_name === callees[i] &&
+          edge.file === step.location.file && edge.line === step.location.line &&
+          edge.column === step.location.column && edge.resolution === 'compiler_resolved' && edge.status === 'successful');
+        offset = result.next_offset;
+      }
+      expect(found, `reviewed trail evidence ${step.name} → ${callees[i]}`).toBeTruthy();
+    }
+    trail.dataset_id = dataset.metadata.dataset_id;
+  }
+  await page.locator('.trail-panel input[type=file]').setInputFiles({
+    name: 'verified-test-trail.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(trail)),
+  });
   await expect(page.locator('.trail-panel ol li')).toHaveCount(4);
   await page.locator('.trail-panel ol li').last().locator('button').click();
   await expect(page.locator('.source-line.current')).toContainText('pid = alloc_pid(');
