@@ -8,7 +8,7 @@ export function lessonActivity(topic: Topic, params: URLSearchParams) {
   const allowed = [
     "question",
     ...(topic.experiment ? ["code", "experiment"] : []),
-    ...(topic.containment ? ["containment"] : []),
+    ...(topic.containment || topic.security_connection ? ["containment"] : []),
     ...(topic.checkpoints.length ? ["source"] : []),
   ];
   const requested = params.get("view") || "question";

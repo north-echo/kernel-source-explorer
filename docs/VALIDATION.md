@@ -89,3 +89,7 @@ The latest Explorer tests exercise novice question entry, API suggestions versus
 ## Process-creation memory journey refinement (2026-10-17)
 
 See [MEMORY_JOURNEY_PASS.md](MEMORY_JOURNEY_PASS.md) for the focused handoff and current validation. This adds a connected two-checkpoint path and C stopping point, rather than any new indexed kernel coverage or runtime mechanism. The source-contract regression checks the actual pinned branch, assignments and documented pointer result. Browser regressions exercise primary continuation, guided/full-definition detours, copied links, history, independent C origin/bookmark, phone paging and enlarged source navigation. Test counts describe functional coverage; the handoff records the separate teaching/layout review and remaining assumed knowledge.
+
+## All-chapter newcomer reading revision (2026-10-17)
+
+See [CURRICULUM_READING_REVIEW.md](CURRICULUM_READING_REVIEW.md) for the 64-row editorial record, before/after decisions, primary-reference checks, rendered review, test results and limits. Chapters now expose the central explanation before optional reflection; the nine developed investigations retain prediction-first views. Code context and evidence availability remain distinct. New regressions protect the reading schema, labeled illustrations, legacy containment routes, notes and saved-position continuity, and keyboard/narrow/enlarged disclosure behavior. This is editorial and functional validation, not beginner participant testing or new C/Linux runtime execution.

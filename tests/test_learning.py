@@ -307,3 +307,21 @@ def test_memory_journey_keeps_existing_selectors_and_exposes_the_actual_branch()
         definition = next(loc for loc in locs if loc['is_definition'])
         text = '\n'.join(client.get('/api/source', params={**definition, 'before': 12, 'after': 3}).json()['lines'])
         assert 'Return: the duplicated mm or NULL on failure.' in text
+
+
+def test_reading_structure_keeps_evidence_and_code_context_separate():
+    chapters = curriculum()['chapters']
+    for c in chapters:
+        assert c['orientation']['heading'] and c['orientation']['prerequisite']
+        assert c['reflection_answer']
+        assert not c['checkpoints'] and not c.get('experiment') and not c.get('walkthrough')
+        assert c['flow']['question'] and c['flow']['relationships']
+        assert all(e.get('label') for e in c['flow']['edges'])
+        for concept in c['concepts']:
+            if concept.get('code'):
+                assert all(concept.get(k) for k in ['code_kind', 'code_context', 'code_syntax'])
+        # Retired chapter worksheets must not imply that a linked lab was run here.
+        assert 'containment' not in c
+    c2 = chapters[1]
+    assert 'security_connection' in c2
+    assert c2['availability'] == dict(reading=True, walkthrough=False, experiment=False, checkpoint=False)

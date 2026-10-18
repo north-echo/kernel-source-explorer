@@ -9,6 +9,7 @@ import type {
 } from "./learningTypes";
 import { emptyNotes } from "./learningTypes";
 import { ConceptFlow } from "./ConceptFlow";
+import { ChapterReading } from "./ChapterReading";
 import { Availability } from "./Availability";
 import { BookCatalog } from "./BookCatalog";
 import { CodeWalkthrough } from "./CodeWalkthrough";
@@ -99,7 +100,7 @@ export function Learning({
         topic.title +
         " · " +
         ({
-          question: "Question",
+          question: topic.orientation ? "Reading guide" : "Question",
           code: "C walkthrough",
           experiment: "Experiment",
           containment: "Containment",
@@ -429,14 +430,19 @@ export function Learning({
               <div className="topic-content">
                 <nav className="topic-tabs" aria-label="Ways to explore">
                   {[
-                    ["question", "Think it through"],
+                    [
+                      "question",
+                      topic.orientation
+                        ? "Read and consider"
+                        : "Think it through",
+                    ],
                     ...(experiment
                       ? [
                           ["code", "Read the C code"],
                           ["experiment", "Optional experiment"],
                         ]
                       : []),
-                    ...(topic.containment
+                    ...(topic.containment || topic.security_connection
                       ? [["containment", "Containment connection"]]
                       : []),
                     ...(topic.checkpoints.length
@@ -457,7 +463,22 @@ export function Learning({
                     </button>
                   ))}
                 </nav>
-                {tab === "question" && (
+                {tab === "question" && topic.orientation && (
+                  <ChapterReading
+                    key={topic.id}
+                    topic={topic}
+                    notes={notes}
+                    onThinking={(thinking) => updateNotes({ thinking })}
+                    revealed={revealed}
+                    onReveal={() =>
+                      setRevealedTopics((old) => ({
+                        ...old,
+                        [topicId]: !revealed,
+                      }))
+                    }
+                  />
+                )}
+                {tab === "question" && !topic.orientation && (
                   <section className="thinking-space">
                     <h2>{topic.prompt}</h2>
                     <label>
@@ -689,8 +710,14 @@ export function Learning({
                 )}
                 {tab === "containment" && (
                   <section className="containment-connection">
-                    <h2>Follow the authority</h2>
-                    {topic.containment ? (
+                    <h2>
+                      {topic.security_connection
+                        ? "What access does this example involve?"
+                        : "Follow the authority"}
+                    </h2>
+                    {topic.security_connection ? (
+                      <p>{topic.security_connection}</p>
+                    ) : topic.containment ? (
                       <>
                         <p>{topic.containment.kind}</p>
                         <dl>
@@ -807,6 +834,12 @@ export function Learning({
                 {topic.related && topic.related.length > 0 && (
                   <section className="related-investigations">
                     <h2>Related investigations</h2>
+                    {topic.orientation && (
+                      <p>
+                        {topic.related_context ||
+                          "These are separate activities, with their own code, experiment and source availability. Reading this guide does not run them."}
+                      </p>
+                    )}
                     {topic.related.map((id) => {
                       const t = topics.find((t) => t.id === id);
                       return t ? (

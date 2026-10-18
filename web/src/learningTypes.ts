@@ -46,6 +46,8 @@ export type Checkpoint = {
 };
 export type Reference = { title: string; url: string };
 export type ConceptMap = {
+  question?: string;
+  relationships?: string;
   title: string;
   scope?: string;
   nodes: { id: string; label: string; detail?: string }[];
@@ -62,6 +64,9 @@ export type Containment = {
   establishes: string;
 };
 export type Concept = {
+  code_kind?: string;
+  code_context?: string;
+  code_syntax?: string;
   title: string;
   scenario: string;
   explanation: string;
@@ -99,6 +104,9 @@ export type Experiment = {
   troubleshooting: string[];
 };
 export type Topic = {
+  orientation?: { heading: string; prerequisite: string };
+  reflection_answer?: string;
+  security_connection?: string;
   guided_path?: {
     definition?: string;
     title: string;
@@ -122,6 +130,7 @@ export type Topic = {
   number?: number;
   group?: string;
   related?: string[];
+  related_context?: string;
   flow?: ConceptMap;
   experiment?: Experiment;
   walkthrough?: Segment[];

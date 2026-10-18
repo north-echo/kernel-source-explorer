@@ -114,7 +114,7 @@ test('reading-only index failure remains visible without preventing the lesson',
 test('corrected ownership, ACL, signal, memory, predicate and acknowledgment models reveal separately',async({page})=>{
   for(const chapter of [5,17,20,24,30,61]){
     await page.goto('/#learn/chapter-'+String(chapter).padStart(2,'0'));
-    await expect(page.locator('.concept-flow')).toHaveCount(0);
+    await expect(page.locator('.concept-flow')).toBeHidden();
     await page.getByRole('button',{name:'Compare with an explanation'}).click();
     await page.getByText('Show concept diagram',{exact:true}).click();
     await expect(page.locator('.concept-flow')).toBeVisible();

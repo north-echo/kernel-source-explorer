@@ -17,3 +17,17 @@
 .source-gap{font:12px/1.8 system-ui,sans-serif;color:#52677c;padding:8px 14px;background:#f0f3f6;border-block:1px dashed #b7c7d5;white-space:normal}
 
 .navigation-marker{opacity:1;font-style:italic}
+
+.chapter-reading .chapter-situation { font-size: 17px; line-height: 1.8; }
+.chapter-prerequisite { color: #435c71; border-left: 3px solid #a4bcd0; padding-left: 14px; }
+.chapter-main { max-width: 74ch; }
+.chapter-main p { font-size: 16px; line-height: 1.9; margin: 20px 0; }
+.chapter-reflection { margin-block: 28px; padding-block: 20px; border-block: 1px solid var(--border); }
+.chapter-reflection h3 { font-size: 18px; line-height: 1.6; }
+.chapter-reflection label { margin-top: 20px; }
+.chapter-reflection textarea { min-height: 70px; }
+.chapter-reading .authored-explanation { border: 0; padding: 16px 0; margin: 0; }
+.chapter-reading > h2 { line-height: 1.5; }
+.chapter-reading .reading-code { margin-top: 20px; }
+.chapter-reading .reading-code p { color: var(--ink); }
+.chapter-reading pre { white-space: pre; overflow: auto; max-width: 100%; }

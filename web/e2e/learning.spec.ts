@@ -54,7 +54,9 @@ test('full book discovery, interactive concept flows and chapter bookmarks work 
   await page.goto('/#learn/catalog');
   await expect(page.locator('.chapter-grid>a')).toHaveCount(64);
   await page.getByLabel('Find a chapter').fill('signals');
-  await expect(page.locator('.chapter-grid>a')).toHaveCount(3);
+  await expect(page.getByRole('heading',{name:'Signals: Fundamental Concepts',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Signals: Signal Handlers',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Signals: Advanced Features',exact:true})).toBeVisible();
   await page.locator('.chapter-grid>a').filter({hasText:'Signals: Fundamental Concepts'}).click();
   await expect(page.locator('.topic-header')).toContainText('pp. 387–420');
   await expect(page.locator('.authored-explanation')).toHaveCount(0);
