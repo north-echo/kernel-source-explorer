@@ -124,6 +124,7 @@ export type Topic = {
   summary: string;
   prompt: string;
   explanation: string[];
+  explanation_headings?: string[];
   follow_up: string;
   boundary: string;
   terms: string[];

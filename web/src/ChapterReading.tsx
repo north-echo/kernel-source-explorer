@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Concept, Topic, TopicNotes } from "./learningTypes";
 import { ConceptFlow } from "./ConceptFlow";
 
@@ -90,7 +91,12 @@ export function ChapterReading({
       <p className="chapter-prerequisite">{topic.orientation!.prerequisite}</p>
       <div className="chapter-main" aria-label="Chapter explanation">
         {topic.explanation.map((p, i) => (
-          <p key={i}>{p}</p>
+          <Fragment key={i}>
+            {topic.explanation_headings?.[i] && (
+              <h3>{topic.explanation_headings[i]}</h3>
+            )}
+            <p>{p}</p>
+          </Fragment>
         ))}
       </div>
       <div className="chapter-reflection">

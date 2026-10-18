@@ -167,11 +167,10 @@
     "summary": "You ask a shell to start a program.",
     "prompt": "A hypothetical child changes its private integer. Does that tell you whether it can read a file?",
     "explanation": [
-      "A program stored in an executable file contains instructions and starting data. When those instructions run, Linux maintains a running instance called a process. Starting the same executable twice can produce two processes with different working information.",
-      "A process uses memory to keep that working information. An ordinary C integer variable keeps a whole-number value in part of that memory. The process refers to memory using addresses, values that locate storage from its own point of view. The range and arrangement of memory it can address is its virtual address space; this is not a list of files it may open.",
-      "Here is a preview of the separate Lab 001 example, not an experiment performed by reading this guide. One process has an ordinary private integer containing 42. After a successful ordinary fork(), both parent and child continue after the call with that starting value. If the child assigns 7 to its private integer, the parent’s integer remains 42. Explicit shared memory is a different case.",
-      "Memory and permission are separate questions. The child can have independent private variables while retaining access to files the parent already opened. Credentials are the kernel’s user/group identity and related permission information for a process. An open file descriptor is a small number through which the process uses an already-open resource. Neither is removed merely by giving the child private memory.",
-      "Library functions are callable routines supplied alongside C programs; some can do their work within the process. A system call requests a kernel service, such as reading from an open resource. The optional depth below follows those layers. Linux can delay copying underlying storage until a private write requires separation. That technique is called copy-on-write; its machinery can wait until the separate-variable behavior is clear."
+      "A program stored in an executable file contains instructions and starting data. When those instructions run, Linux maintains a running instance called a process. Starting the same executable twice can produce two processes with different working information. The kernel is the core part of the operating system that manages resources and handles requests from running programs.",
+      "A process uses memory to keep that working information. An ordinary C integer variable keeps a whole-number value in part of that memory. Private memory lets a process change its working information independently of another process; explicit shared memory is a different case.",
+      "Here is a preview of the separate Lab 001 example, not an experiment performed by reading this guide. One process has an ordinary private integer containing 42. A successful ordinary fork() creates a child process. The original process is called the parent. Both parent and child continue after the call with that starting value. If the child assigns 7 to its private integer, the parent’s integer remains 42. This example concerns an ordinary private variable, not shared memory.",
+      "Memory and permission are separate questions. The child can have independent private variables while retaining access to files the parent already opened. Credentials are the kernel’s user/group identity and related permission information for a process. An open file descriptor is a small number through which the process uses an already-open resource. Neither is removed merely by giving the child private memory. A file read depends on the access the child retains and the checks relevant to that operation."
     ],
     "follow_up": "When a process executes a different program, which resources would you expect it to retain?",
     "boundary": "This is an authored reading guide. Its hypothetical examples are not measured experiments or compiler evidence; linked investigations are separate activities with their own availability.",
@@ -241,11 +240,11 @@
     ],
     "concepts": [
       {
-        "title": "Follow a concrete request",
-        "scenario": "A C program calls printf and later read.",
-        "explanation": "printf can keep pending output in memory managed by the C library before requesting any write. read has a different interface contract for obtaining bytes. One C library call need not correspond to one kernel entry; this chapter is an orientation, not a resolved userspace-to-kernel call graph.",
-        "assumptions": "The request starts in one user-space process and may pass through libc before entering the kernel.",
-        "counterexample": "One library call need not correspond to exactly one syscall; a vDSO or library cache can avoid a syscall.",
+        "title": "Optional depth: library calls and kernel requests",
+        "scenario": "A C program asks printf to produce output and read to obtain bytes.",
+        "explanation": "Library functions are callable routines supplied alongside C programs. printf can keep pending output in a buffer, an area of memory managed by the C library, before requesting a write. A system call requests a kernel service, such as reading from an open resource. One library call need not correspond to one kernel entry; some library work stays within the process. This is an authored explanation of the layers, not a resolved userspace-to-kernel call graph.",
+        "assumptions": "The example is one process using the C library (often called libc on Linux). The interface contract and the library’s implementation are separate questions.",
+        "counterexample": "A library cache, or a vDSO routine supplied by Linux for selected services, can answer some requests without a system call.",
         "apis": [
           "intro",
           "fork"
@@ -279,6 +278,27 @@
           {
             "title": "fork.2 manual",
             "url": "https://man7.org/linux/man-pages/man2/fork.2.html"
+          }
+        ]
+      },
+      {
+        "title": "Optional depth: addresses and copy-on-write",
+        "scenario": "The parent and child start with the same private integer value, yet later writes can differ.",
+        "explanation": "A process refers to memory using addresses, values that locate storage from its own point of view. The range and arrangement of memory it can address is its virtual address space, not a list of files it may open. Linux can initially let separate private mappings use the same underlying physical pages and arrange separation when a private write requires it. That technique is called copy-on-write. The ordinary-variable behavior does not require eagerly copying every physical page when fork creates the child.",
+        "assumptions": "This explanation concerns ordinary private memory after successful fork. It is optional implementation depth beyond the preview; reading it supplies neither a runtime observation nor a reviewed source visit.",
+        "counterexample": "An explicitly shared mapping can let one process’s writes become visible to another. Separate private memory also does not remove inherited file access.",
+        "apis": [
+          "fork",
+          "mmap"
+        ],
+        "references": [
+          {
+            "title": "fork.2 manual",
+            "url": "https://man7.org/linux/man-pages/man2/fork.2.html"
+          },
+          {
+            "title": "mmap.2 manual",
+            "url": "https://man7.org/linux/man-pages/man2/mmap.2.html"
           }
         ]
       }
@@ -324,7 +344,13 @@
       "prerequisite": "Begin with a file containing instructions and a variable that keeps a value while code runs. No knowledge of credentials or virtual memory is assumed."
     },
     "reflection_answer": "No. The private integer example concerns working memory. A file read depends on the child’s retained references, credentials and applicable access checks. Lab 001 is a separate optional preview, not an experiment performed by reading Chapter 2.",
-    "security_connection": "The hypothetical child wants to read a file. Its inherited descriptor may still let it read that resource even though its private integer is independent. This distinction is state isolation versus access control: separating working data is different from restricting operations. Lab 001 and the reviewed memory-source journey are separate optional activities, not evidence of a run in this chapter."
+    "security_connection": "The hypothetical child wants to read a file. Its inherited descriptor may still let it read that resource even though its private integer is independent. This distinction is state isolation versus access control: separating working data is different from restricting operations. Lab 001 and the reviewed memory-source journey are separate optional activities, not evidence of a run in this chapter.",
+    "explanation_headings": [
+      "A program becomes a process",
+      "A process keeps working information in memory",
+      "A child starts with its own private variable",
+      "Separate memory does not remove file access"
+    ]
   },
   {
     "id": "chapter-03",
@@ -3333,13 +3359,15 @@
       "start": 387,
       "end": 420
     },
-    "reading": "A program temporarily postpones an interrupt request while it updates some state. Postponing the request is different from deciding to discard it.",
-    "summary": "A program temporarily postpones an interrupt request while it updates some state.",
-    "prompt": "A signal is generated while it is blocked. Has the process ignored it?",
+    "reading": "You press Ctrl+C while a program runs in a terminal. The program often ends, but the key press and the program’s response are different parts of the story.",
+    "summary": "You press Ctrl+C while a program runs in a terminal.",
+    "prompt": "In the one-thread example, SIGINT is not ignored but is blocked when you press Ctrl+C. Has the process discarded it?",
     "explanation": [
-      "Generating a signal makes a notification relevant to a process or thread under the targeting rules. Generation is different from delivery, the point at which the signal’s configured action takes effect.",
-      "A thread is one execution path within a process. A thread can block a catchable signal by putting its number in a blocked set, called its signal mask. A nonignored blocked signal may remain pending: generated but not yet delivered. Removing it from the blocked set can make delivery eligible again.",
-      "The configured action is called the disposition: a default action, an installed handler function, or ignoring where allowed. Ignoring is not the same as blocking for later delivery. SIGKILL and SIGSTOP cannot be caught, blocked or ignored. Repeated ordinary signals can combine into one pending indication, so this mechanism is not an unlimited event counter."
+      "Under the usual terminal configuration, Ctrl+C causes the terminal to send SIGINT, an interrupt signal, to its foreground process group. This is the group of processes currently selected to interact with that terminal; it can contain more than one process, such as the members of a pipeline. A signal is a notification managed by the kernel. Different terminal settings can change what Ctrl+C does.",
+      "SIGINT’s default action is termination: ending the process. A program can instead arrange a permitted response, such as running a handler function or ignoring SIGINT. This choice of action is called the signal’s disposition. The terminal sends the signal; it does not decide which response each program has configured.",
+      "Sending SIGINT in this example generates a signal for each targeted process. Generation means the request has been created. Delivery is the handling step at which Linux applies the signal’s action; it need not happen at the key press. Keeping these steps separate lets us ask whether a generated signal is waiting to be handled.",
+      "Consider one targeted process with one thread, meaning one execution path. The thread can temporarily block SIGINT using its signal mask, the set of signal numbers it blocks. If SIGINT is not ignored, it can remain pending: generated but not yet delivered. Unblocking makes it eligible for delivery again. Blocking postpones delivery; ignoring chooses to discard the signal instead. Masks belong to individual threads, so a process with several threads needs the additional targeting rules in the optional depth.",
+      "Not every signal permits these choices. SIGKILL and SIGSTOP cannot be caught, blocked or ignored. Repeated standard signals such as SIGINT can combine into one pending indication, so repeated key presses do not provide an unlimited event count. The chapter uses this distinction between a request, its delivery and its configured action to explain signal behavior."
     ],
     "follow_up": "How would pending, blocked and ignored differ in a diagram?",
     "boundary": "This is an authored reading guide. Its hypothetical examples are not measured experiments or compiler evidence; linked investigations are separate activities with their own availability.",
@@ -3428,14 +3456,14 @@
     ],
     "concepts": [
       {
-        "title": "Block is not ignore",
-        "scenario": "A catchable ordinary signal is generated while blocked.",
-        "explanation": "Signal disposition is process-wide while the blocked mask is per thread. Process-directed and thread-directed generation have different targeting implications; an eligible thread still needs an opportunity to execute the action.",
-        "assumptions": "The blocking example concerns an ordinary nonignored signal; ignored signals and SIGKILL/SIGSTOP need their own rules.",
-        "counterexample": "SIGKILL and SIGSTOP cannot be blocked or caught, and signal-specific details matter; the diagram is scoped to an ordinary catchable signal.",
+        "title": "Optional depth: one process, several threads",
+        "scenario": "The terminal sends SIGINT to a process whose execution is split among several threads.",
+        "explanation": "A terminal-generated SIGINT is directed to the process, rather than a particular thread. Linux may deliver it to one thread that does not block it. Blocking it in one thread therefore need not postpone it for the whole process. The disposition is shared by the process, while each thread has its own mask. A signal explicitly directed to a thread follows that target instead.",
+        "assumptions": "The main example uses a one-thread process. In threaded code, use pthread_sigmask to manage the calling thread’s mask; sigprocmask is for the single-threaded case.",
+        "counterexample": "Ignoring is a disposition choice, not a mask setting. A blocked signal that is also ignored requires the ignored-signal rules; it is not the nonignored pending example in the main text.",
         "apis": [
           "signal",
-          "sigprocmask",
+          "pthread_sigmask",
           "sigaction"
         ],
         "references": [
@@ -3446,28 +3474,32 @@
           {
             "title": "sigprocmask.2 manual",
             "url": "https://man7.org/linux/man-pages/man2/sigprocmask.2.html"
+          },
+          {
+            "title": "pthread_sigmask.3 manual",
+            "url": "https://man7.org/linux/man-pages/man3/pthread_sigmask.3.html"
           }
         ]
       },
       {
-        "title": "Which action runs",
-        "scenario": "A previously pending signal becomes eligible after unblocking.",
-        "explanation": "Standard signals can coalesce rather than queue one distinct item per generation. SIGCHLD and other signal-specific rules need their own reading; the diagram intentionally compares a simple ignored case with a nonignored blocked case.",
-        "assumptions": "A disposition belongs to the process while a signal mask belongs to a thread; delivery also depends on the selected target.",
-        "counterexample": "A queued signal does not promise immediate execution of user code or a distinct callback per generation.",
+        "title": "Optional depth: why the terminal settings matter",
+        "scenario": "A terminal program changes how it handles input characters.",
+        "explanation": "The terminal’s ISIG setting enables signal-generating input characters, and its VINTR entry selects the interrupt character, usually Ctrl+C. With those settings, the terminal generates SIGINT for each process in its foreground process group. If signal-generating input is disabled or the interrupt character changes, the same key press need not generate SIGINT. Chapter 34 explores foreground groups; Chapter 62 explores terminal configuration.",
+        "assumptions": "The main example assumes the usual Ctrl+C interrupt character and signal-generating input enabled. It describes a terminal event, not a new measured experiment.",
+        "counterexample": "A raw-input program may receive the character as input rather than be sent SIGINT. Even when SIGINT is generated, an installed handler or ignored disposition can prevent the default termination.",
         "apis": [
-          "signal",
-          "sigprocmask",
+          "tcgetattr",
+          "tcsetattr",
           "sigaction"
         ],
         "references": [
           {
-            "title": "sigprocmask.2 manual",
-            "url": "https://man7.org/linux/man-pages/man2/sigprocmask.2.html"
+            "title": "termios.3 manual",
+            "url": "https://man7.org/linux/man-pages/man3/termios.3.html"
           },
           {
-            "title": "sigaction.2 manual",
-            "url": "https://man7.org/linux/man-pages/man2/sigaction.2.html"
+            "title": "signal.7 manual",
+            "url": "https://man7.org/linux/man-pages/man7/signal.7.html"
           }
         ]
       }
@@ -3493,6 +3525,10 @@
         "url": "https://man7.org/linux/man-pages/man2/sigaction.2.html"
       },
       {
+        "title": "termios.3 manual",
+        "url": "https://man7.org/linux/man-pages/man3/termios.3.html"
+      },
+      {
         "title": "Author’s detailed TLPI table of contents",
         "url": "https://man7.org/tlpi/toc-detailed.html"
       }
@@ -3509,10 +3545,10 @@
       "checkpoint": false
     },
     "orientation": {
-      "heading": "A request to interrupt a process can wait",
-      "prerequisite": "Recall that a process executes instructions and may be interrupted. A signal is a kernel-mediated notification with a particular signal number."
+      "heading": "What happens when you press Ctrl+C?",
+      "prerequisite": "Picture a program running from a terminal. No signal vocabulary is needed yet; start with the key press and the program’s possible response."
     },
-    "reflection_answer": "No. For the scoped nonignored catchable signal, blocking can leave it pending for later delivery. Ignoring selects a different disposition and may discard it instead.",
+    "reflection_answer": "No. With the usual terminal settings, the key press generates SIGINT. In this one-thread, nonignored case it can remain pending while blocked. Unblocking allows delivery according to the disposition; with SIGINT’s default disposition, that action is termination. Ignoring would be a different choice, not a name for temporary blocking.",
     "security_connection": "A supervisor may send its child a termination request. Whether that request is delayed, ignored or handled depends on the chosen signal and the child’s state. That delivery policy does not restrict the child’s file or network operations; the separate supervisor lab observes one prepared signal path."
   },
   {
@@ -5187,11 +5223,11 @@
     },
     "reading": "A consumer wants an item from a shared queue. It must avoid taking an item that is not there or missing a producer’s change while it starts waiting.",
     "summary": "A consumer wants an item from a shared queue.",
-    "prompt": "A consumer checks that a queue is empty, then waits. Where can a missed notification arise?",
+    "prompt": "In a faulty approach, a consumer checks the queue while holding the mutex, finds it empty, unlocks the mutex, and separately starts waiting for a notification. Where could a producer add an item and send a notification, leaving the consumer waiting despite available work?",
     "explanation": [
       "A mutex is a lock that cooperating threads use to take turns inspecting and changing shared state. While holding the queue’s mutex, the consumer checks whether an item is available. That true/false condition is called a predicate.",
-      "If the queue is empty, pthread_cond_wait coordinates releasing the mutex and waiting for a notification. Before returning it reacquires the mutex. This avoids the unprotected gap in a separate unlock-then-sleep approach when participants follow the same protocol.",
-      "The consumer checks the predicate again in a while loop after every return. A wakeup does not reserve an item: another consumer may have taken it, and wakeups can occur without the predicate becoming true. The chapter explains how the lock, state and condition notification work together; a notification by itself is not stored queue data."
+      "If the queue is empty, pthread_cond_wait() coordinates releasing the mutex and waiting for a notification. Before returning it reacquires the mutex. Compare a faulty approach: the consumer unlocks first and only afterward starts waiting. In that gap, a producer can acquire the mutex, add an item and notify before the consumer is waiting. A condition variable does not keep that notification for a future waiter. The coordinated release-and-wait avoids this gap when participants inspect and change the same predicate under the same mutex.",
+      "The consumer checks the predicate again in a while loop after every return. This solves a separate problem: a wakeup does not reserve an item, another consumer may have taken it, and wakeups can occur without the predicate becoming true. The loop alone cannot repair an incorrectly separated unlock-and-wait operation. The lock protects the queue state, coordinated waiting avoids the start-waiting gap, and the loop checks whether work is actually available after waking."
     ],
     "follow_up": "What if another consumer removes the item before the awakened thread obtains the mutex?",
     "boundary": "This is an authored reading guide. Its hypothetical examples are not measured experiments or compiler evidence; linked investigations are separate activities with their own availability.",
@@ -5358,7 +5394,7 @@
       "heading": "Wait for a condition, then check it again",
       "prerequisite": "Recall shared objects between threads. A queue is stored program data containing items to process; concurrent changes need a coordinated rule."
     },
-    "reflection_answer": "A separate check and wait can leave a gap in which a producer changes the state and sends a notification before waiting begins. Use the same mutex/predicate protocol with condition waiting, and recheck the predicate in a loop.",
+    "reflection_answer": "The producer can act after the consumer unlocks but before the consumer starts waiting: it locks the mutex, adds an item, sends a notification and unlocks. If no one is waiting yet, that notification is not saved for the later waiter. The consumer can then sleep with an item already in the queue. Instead, call pthread_cond_wait() while holding the mutex: it coordinates releasing that mutex with starting the wait. When the producer follows the same mutex/predicate protocol, its notification after acquiring the released mutex behaves as if the consumer were already waiting. After the wait returns with the mutex held, the while loop rechecks the queue for a different reason: waking does not guarantee an item is still available. The loop does not reserve an item or fix the faulty separated operation.",
     "security_connection": "A mutex coordinates threads that follow its protocol; it does not deny file or network access to a thread running the same program. Protecting a queue’s consistency and limiting a worker’s authority are different design tasks."
   },
   {

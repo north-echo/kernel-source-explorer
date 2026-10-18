@@ -164,6 +164,9 @@ def test_chapter_depth_and_flagged_diagram_semantics():
     content = curriculum()
     for chapter in content['chapters']:
         assert chapter['concepts']
+        if 'explanation_headings' in chapter:
+            assert len(chapter['explanation_headings']) == len(chapter['explanation'])
+            assert all(isinstance(h, str) and h for h in chapter['explanation_headings'])
         assert not any(c['title']=='Trace the mechanism before choosing a boundary' for c in chapter['concepts'])
         assert all(c['explanation'] not in chapter['explanation'] for c in chapter['concepts'])
         assert len(chapter['terms']) >= 2

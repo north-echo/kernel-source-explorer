@@ -197,3 +197,50 @@ test("narrow enlarged reading and code keep keyboard disclosures and history usa
   await page.goBack();
   await expect(page.locator(".topic-header h1")).toHaveText("Pseudoterminals");
 });
+
+test("staged reading keeps deeper mechanisms optional and supports plain guides without headings", async ({ page }) => {
+  for (const width of [1512, 390]) {
+    await page.setViewportSize({ width, height: 982 });
+    for (const n of [2, 20, 30, 4]) {
+      await page.goto(`/#learn/chapter-${String(n).padStart(2, "0")}`);
+      await expect(page.locator(".topic-header h1")).toBeFocused();
+      await page.evaluate((narrow) => { document.body.style.zoom = narrow ? "1.5" : "1"; }, width === 390);
+      const main = page.getByLabel("Chapter explanation");
+      await expect(main).toBeVisible();
+      await expect(page.locator(".chapter-concept[open]")).toHaveCount(0);
+      await expect(page.locator(".authored-explanation")).toHaveCount(0);
+      if (n === 2) {
+        // Protect paragraph-to-heading association, not an editorial word count.
+        const stages = await main.locator("h3").evaluateAll((headings) =>
+          headings.map((h) => ({ title: h.textContent, paragraph: h.nextElementSibling?.textContent })),
+        );
+        expect(stages[0].paragraph).toContain("The kernel is the core part");
+        expect(stages[2].paragraph).toContain("creates a child process");
+        expect(stages[3].paragraph).toContain("retaining access to files");
+        await expect(main).not.toContainText("copy-on-write");
+        await expect(page.getByText("Optional depth: addresses and copy-on-write", { exact: true })).toBeVisible();
+      } else {
+        await expect(main.locator("h3")).toHaveCount(0);
+      }
+      await main.screenshot({ path: test.info().outputPath(`chapter-${n}-${width}-main.png`) });
+      await page.getByRole("button", { name: "Compare with an explanation", exact: true }).focus();
+      await page.keyboard.press("Enter");
+      await expect(page.locator(".authored-explanation")).toBeVisible();
+      if (n === 30) {
+        await expect(page.locator(".chapter-reflection h3")).toContainText("separately starts waiting");
+        await expect(page.locator(".authored-explanation")).toContainText("after the consumer unlocks but before");
+      }
+      for (const summary of await page.locator(".chapter-concept > summary").all()) {
+        await summary.focus();
+        await page.keyboard.press("Enter");
+        await expect(summary.locator("..")).toHaveAttribute("open", "");
+        await summary.locator("..").screenshot({ path: test.info().outputPath(`chapter-${n}-${width}-optional-${await summary.textContent()}.png`) });
+        await page.keyboard.press("Enter");
+        await expect(summary.locator("..")).not.toHaveAttribute("open");
+      }
+      await page.getByRole("button", { name: "Hide explanation", exact: true }).focus();
+      await page.keyboard.press("Enter");
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    }
+  }
+});
