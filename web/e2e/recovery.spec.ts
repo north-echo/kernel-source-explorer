@@ -366,9 +366,11 @@ test("oversized ordinary edits and oversized final merges preserve the prior rec
       Array.from({ length: 207 }, (_, i) => ["n" + i, note]),
     ),
   };
-  await page.goto("/");
-  await page.evaluate(
-    (v) => localStorage.setItem("kse-reader-v1", JSON.stringify(v)),
+  await page.addInitScript(
+    (v) => {
+      if (localStorage.getItem("kse-reader-v1") === null)
+        localStorage.setItem("kse-reader-v1", JSON.stringify(v));
+    },
     nearLimit,
   );
   await page.goto("/#learn/fork-memory");
@@ -384,6 +386,7 @@ test("oversized ordinary edits and oversized final merges preserve the prior rec
   const before = await page.evaluate(() =>
     localStorage.getItem("kse-reader-v1"),
   );
+  expect(Object.keys(JSON.parse(before!).notes)).toHaveLength(207);
   await page.getByLabel("My thinking (optional)").fill("漢".repeat(9999));
   await expect(page.locator(".reading-error")).toContainText(
     "edit was not accepted",
