@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "workspace": "/home/cdl/kse-fedora-kernel-laoxtupk",
+  "verified_index": "/home/cdl/kse-fedora-kernel-laoxtupk/index-tmpfs-verified.sqlite",
+  "python_tests": "...............................................                          [100%]\n=============================== warnings summary ===============================\n../venv/lib64/python3.14/site-packages/starlette/testclient.py:51\n  /home/cdl/kse-fedora-kernel-laoxtupk/venv/lib64/python3.14/site-packages/starlette/testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.\n    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n47 passed, 1 warning in 4.93s\n"
+}

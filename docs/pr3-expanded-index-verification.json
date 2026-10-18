@@ -1,0 +1,309 @@
+{
+  "dataset_id": "8b206cf53527c8c4bf005ec155e136a101910cf17757fee319c17864a259faad",
+  "revision": "a2de78ee6ed8bf8cd99d177c74865a6e8c3cb6ea",
+  "architecture": "arm64",
+  "indexer_version": "0.1.0",
+  "clang_versions": [
+    "22.1.2"
+  ],
+  "indexer_sha256": "26763e53f023f5ddbe44b8d8e706c24fb3930175e041b2dd730465e9805081a9",
+  "configuration_hash": "77125a6f4f0e899d2696a4bca7eb04b4f544b88264d5a3eefd7643e2546031d1",
+  "compilation_database_hash": "49c851250e1175cc1c379e862b501e656341cfa735584e62ce65703954c82654",
+  "profile": "all",
+  "configuration_fragment": [
+    "CONFIG_SECURITY=y",
+    "CONFIG_SECURITY_NETWORK=y",
+    "CONFIG_SECURITY_PATH=y",
+    "CONFIG_AUDIT=y",
+    "CONFIG_SECURITY_SELINUX=y",
+    "CONFIG_SECURITY_LANDLOCK=y",
+    "CONFIG_SECCOMP=y",
+    "CONFIG_SECCOMP_FILTER=y"
+  ],
+  "elapsed_seconds": 177.206280215,
+  "peak_rss_bytes": 2690220032,
+  "database_bytes": 1082552320,
+  "symbols": 197310,
+  "relationships": 1133386,
+  "source_files_verified": 1035,
+  "diagnostics": [],
+  "sqlite_quick_check": "ok",
+  "translation_units": [
+    {
+      "path": "kernel/fork.c",
+      "status": "successful",
+      "elapsed_seconds": 3.675381238,
+      "peak_rss_bytes": 2387066880,
+      "reason": null
+    },
+    {
+      "path": "kernel/pid.c",
+      "status": "successful",
+      "elapsed_seconds": 2.4700607689999856,
+      "peak_rss_bytes": 2415489024,
+      "reason": null
+    },
+    {
+      "path": "kernel/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 1.6918215270000019,
+      "peak_rss_bytes": 1517256704,
+      "reason": null
+    },
+    {
+      "path": "kernel/exit.c",
+      "status": "successful",
+      "elapsed_seconds": 2.371914038,
+      "peak_rss_bytes": 2414309376,
+      "reason": null
+    },
+    {
+      "path": "kernel/sys.c",
+      "status": "successful",
+      "elapsed_seconds": 2.6457053809999707,
+      "peak_rss_bytes": 2358730752,
+      "reason": null
+    },
+    {
+      "path": "fs/exec.c",
+      "status": "successful",
+      "elapsed_seconds": 2.1983701400000086,
+      "peak_rss_bytes": 2370289664,
+      "reason": null
+    },
+    {
+      "path": "fs/file.c",
+      "status": "successful",
+      "elapsed_seconds": 2.9525883579999572,
+      "peak_rss_bytes": 2415276032,
+      "reason": null
+    },
+    {
+      "path": "fs/open.c",
+      "status": "successful",
+      "elapsed_seconds": 2.017709556,
+      "peak_rss_bytes": 1491099648,
+      "reason": null
+    },
+    {
+      "path": "fs/namei.c",
+      "status": "successful",
+      "elapsed_seconds": 2.4454322400000024,
+      "peak_rss_bytes": 2414141440,
+      "reason": null
+    },
+    {
+      "path": "security/security.c",
+      "status": "successful",
+      "elapsed_seconds": 3.0203002050000123,
+      "peak_rss_bytes": 2429919232,
+      "reason": null
+    },
+    {
+      "path": "kernel/seccomp.c",
+      "status": "successful",
+      "elapsed_seconds": 2.8339190890000054,
+      "peak_rss_bytes": 2416119808,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/fs.c",
+      "status": "successful",
+      "elapsed_seconds": 3.434685473000002,
+      "peak_rss_bytes": 2472771584,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/cred.c",
+      "status": "successful",
+      "elapsed_seconds": 2.5694443429999865,
+      "peak_rss_bytes": 1359331328,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/ruleset.c",
+      "status": "successful",
+      "elapsed_seconds": 4.0801197399999865,
+      "peak_rss_bytes": 2477174784,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/syscalls.c",
+      "status": "successful",
+      "elapsed_seconds": 4.238023507000037,
+      "peak_rss_bytes": 2447503360,
+      "reason": null
+    },
+    {
+      "path": "security/landlock/task.c",
+      "status": "successful",
+      "elapsed_seconds": 2.983403269000007,
+      "peak_rss_bytes": 2477129728,
+      "reason": null
+    },
+    {
+      "path": "security/selinux/hooks.c",
+      "status": "successful",
+      "elapsed_seconds": 5.463655889999984,
+      "peak_rss_bytes": 2690220032,
+      "reason": null
+    },
+    {
+      "path": "arch/arm64/kernel/ptrace.c",
+      "status": "successful",
+      "elapsed_seconds": 1.7793305480000186,
+      "peak_rss_bytes": 1412927488,
+      "reason": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "lesson": "process-inheritance",
+      "id": "copy-files",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2280,
+        "column": 11
+      },
+      "line": "\tretval = copy_files(clone_flags, p, args->no_files);"
+    },
+    {
+      "lesson": "process-inheritance",
+      "id": "duplicate-table",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      },
+      "line": "\tnewf = dup_fd(oldf, NULL);"
+    },
+    {
+      "lesson": "process-inheritance",
+      "id": "close-exec",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      },
+      "line": "\tdo_close_on_exec(me->files);"
+    },
+    {
+      "lesson": "process-identity",
+      "id": "getpid-handler",
+      "location": {
+        "file": "kernel/sys.c",
+        "line": 1001,
+        "column": 9
+      },
+      "line": "\treturn task_tgid_vnr(current);"
+    },
+    {
+      "lesson": "process-identity",
+      "id": "task-record",
+      "location": {
+        "file": "include/linux/sched.h",
+        "line": 826,
+        "column": 8
+      },
+      "line": "struct task_struct {"
+    },
+    {
+      "lesson": "fork-memory",
+      "id": "memory-setup",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 2292,
+        "column": 11
+      },
+      "line": "\tretval = copy_mm(clone_flags, p);"
+    },
+    {
+      "lesson": "fork-memory",
+      "id": "memory-choice",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1594,
+        "column": 8
+      },
+      "line": "\t\tmm = dup_mm(tsk, current->mm);"
+    },
+    {
+      "lesson": "shared-offset",
+      "id": "table-copy",
+      "location": {
+        "file": "kernel/fork.c",
+        "line": 1664,
+        "column": 9
+      },
+      "line": "\tnewf = dup_fd(oldf, NULL);"
+    },
+    {
+      "lesson": "shared-offset",
+      "id": "file-references",
+      "location": {
+        "file": "fs/file.c",
+        "line": 458,
+        "column": 4
+      },
+      "line": "\t\t\tget_file(f);"
+    },
+    {
+      "lesson": "exit-wait",
+      "id": "release-memory",
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 975,
+        "column": 2
+      },
+      "line": "\texit_mm();"
+    },
+    {
+      "lesson": "exit-wait",
+      "id": "wait-operation",
+      "location": {
+        "file": "kernel/exit.c",
+        "line": 1893,
+        "column": 8
+      },
+      "line": "\tret = do_wait(&wo);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-request",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1899,
+        "column": 9
+      },
+      "line": "\treturn bprm_execve(bprm);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-format",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1801,
+        "column": 11
+      },
+      "line": "\tretval = exec_binprm(bprm);"
+    },
+    {
+      "lesson": "exec-replacement",
+      "id": "exec-descriptors",
+      "location": {
+        "file": "fs/exec.c",
+        "line": 1186,
+        "column": 2
+      },
+      "line": "\tdo_close_on_exec(me->files);"
+    }
+  ],
+  "signature_verification": {
+    "origin": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+    "tag": "v7.2.11",
+    "tag_object": "8316c24ec1b77dba19ba072ca4fe251b36dc65d3",
+    "verification": "git verify-tag: valid signature with pinned upstream primary fingerprint",
+    "signer_fingerprint": "647F28654894E3BD457199BE38DBBDC86092693E",
+    "verification_output": "[GNUPG:] NEWSIG\n[GNUPG:] KEY_CONSIDERED 647F28654894E3BD457199BE38DBBDC86092693E 0\n[GNUPG:] SIG_ID o4rDBwEwZFpMSi8fvygYJ9PYztI 2026-10-15 1792058622\n[GNUPG:] GOODSIG 38DBBDC86092693E Greg Kroah-Hartman <gregkh@kernel.org>\n[GNUPG:] VALIDSIG 647F28654894E3BD457199BE38DBBDC86092693E 2026-10-15 1792058622 0 4 0 1 10 00 647F28654894E3BD457199BE38DBBDC86092693E\n[GNUPG:] TRUST_UNDEFINED 0 pgp\n"
+  }
+}
